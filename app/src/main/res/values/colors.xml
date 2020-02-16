@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+    <color name="gray">#86868b</color>
+    <color name="darkGray">#333333</color>
+    <color name="white">#FFFFFF</color>
+    <color name="orange">#f76f49</color>
+    <color name="orange2">#ffa500</color>
+    <color name="purple">#3104B4</color>
+    <color name="gold">#DAA520</color>
+    <color name="silver">#C0C0C0</color>
+    <color name="bronze">#C47222</color>
+    <color name="darkYellow">#edb918</color>
+    <color name="darkYellow2">#ff8c00</color>
+    <color name="darkRed">#b40926</color>
+    <color name="yellow">#ffff00</color>
+    <color name="red">#ff0000</color>
+    <color name="slateGray">#708090</color>
+
+
+    <color name="lightRed">#f76161</color>
+    <color name="lightRed2">#ff3366</color>
+
+    <color name="lightOrange">#ff9966</color>
+    <color name="lightSalmon">#ffa07a</color>
+    <color name="lightPink">#ff99cc</color>
+    <color name="lightBlue">#7476d6</color>
+    <color name="lightBlue2">#5155e6</color>
+    <color name="lightBlue3">#99ffcc</color>
+    <color name="lightPurple">#9F81F7</color>
+    <color name="lightPurple2">#7B68EE</color>
+    <color name="lightGreen">#39ae5c</color>
+    <color name="lightGreen2">#99ff33</color>
+    <color name="lightGreen3">#99ff00</color>
+    <color name="lightGreen4">#ccff00</color>
+    <color name="lightYellow">#ffff33</color>
+
+
+    <color name="startBack">#626262</color>
+    <color name="startText">#FF5722</color>
+    <color name="countdownBack">#586365</color>
+    <color name="countdownText">#ffc042</color>
+
+</resources>
