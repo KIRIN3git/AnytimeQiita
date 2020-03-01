@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/bottom_navigation_bookmark"
-        android:name="jp.kirin3.anytimeqiita.ui.home.HomeFragment"
+        android:name="jp.kirin3.anytimeqiita.ui.home.LoginFragment"
         android:label="@string/title_home"
         tools:layout="@layout/fragment_home" />
 
@@ -31,7 +31,18 @@
 
     <fragment
         android:id="@+id/bottom_navigation_setting"
-        android:name="jp.kirin3.anytimeqiita.ui.notifications.NotificationsFragment"
-        android:label="@string/title_notifications"
-        tools:layout="@layout/fragment_notifications" />
+        android:name="jp.kirin3.anytimeqiita.ui.setting.SettingFragment"
+        android:label="@string/title_setting"
+        tools:layout="@layout/fragment_setting">
+        <action
+            android:id="@+id/action_setting_to_login"
+            app:destination="@id/navigation_login_web_view" />
+    </fragment>
+
+
+    <fragment
+        android:id="@+id/navigation_login_web_view"
+        android:name="jp.kirin3.anytimeqiita.ui.home.LoginFragment"
+        android:label="@string/title_setting"
+        tools:layout="@layout/fragment_login" />
 </navigation>

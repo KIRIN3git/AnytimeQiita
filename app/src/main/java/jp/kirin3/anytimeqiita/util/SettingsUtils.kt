@@ -1,12 +1,12 @@
 package kirin3.jp.mljanken.util
 
 import android.content.Context
-import android.preference.PreferenceManager
+import androidx.preference.PreferenceManager
 import kirin3.jp.mljanken.util.LogUtils.LOGD
 
 object SettingsUtils {
 
-    val TAG = LogUtils.makeLogTag(CloudFirestoreHelper::class.java)
+    val TAG = "TAG"
 
     enum class Gender {
         NOTHING,
@@ -58,13 +58,25 @@ object SettingsUtils {
     val PREF_SETTING_MAX_CHAIN_WIN_NUM = "pref_setting_max_chain_win_num"
     val PREF_SETTING_MAX_CHAIN_LOSE_NUM = "pref_setting_max_chain_lose_num"
 
+    val PREF_SETTING_CODE = "pref_setting_code"
+
+    fun setUserCode(context: Context, code: String) {
+        val sp = PreferenceManager.getDefaultSharedPreferences(context)
+        sp.edit().putString(PREF_SETTING_CODE, code).apply()
+        LOGD("SetPref code = " + code)
+    }
+
+    fun getUserCode(context: Context): String? {
+        val sp = PreferenceManager.getDefaultSharedPreferences(context)
+        LOGD("GetPref code = " + sp.getString(PREF_SETTING_CODE, ""))
+        return sp.getString(PREF_SETTING_CODE, "")
+    }
 
     /**
      * UUIDを保存
      */
     fun setSettingUuid(context: Context, uuid: String) {
         val sp = PreferenceManager.getDefaultSharedPreferences(context)
-        LOGD(TAG, "setSettingUuid:" + uuid)
         sp.edit().putString(PREF_SETTING_UUID, uuid).apply()
     }
 
@@ -73,7 +85,6 @@ object SettingsUtils {
      */
     fun setSettingRadioIdGender(context: Context, gender_id: Int) {
         val sp = PreferenceManager.getDefaultSharedPreferences(context)
-        LOGD(TAG, "setSettingRadioIdGender:" + gender_id)
         sp.edit().putInt(PREF_SETTING_GENDER, gender_id).apply()
     }
 
@@ -82,7 +93,6 @@ object SettingsUtils {
      */
     fun setSettingRadioIdAge(context: Context, age_id: Int) {
         val sp = PreferenceManager.getDefaultSharedPreferences(context)
-        LOGD(TAG, "setSettingRadioIdAge:" + age_id)
         sp.edit().putInt(PREF_SETTING_AGE, age_id).apply()
     }
 
@@ -91,7 +101,6 @@ object SettingsUtils {
      */
     fun setSettingRadioIdPrefecture(context: Context, prefecture_id: Int) {
         val sp = PreferenceManager.getDefaultSharedPreferences(context)
-        LOGD(TAG, "setSettingRadioIdPrefecture:" + prefecture_id)
         sp.edit().putInt(PREF_SETTING_PREFECTURE, prefecture_id).apply()
     }
 
@@ -100,7 +109,6 @@ object SettingsUtils {
      */
     fun setSettingBattleNum(context: Context, battle_num: Int) {
         val sp = PreferenceManager.getDefaultSharedPreferences(context)
-        LOGD(TAG, "setSettingBattleNum:" + battle_num)
         sp.edit().putInt(PREF_SETTING_BATTEL_NUM, battle_num).apply()
     }
 
@@ -109,7 +117,6 @@ object SettingsUtils {
      */
     fun setSettingWinNum(context: Context, win_num: Int) {
         val sp = PreferenceManager.getDefaultSharedPreferences(context)
-        LOGD(TAG, "setSettingWinNum:" + win_num)
         sp.edit().putInt(PREF_SETTING_WIN_NUM, win_num).apply()
     }
 
@@ -118,7 +125,6 @@ object SettingsUtils {
      */
     fun setSettingDrowNum(context: Context, drow_num: Int) {
         val sp = PreferenceManager.getDefaultSharedPreferences(context)
-        LOGD(TAG, "setSettingDrowNum:" + drow_num)
         sp.edit().putInt(PREF_SETTING_DROW_NUM, drow_num).apply()
     }
 
@@ -127,7 +133,6 @@ object SettingsUtils {
      */
     fun setSettingLoseNum(context: Context, lose_num: Int) {
         val sp = PreferenceManager.getDefaultSharedPreferences(context)
-        LOGD(TAG, "setSettingLoseNum:" + lose_num)
         sp.edit().putInt(PREF_SETTING_LOSE_NUM, lose_num).apply()
     }
 
@@ -136,7 +141,6 @@ object SettingsUtils {
      */
     fun setSettingNowChainWinNum(context: Context, chain_win_num: Int) {
         val sp = PreferenceManager.getDefaultSharedPreferences(context)
-        LOGD(TAG, "setSettingNowChainWinNum:" + chain_win_num)
         sp.edit().putInt(PREF_SETTING_NOW_CHAIN_WIN_NUM, chain_win_num).apply()
     }
 
@@ -145,7 +149,6 @@ object SettingsUtils {
      */
     fun setSettingNowChainLoseNum(context: Context, chain_lose_num: Int) {
         val sp = PreferenceManager.getDefaultSharedPreferences(context)
-        LOGD(TAG, "setSettingNowChainLoseNum:" + chain_lose_num)
         sp.edit().putInt(PREF_SETTING_NOW_CHAIN_LOSE_NUM, chain_lose_num).apply()
     }
 
@@ -154,7 +157,6 @@ object SettingsUtils {
      */
     fun setSettingMaxChainWinNum(context: Context, chain_win_num: Int) {
         val sp = PreferenceManager.getDefaultSharedPreferences(context)
-        LOGD(TAG, "setSettingMaxChainWinNum:" + chain_win_num)
         sp.edit().putInt(PREF_SETTING_MAX_CHAIN_WIN_NUM, chain_win_num).apply()
     }
 
@@ -163,7 +165,6 @@ object SettingsUtils {
      */
     fun setSettingMaxChainLoseNum(context: Context, chain_lose_num: Int) {
         val sp = PreferenceManager.getDefaultSharedPreferences(context)
-        LOGD(TAG, "setSettingMaxChainLoseNum:" + chain_lose_num)
         sp.edit().putInt(PREF_SETTING_MAX_CHAIN_LOSE_NUM, chain_lose_num).apply()
     }
 
@@ -175,7 +176,6 @@ object SettingsUtils {
      */
     fun getSettingUuid(context: Context): String? {
         val sp = PreferenceManager.getDefaultSharedPreferences(context)
-        LOGD(TAG, "getSettingUuid:" + sp.getString(PREF_SETTING_UUID, ""))
         return sp.getString(PREF_SETTING_UUID, "")
     }
 
@@ -184,7 +184,6 @@ object SettingsUtils {
      */
     fun getSettingRadioIdGender(context: Context): Int {
         val sp = PreferenceManager.getDefaultSharedPreferences(context)
-        LOGD(TAG, "getSettingRadioIdGender:" + sp.getInt(PREF_SETTING_GENDER, 0))
         return sp.getInt(PREF_SETTING_GENDER, 0)
     }
 
@@ -193,7 +192,6 @@ object SettingsUtils {
      */
     fun getSettingRadioIdAge(context: Context): Int {
         val sp = PreferenceManager.getDefaultSharedPreferences(context)
-        LOGD(TAG, "getSettingRadioIdAge:" + sp.getInt(PREF_SETTING_AGE, 0))
         return sp.getInt(PREF_SETTING_AGE, 0)
     }
 
@@ -202,7 +200,6 @@ object SettingsUtils {
      */
     fun getSettingRadioIdPrefecture(context: Context): Int {
         val sp = PreferenceManager.getDefaultSharedPreferences(context)
-        LOGD(TAG, "getSettingRadioIdPrefecture:" + sp.getInt(PREF_SETTING_PREFECTURE, 0))
         return sp.getInt(PREF_SETTING_PREFECTURE, 0)
     }
 
@@ -211,7 +208,6 @@ object SettingsUtils {
      */
     fun getSettingBattleNum(context: Context): Int {
         val sp = PreferenceManager.getDefaultSharedPreferences(context)
-        LOGD(TAG, "getSettingBattleNum:" + sp.getInt(PREF_SETTING_BATTEL_NUM, 0))
         return sp.getInt(PREF_SETTING_BATTEL_NUM, 0)
     }
 
@@ -220,7 +216,6 @@ object SettingsUtils {
      */
     fun getSettingWinNum(context: Context): Int {
         val sp = PreferenceManager.getDefaultSharedPreferences(context)
-        LOGD(TAG, "getSettingWinNum:" + sp.getInt(PREF_SETTING_WIN_NUM, 0))
         return sp.getInt(PREF_SETTING_WIN_NUM, 0)
     }
 
@@ -229,7 +224,6 @@ object SettingsUtils {
      */
     fun getSettingDrowNum(context: Context): Int {
         val sp = PreferenceManager.getDefaultSharedPreferences(context)
-        LOGD(TAG, "getSettingDrowNum:" + sp.getInt(PREF_SETTING_DROW_NUM, 0))
         return sp.getInt(PREF_SETTING_DROW_NUM, 0)
     }
 
@@ -238,7 +232,6 @@ object SettingsUtils {
      */
     fun getSettingLoseNum(context: Context): Int {
         val sp = PreferenceManager.getDefaultSharedPreferences(context)
-        LOGD(TAG, "getSettingLoseNum:" + sp.getInt(PREF_SETTING_LOSE_NUM, 0))
         return sp.getInt(PREF_SETTING_LOSE_NUM, 0)
     }
 
@@ -247,7 +240,6 @@ object SettingsUtils {
      */
     fun getSettingNowChainWinNum(context: Context): Int {
         val sp = PreferenceManager.getDefaultSharedPreferences(context)
-        LOGD(TAG, "getSettingNowChainWinNum:" + sp.getInt(PREF_SETTING_NOW_CHAIN_WIN_NUM, 0))
         return sp.getInt(PREF_SETTING_NOW_CHAIN_WIN_NUM, 0)
     }
 
@@ -256,7 +248,6 @@ object SettingsUtils {
      */
     fun getSettingNowChainLoseNum(context: Context): Int {
         val sp = PreferenceManager.getDefaultSharedPreferences(context)
-        LOGD(TAG, "getSettingNowChainLoseNum:" + sp.getInt(PREF_SETTING_NOW_CHAIN_LOSE_NUM, 0))
         return sp.getInt(PREF_SETTING_NOW_CHAIN_LOSE_NUM, 0)
     }
 
@@ -265,7 +256,6 @@ object SettingsUtils {
      */
     fun getSettingMaxChainWinNum(context: Context): Int {
         val sp = PreferenceManager.getDefaultSharedPreferences(context)
-        LOGD(TAG, "getSettingMaxChainWinNum:" + sp.getInt(PREF_SETTING_MAX_CHAIN_WIN_NUM, 0))
         return sp.getInt(PREF_SETTING_MAX_CHAIN_WIN_NUM, 0)
     }
 
@@ -274,7 +264,6 @@ object SettingsUtils {
      */
     fun getSettingMaxChainLoseNum(context: Context): Int {
         val sp = PreferenceManager.getDefaultSharedPreferences(context)
-        LOGD(TAG, "getSettingMaxChainLoseNum:" + sp.getInt(PREF_SETTING_MAX_CHAIN_LOSE_NUM, 0))
         return sp.getInt(PREF_SETTING_MAX_CHAIN_LOSE_NUM, 0)
     }
 

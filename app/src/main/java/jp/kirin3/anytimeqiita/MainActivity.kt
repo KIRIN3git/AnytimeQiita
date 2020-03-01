@@ -1,12 +1,12 @@
 package jp.kirin3.anytimeqiita
 
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import jp.kirin3.anytimeqiita.ui.login.LoginHelper
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -15,6 +15,7 @@ class MainActivity : AppCompatActivity() {
             findViewById(R.id.activity_main_bottom_navigation_view)
 
         val navController = findNavController(R.id.activity_main_navigation_host_fragment)
+
         /*
         //TODO: KIRIN3 ActionBar設置時に指定
         //各メニューIDを一連のIDとして渡します
@@ -28,7 +29,11 @@ class MainActivity : AppCompatActivity() {
         setupActionBarWithNavController(navController, appBarConfiguration)
         */
 
+
+        LoginHelper.processLogin(this, intent)
+
         //BottomNavigatinにNavigationを設定
         bottomNavigationView.setupWithNavController(navController)
     }
+
 }
