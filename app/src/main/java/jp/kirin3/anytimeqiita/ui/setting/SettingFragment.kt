@@ -5,15 +5,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.TextView
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import androidx.navigation.fragment.findNavController
 import jp.kirin3.anytimeqiita.R
-import jp.kirin3.anytimeqiita.ui.login.LoginHelper
-import jp.kirin3.anytimeqiita.ui.notifications.SettingViewModel
-import kotlinx.android.synthetic.main.fragment_setting.fragment_setting_login_button
+import jp.kirin3.anytimeqiita.Helper.LoginHelper
 
 class SettingFragment : Fragment() {
 

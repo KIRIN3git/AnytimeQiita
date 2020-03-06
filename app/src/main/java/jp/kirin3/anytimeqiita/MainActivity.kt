@@ -4,7 +4,8 @@ import android.os.Bundle
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import jp.kirin3.anytimeqiita.ui.login.LoginHelper
+import jp.kirin3.anytimeqiita.Helper.LoginHelper
+import timber.log.Timber
 
 class MainActivity : BaseActivity() {
 
@@ -30,8 +31,11 @@ class MainActivity : BaseActivity() {
         */
 
 
-        LoginHelper.processLogin(this, intent)
+        // 認証後処理
+        LoginHelper.processAfterLogin(this, intent)
 
+
+        Timber.d("")
         //BottomNavigatinにNavigationを設定
         bottomNavigationView.setupWithNavController(navController)
     }

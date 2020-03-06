@@ -5,44 +5,41 @@
     android:id="@+id/mobile_navigation"
     app:startDestination="@+id/bottom_navigation_reading">
 
-    <fragment
-        android:id="@+id/bottom_navigation_bookmark"
-        android:name="jp.kirin3.anytimeqiita.ui.home.LoginFragment"
-        android:label="@string/title_home"
-        tools:layout="@layout/fragment_home" />
-
-    <fragment
-        android:id="@+id/bottom_navigation_reading"
-        android:name="jp.kirin3.anytimeqiita.ui.dashboard.DashboardFragment"
-        android:label="@string/title_dashboard"
-        tools:layout="@layout/fragment_dashboard" />
-
-    <fragment
-        android:id="@+id/bottom_navigation_stock"
-        android:name="jp.kirin3.anytimeqiita.ui.notifications.NotificationsFragment"
-        android:label="@string/title_notifications"
-        tools:layout="@layout/fragment_notifications" />
 
     <fragment
         android:id="@+id/bottom_navigation_record"
-        android:name="jp.kirin3.anytimeqiita.ui.dashboard.DashboardFragment"
-        android:label="@string/title_dashboard"
-        tools:layout="@layout/fragment_dashboard" />
+        android:name="jp.kirin3.anytimeqiita.ui.record.RecordFragment"
+        android:label="@string/title_record"
+        tools:layout="@layout/fragment_record" />
+
+    <fragment
+        android:id="@+id/bottom_navigation_stock"
+        android:name="jp.kirin3.anytimeqiita.ui.reading.ReadingFragment"
+        android:label="@string/title_stock"
+        tools:layout="@layout/fragment_stock" />
+
+    <fragment
+        android:id="@+id/bottom_navigation_bookmark"
+        android:name="jp.kirin3.anytimeqiita.ui.stock.StockFragment"
+        android:label="@string/title_bookmark"
+        tools:layout="@layout/fragment_bookmark" />
+
+    <fragment
+        android:id="@+id/bottom_navigation_reading"
+        android:name="jp.kirin3.anytimeqiita.ui.record.RecordFragment"
+        android:label="@string/title_reading"
+        tools:layout="@layout/fragment_record" />
 
     <fragment
         android:id="@+id/bottom_navigation_setting"
         android:name="jp.kirin3.anytimeqiita.ui.setting.SettingFragment"
         android:label="@string/title_setting"
         tools:layout="@layout/fragment_setting">
+        <!--
         <action
             android:id="@+id/action_setting_to_login"
             app:destination="@id/navigation_login_web_view" />
+        -->
     </fragment>
 
-
-    <fragment
-        android:id="@+id/navigation_login_web_view"
-        android:name="jp.kirin3.anytimeqiita.ui.home.LoginFragment"
-        android:label="@string/title_setting"
-        tools:layout="@layout/fragment_login" />
 </navigation>

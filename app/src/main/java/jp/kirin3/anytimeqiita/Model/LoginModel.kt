@@ -1,4 +1,4 @@
-package jp.kirin3.anytimeqiita.ui.home
+package jp.kirin3.anytimeqiita.ui.reading
 
 import android.content.Context
 import android.content.Intent
@@ -8,8 +8,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import kirin3.jp.mljanken.util.LogUtils.LOGD
+import kirin3.jp.mljanken.util.LogUtils.LOGE
 
-class LoginViewModel : ViewModel() {
+class LoginModel : ViewModel() {
 
     companion object {
         private val QIITA_URL = "https://qiita.com/api/v2/oauth/authorize"
@@ -22,7 +23,7 @@ class LoginViewModel : ViewModel() {
 
     fun requestLoginIntent(context: Context?) {
         if (context == null) {
-            //TODO: kirin3 ログを出力
+            LOGE("NOT CONTEXT")
             return
         }
         val intent = Intent(Intent.ACTION_VIEW, Uri.parse(createUrl()))
@@ -39,7 +40,7 @@ class LoginViewModel : ViewModel() {
         val charPool: List<Char> = ('a'..'z') + ('A'..'Z') + ('0'..'9')
 
         state = (1..STATE_LENGTH)
-            .map { i -> kotlin.random.Random.nextInt(0, charPool.size) }
+            .map { kotlin.random.Random.nextInt(0, charPool.size) }
             .map(charPool::get)
             .joinToString("")
 
@@ -56,6 +57,7 @@ class LoginViewModel : ViewModel() {
         LOGD("codeParam")
 
         val appLinkAction = intent.action
+
         if (appLinkAction != Intent.ACTION_VIEW) {
             return null
         }

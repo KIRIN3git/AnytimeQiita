@@ -1,11 +1,13 @@
 package kirin3.jp.mljanken.util
 
+import android.os.Build
 import timber.log.Timber
 
 object LogUtils {
 
-    fun LOGD(message: String) {
-        Timber.d(message)
+    fun LOGD(any: Any) {
+        if(any == null) return
+        Timber.d(any.toString())
     }
 
     fun LOGV(message: String) {

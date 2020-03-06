@@ -15,13 +15,14 @@ class ExtDebugTree(tag: String) : DebugTree() {
     companion object {
 
         private const val MAX_LOG_LENGTH = 4000
-        private const val CALLER_INFO_FORMAT = " at %s(%s:%s)"
+        private const val CALLER_INFO_FORMAT = " [%s](%s:%s)"
 
         private fun formatForLogCat(stack: StackTraceElement): String {
             val className = stack.className
             val packageName = className.substring(0, className.lastIndexOf("."))
             return String.format(
-                CALLER_INFO_FORMAT, packageName,
+//                CALLER_INFO_FORMAT, packageName + "[" + stack.methodName + "]" ,
+                CALLER_INFO_FORMAT, stack.methodName ,
                 stack.fileName, stack.lineNumber
             )
         }
@@ -84,11 +85,14 @@ class ExtDebugTree(tag: String) : DebugTree() {
         }
     }
 
+    /*
+     *　一つ前のメソッドを表示(5 → 6)
+     */
     private fun getCallerInfo(stacks: Array<StackTraceElement>?): String {
-        return if (stacks == null || stacks.size < 5) { // are you using proguard???
+        return if (stacks == null || stacks.size < 6) { // are you using proguard???
             ""
         } else formatForLogCat(
-            stacks[5]
+            stacks[6]
         )
     }
 }

@@ -1,23 +1,23 @@
-package jp.kirin3.anytimeqiita.ui.login
+package jp.kirin3.anytimeqiita.Helper
 
 import android.content.Context
 import android.content.Intent
-import jp.kirin3.anytimeqiita.ui.home.LoginViewModel
+import jp.kirin3.anytimeqiita.ui.reading.LoginModel
 import kirin3.jp.mljanken.util.SettingsUtils
 
 object LoginHelper {
 
-    val loginModel: LoginViewModel = LoginViewModel()
+    val LOGIN_MODEL: LoginModel = LoginModel()
 
     fun requestLogin(context: Context?) {
-        loginModel.requestLoginIntent(context)
+        LOGIN_MODEL.requestLoginIntent(context)
     }
 
-    fun processLogin(context: Context?, intent: Intent) {
+    fun processAfterLogin(context: Context?, intent: Intent) {
 
         if (context == null) return
 
-        loginModel.processLogin(intent)?.let {
+        LOGIN_MODEL.processLogin(intent)?.let {
             SettingsUtils.setUserCode(context, it)
         }
 
