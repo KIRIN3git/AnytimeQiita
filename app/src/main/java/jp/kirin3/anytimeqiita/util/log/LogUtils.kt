@@ -1,28 +1,31 @@
 package kirin3.jp.mljanken.util
 
-import android.os.Build
 import timber.log.Timber
 
 object LogUtils {
 
     fun LOGD(any: Any) {
-        if(any == null) return
+        if (any == null) return
         Timber.d(any.toString())
     }
 
-    fun LOGV(message: String) {
-        Timber.v(message)
+    fun LOGV(any: Any) {
+        if (any == null) return
+        Timber.v(any.toString())
     }
 
-    fun LOGI(message: String) {
-        Timber.i(message)
+    fun LOGI(any: Any) {
+        if (any == "") Timber.i("CHECK_POINT")
+        else Timber.i(any.toString())
     }
 
-    fun LOGW(message: String) {
-        Timber.w(message)
+    fun LOGW(any: Any) {
+        if (any == null) return
+        Timber.w(any.toString())
     }
 
-    fun LOGE(message: String) {
-        Timber.e(message)
+    fun LOGE(any: Any) {
+        if (any == null) return
+        Timber.e(any.toString())
     }
 }

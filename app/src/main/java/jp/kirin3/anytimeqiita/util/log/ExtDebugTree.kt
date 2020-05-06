@@ -20,9 +20,12 @@ class ExtDebugTree(tag: String) : DebugTree() {
         private fun formatForLogCat(stack: StackTraceElement): String {
             val className = stack.className
             val packageName = className.substring(0, className.lastIndexOf("."))
+            /**+
+             * ログのフォーマット変更
+             */
             return String.format(
 //                CALLER_INFO_FORMAT, packageName + "[" + stack.methodName + "]" ,
-                CALLER_INFO_FORMAT, stack.methodName ,
+                CALLER_INFO_FORMAT, stack.methodName,
                 stack.fileName, stack.lineNumber
             )
         }
@@ -85,8 +88,9 @@ class ExtDebugTree(tag: String) : DebugTree() {
         }
     }
 
-    /*
-     *　一つ前のメソッドを表示(5 → 6)
+    /***
+     * ログに表示するファイル位置
+     *　Timberの箇所:5　一つ前のフォルダ:6
      */
     private fun getCallerInfo(stacks: Array<StackTraceElement>?): String {
         return if (stacks == null || stacks.size < 6) { // are you using proguard???

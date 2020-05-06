@@ -10,4 +10,5 @@
     <string name="title_setting">セッティング</string>
 
     <string name="login">ログイン</string>
+    <string name="login_success">ログインに成功しました</string>
 </resources>

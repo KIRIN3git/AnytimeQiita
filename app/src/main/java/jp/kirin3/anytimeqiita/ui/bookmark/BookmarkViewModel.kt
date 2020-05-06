@@ -22,7 +22,7 @@ class BookmarkViewModel : ViewModel() {
 
 
     private val _text = MutableLiveData<String>().apply {
-        value = "This is setting Fragment"
+        value = "This is bookmark Fragment"
     }
     val text: LiveData<String> = _text
 }

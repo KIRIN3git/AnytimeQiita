@@ -8,6 +8,9 @@ class MainApplication : Application() {
 
     companion object {
         const val LOG_TAG = "KIRIN3_LOG"
+        const val QIITA_CLIENT_ID = "XXXXXXXXXXXXXXXXX"
+        const val QIITA_CLIENT_SEACRET = "YYYYYYYYYYYYYYYYYY"
+
     }
 
     override fun onCreate() {

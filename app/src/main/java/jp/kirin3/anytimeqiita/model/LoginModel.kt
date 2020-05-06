@@ -9,6 +9,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import kirin3.jp.mljanken.util.LogUtils.LOGD
 import kirin3.jp.mljanken.util.LogUtils.LOGE
+import kirin3.jp.mljanken.util.LogUtils.LOGI
 
 class LoginModel : ViewModel() {
 
@@ -18,10 +19,14 @@ class LoginModel : ViewModel() {
         private val QIITA_SCOPE = "read_qiita"
 
         private val STATE_LENGTH = 24
-        private var state: String = ""
+
     }
 
-    fun requestLoginIntent(context: Context?) {
+    private var state: String = ""
+    private var paramState: String = ""
+    var paramCode: String = ""
+
+    fun startActionViewIntent(context: Context?) {
         if (context == null) {
             LOGE("NOT CONTEXT")
             return
@@ -30,7 +35,7 @@ class LoginModel : ViewModel() {
         context.startActivity(intent)
     }
 
-    fun createUrl(): String {
+    private fun createUrl(): String {
         return QIITA_URL + "?client_id=" + QIITA_CLIENT_ID +
                 "&scope=" + QIITA_SCOPE +
                 "&state=" + createState()
@@ -47,39 +52,40 @@ class LoginModel : ViewModel() {
         return state
     }
 
-    fun checkState(checkState: String?): Boolean {
-        return checkState.equals(state)
+    fun checkStateSame(): Boolean {
+        if (state.isEmpty() || paramState.isEmpty()) return false
+        return true
     }
 
     @Nullable
-    fun processLogin(intent: Intent): String? {
+    fun analyzeLoginIntent(intent: Intent): Boolean {
 
-        LOGD("codeParam")
+        LOGI("analyzeLoginIntent")
 
         val appLinkAction = intent.action
 
         if (appLinkAction != Intent.ACTION_VIEW) {
-            return null
+            return false
         }
         val appLinkData = intent.data ?: run {
-            return null
+            return false
         }
-        val codeParam = appLinkData.getQueryParameter("code") ?: run {
-            return null
-        }
-        val statetParam = appLinkData.getQueryParameter("state") ?: run {
-            return null
-        }
-        if (checkState(statetParam) == false) {
-            return null
+        paramCode = appLinkData.getQueryParameter("code") ?: run {
+            return false
         }
 
-        LOGD("codeParam" + codeParam)
-        LOGD("statetParam" + statetParam)
-        return codeParam
+        paramState = appLinkData.getQueryParameter("state") ?: run {
+            return false
+        }
+
+        LOGD("paramCode" + paramCode)
+        LOGD("paramCode" + paramCode)
+
+        return true
     }
 
 
+    // LIVE DATA
     private val _text = MutableLiveData<String>().apply {
         value = "This is setting Fragment"
     }

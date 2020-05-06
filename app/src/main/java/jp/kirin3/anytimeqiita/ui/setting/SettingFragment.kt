@@ -8,7 +8,7 @@ import android.widget.Button
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import jp.kirin3.anytimeqiita.R
-import jp.kirin3.anytimeqiita.Helper.LoginHelper
+import jp.kirin3.anytimeqiita.helper.LoginHelper
 
 class SettingFragment : Fragment() {
 
@@ -29,7 +29,7 @@ class SettingFragment : Fragment() {
 
         loginButton = root.findViewById(R.id.fragment_setting_login_button)
         loginButton.setOnClickListener{
-            LoginHelper.requestLogin(context)
+            LoginHelper.accessLoginPage(context)
 //            findNavController().navigate(R.id.action_setting_to_login)
         }
 /*
