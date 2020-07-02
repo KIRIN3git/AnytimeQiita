@@ -12,7 +12,6 @@ class BookmarklPresenter(
 
     // FragmentのpresenterにViewを設定
     init {
-        LOGD("xxxxxxxxxxxxxxinit")
         bookmarkView.presenter = this
     }
 
@@ -22,7 +21,7 @@ class BookmarklPresenter(
     }
 
     override fun getMessage() {
-//          getTasks()
+//       getTasks()
     }
 
     data class User(var name: String, val age: Int)

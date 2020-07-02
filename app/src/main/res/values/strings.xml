@@ -11,4 +11,5 @@
 
     <string name="login">ログイン</string>
     <string name="login_success">ログインに成功しました</string>
+    <string name="login_fail">ログインに失敗しました</string>
 </resources>

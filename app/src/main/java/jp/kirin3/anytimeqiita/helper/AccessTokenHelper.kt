@@ -8,16 +8,18 @@ import kirin3.jp.mljanken.util.SettingsUtils
 import java.util.concurrent.CountDownLatch
 
 object AccessTokenHelper {
-    fun loadAccessToken(context: Context?, code: String, latch: CountDownLatch) {
-        if (context == null) return
+    fun loadAccessToken(context: Context?, code: String?, latch: CountDownLatch) {
+        if (context == null || code == null) {
+            return
+        }
 
+        // アクセストークンの初期化
         SettingsUtils.setQiitaAccessToken(context, "")
 
         ApiClient.fetchAccessToken(code, object : ApiClient.AccessTokenApiCallback {
             override fun onTasksLoaded(responseData: AccessTokenResponseData) {
                 LogUtils.LOGI("")
                 SettingsUtils.setQiitaAccessToken(context, responseData.token)
-//                loadAuthenticatedUser(context, responseData.token)
 
                 latch.apply { countDown() }
             }

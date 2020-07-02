@@ -1,6 +1,5 @@
 package jp.kirin3.anytimeqiita
 
-import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
@@ -9,14 +8,19 @@ import androidx.fragment.app.FragmentManager
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import io.realm.Realm
 import jp.kirin3.anytimeqiita.helper.AccessTokenHelper
 import jp.kirin3.anytimeqiita.helper.AuthenticatedUserHelper
 import jp.kirin3.anytimeqiita.helper.LoginHelper
+import jp.kirin3.anytimeqiita.helper.LoginHelper.processAfterLogin
+import jp.kirin3.anytimeqiita.util.StringUtils
 import kirin3.jp.mljanken.util.LogUtils.LOGI
 import kirin3.jp.mljanken.util.SettingsUtils
 import java.util.concurrent.CountDownLatch
 
 class MainActivity : BaseActivity() {
+
+    private lateinit var realm: Realm
 
     companion object {
         const val EXTRA_TASK_ID = "TASK_ID"
@@ -44,20 +48,22 @@ class MainActivity : BaseActivity() {
         setupActionBarWithNavController(navController, appBarConfiguration)
         */
 
-        // createBookmarkPresenter()
 
-        LOGI("MAIN")
-//        val pd = ProgressDialog(this)
-//        pd.setMessage("読み込み中")
-//        pd.show()
-        processAfterLogin(intent)
-
+        if (LoginHelper.hasLoginParamToPrefarence(intent)) {
+            if(processAfterLogin(intent,this)){
+                showLoginSuccessToast()
+            } else{
+                showLoginFailToast()
+            }
+        } else{
+            AuthenticatedUserHelper.setAuthnticatedUserToCated()
+        }
 
         //BottomNavigatinにNavigationを設定
         bottomNavigationView.setupWithNavController(navController)
     }
 
-    fun showLoginToast() {
+    fun showLoginSuccessToast() {
         Toast.makeText(
             this,
             this.getString(R.string.login_success),
@@ -65,28 +71,23 @@ class MainActivity : BaseActivity() {
         ).show()
     }
 
+    fun showLoginFailToast() {
+        Toast.makeText(
+            this,
+            this.getString(R.string.login_fail),
+            Toast.LENGTH_LONG
+        ).show()
+    }
+
     fun FragmentManager.getCurrentNavigationFragment(): Fragment? =
         primaryNavigationFragment?.childFragmentManager?.fragments?.first()
 
-    fun processAfterLogin(intent: Intent) {
 
-        var latch = CountDownLatch(1);
-        if (!LoginHelper.setLoginParamToPrefarence(this, intent)) return
 
-        AccessTokenHelper.loadAccessToken(this, LoginHelper.getQiitaCode(this), latch)
-        latch.await()
+    override fun onDestroy() {
+        super.onDestroy()
 
-        latch = CountDownLatch(1)
-        AuthenticatedUserHelper.loadAuthenticatedUser(
-            this,
-            SettingsUtils.getQiitaAccessToken(this),
-            latch
-        )
-        latch.await()
-
-        if(AuthenticatedUserHelper.hasAuthenticatedUser()){
-            LOGI("xxxxxxxxxxxxxxxx " + AuthenticatedUserHelper.authenticatedModel.getAuthenticatedUser()?.id)
-            showLoginToast()
-        }
     }
+
+
 }

@@ -36,9 +36,12 @@ class LoginModel : ViewModel() {
     }
 
     private fun createUrl(): String {
-        return QIITA_URL + "?client_id=" + QIITA_CLIENT_ID +
+        val url = QIITA_URL + "?client_id=" + QIITA_CLIENT_ID +
                 "&scope=" + QIITA_SCOPE +
                 "&state=" + createState()
+        LOGI("LOGIN URL = " + url)
+
+        return url
     }
 
     private fun createState(): String {
@@ -77,9 +80,6 @@ class LoginModel : ViewModel() {
         paramState = appLinkData.getQueryParameter("state") ?: run {
             return false
         }
-
-        LOGD("paramCode" + paramCode)
-        LOGD("paramCode" + paramCode)
 
         return true
     }

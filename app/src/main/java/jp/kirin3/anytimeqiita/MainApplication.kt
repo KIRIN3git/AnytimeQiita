@@ -1,15 +1,20 @@
 package jp.kirin3.anytimeqiita
 
 import android.app.Application
+import io.realm.Realm
 import jp.kirin3.anytimeqiita.util.log.ExtDebugTree
 import timber.log.Timber
+import io.realm.Realm.setDefaultConfiguration
+import io.realm.RealmConfiguration
+
+
 
 class MainApplication : Application() {
 
     companion object {
         const val LOG_TAG = "KIRIN3_LOG"
-        const val QIITA_CLIENT_ID = "XXXXXXXXXXXXXXXXX"
-        const val QIITA_CLIENT_SEACRET = "YYYYYYYYYYYYYYYYYY"
+        const val QIITA_CLIENT_ID = "2d2713c9fb8be9972a134670392dc4df46388034"
+        const val QIITA_CLIENT_SEACRET = "972fe1788f23c93aa8546d1b99ab1c0677596f53"
 
     }
 
@@ -18,5 +23,10 @@ class MainApplication : Application() {
         if (BuildConfig.DEBUG) {
             Timber.plant(ExtDebugTree(LOG_TAG))
         }
+
+        Realm.init(this)
+        val config = RealmConfiguration.Builder().name("myrealm.realm").build()
+        // インスタンスの生成
+        Realm.setDefaultConfiguration(config)
     }
 }

@@ -1,6 +1,5 @@
 package jp.kirin3.anytimeqiita.ui.bookmark
 
-import android.app.ProgressDialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,6 +8,7 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import jp.kirin3.anytimeqiita.R
+import jp.kirin3.anytimeqiita.helper.StatusHelper
 import jp.kirin3.anytimeqiita.injection.Injection
 import jp.kirin3.anytimeqiita.ui.reading.BookmarkViewModel
 import kirin3.jp.mljanken.util.LogUtils.LOGI
@@ -47,6 +47,7 @@ class BookmarkFragment : Fragment(), BookmarkContract.View {
             Injection.provideTasksRepository(),
             this
         )
+
 
 //        val pd = ProgressDialog(context)
 //        pd.setMessage("読み込み中")

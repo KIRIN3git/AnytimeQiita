@@ -10,6 +10,8 @@ import jp.kirin3.anytimeqiita.data.AccessTokenResponseData
 import jp.kirin3.anytimeqiita.data.AuthenticatedUserResponceData
 import kirin3.jp.mljanken.util.LogUtils.LOGD
 import kirin3.jp.mljanken.util.LogUtils.LOGI
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
@@ -19,10 +21,16 @@ object ApiClient {
     private val HEADER_ACCESS_TOKEN_BEARER = "Bearer "
 
     private fun restClient(): Retrofit {
+
+        val interceptor = HttpLoggingInterceptor()
+        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
+        val client = OkHttpClient.Builder().addInterceptor(interceptor).build()
+
         return Retrofit.Builder()
             .baseUrl(BASE_URL)
             .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
             .addConverterFactory(GsonConverterFactory.create())
+            .client(client)
             .build()
     }
 
@@ -35,9 +43,12 @@ object ApiClient {
         val service = restClient().create(AccessTokenService::class.java)
         val requestData = AccessTokenRequestData(
             QIITA_CLIENT_ID,
-            QIITA_CLIENT_SEACRET, code
+            QIITA_CLIENT_SEACRET,
+            code
         )
         val repos = service.fetchRepos(requestData)
+
+//        LOGI("repos.toString()" + repos.)
 
         repos
             .subscribeOn(Schedulers.io())
