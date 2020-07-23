@@ -1,6 +1,5 @@
 package jp.kirin3.anytimeqiita
 
-import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.fragment.app.Fragment
@@ -9,14 +8,10 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import io.realm.Realm
-import jp.kirin3.anytimeqiita.helper.AccessTokenHelper
-import jp.kirin3.anytimeqiita.helper.AuthenticatedUserHelper
 import jp.kirin3.anytimeqiita.helper.LoginHelper
 import jp.kirin3.anytimeqiita.helper.LoginHelper.processAfterLogin
-import jp.kirin3.anytimeqiita.util.StringUtils
+import jp.kirin3.anytimeqiita.model.AuthenticatedUserModel
 import kirin3.jp.mljanken.util.LogUtils.LOGI
-import kirin3.jp.mljanken.util.SettingsUtils
-import java.util.concurrent.CountDownLatch
 
 class MainActivity : BaseActivity() {
 
@@ -56,7 +51,7 @@ class MainActivity : BaseActivity() {
                 showLoginFailToast()
             }
         } else{
-            AuthenticatedUserHelper.setAuthnticatedUserToCated()
+            AuthenticatedUserModel.setAuthnticatedUserToCache()
         }
 
         //BottomNavigatinにNavigationを設定

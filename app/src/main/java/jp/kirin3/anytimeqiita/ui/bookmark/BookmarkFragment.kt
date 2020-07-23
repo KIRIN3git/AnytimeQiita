@@ -8,7 +8,6 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import jp.kirin3.anytimeqiita.R
-import jp.kirin3.anytimeqiita.helper.StatusHelper
 import jp.kirin3.anytimeqiita.injection.Injection
 import jp.kirin3.anytimeqiita.ui.reading.BookmarkViewModel
 import kirin3.jp.mljanken.util.LogUtils.LOGI
@@ -43,10 +42,6 @@ class BookmarkFragment : Fragment(), BookmarkContract.View {
         val root = inflater.inflate(R.layout.fragment_bookmark, container, false)
         headText = root.findViewById(R.id.fragment_bookmark_head_text)
 
-        presenter = BookmarklPresenter(
-            Injection.provideTasksRepository(),
-            this
-        )
 
 
 //        val pd = ProgressDialog(context)
@@ -66,7 +61,6 @@ class BookmarkFragment : Fragment(), BookmarkContract.View {
         super.onResume()
         LOGI("")
 
-        presenter.start()
     }
 
     override fun showMessage(msg: String) {

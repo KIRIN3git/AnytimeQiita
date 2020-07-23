@@ -13,9 +13,9 @@
 
     <fragment
         android:id="@+id/bottom_navigation_stock"
-        android:name="jp.kirin3.anytimeqiita.ui.stock.StockFragment"
+        android:name="jp.kirin3.anytimeqiita.ui.stocks.StocksFragment"
         android:label="@string/title_stock"
-        tools:layout="@layout/fragment_stock" />
+        tools:layout="@layout/fragment_stocks" />
 
     <fragment
         android:id="@+id/bottom_navigation_bookmark"

@@ -10,14 +10,15 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import jp.kirin3.anytimeqiita.R
-import jp.kirin3.anytimeqiita.helper.AuthenticatedUserHelper
 import jp.kirin3.anytimeqiita.helper.LoginHelper
-import jp.kirin3.anytimeqiita.ui.reading.StatusModel
+import jp.kirin3.anytimeqiita.model.AuthenticatedUserModel
+import jp.kirin3.anytimeqiita.ui.reading.LoginModel
 
 class SettingFragment : Fragment() {
 
     private lateinit var settingViewModel: SettingViewModel
     private lateinit var loginButton: Button
+    private lateinit var logoutButton: Button
     private lateinit var notLoggedLayout: LinearLayout
     private lateinit var loggingLayout: LinearLayout
     private lateinit var userIdTextView: TextView
@@ -40,14 +41,21 @@ class SettingFragment : Fragment() {
 //            findNavController().navigate(R.id.action_setting_to_login)
         }
 
-        notLoggedLayout = root.findViewById(R.id.fragment_setting_not_logged_layout)
-        loggingLayout = root.findViewById(R.id.fragment_setting_logging_layout)
+        logoutButton = root.findViewById(R.id.fragment_setting_logout_button)
+        logoutButton.setOnClickListener {
+            LoginHelper.clearLoginAllInfo(context)
+            changeNotLoggedModeInterface()
+//            findNavController().navigate(R.id.action_setting_to_login)
+        }
+
+        notLoggedLayout = root.findViewById(R.id.fragment_setting_not_logged_in_layout)
+        loggingLayout = root.findViewById(R.id.fragment_setting_logged_in_layout)
 
         userIdTextView = root.findViewById(R.id.fragment_setting_user_id)
 
-        StatusModel.getStatus(context).also {
-            if (it == StatusModel.Status.COMPLETE) {
-                changeLoginModeInterface()
+        LoginHelper.getStatusFromModel(context).also {
+            if (it == LoginModel.Status.COMPLETE) {
+                changeLoggingModeInterface()
                 displayAuthentiatedUserId()
             }
         }
@@ -62,13 +70,18 @@ class SettingFragment : Fragment() {
     }
 
 
-    fun changeLoginModeInterface() {
+    fun changeLoggingModeInterface() {
         notLoggedLayout.visibility = View.GONE
         loggingLayout.visibility = View.VISIBLE
     }
 
-    fun displayAuthentiatedUserId(){
-        val userId = AuthenticatedUserHelper.getAuthenticatedUserIdFromCashe()
+    fun changeNotLoggedModeInterface() {
+        notLoggedLayout.visibility = View.VISIBLE
+        loggingLayout.visibility = View.GONE
+    }
+
+    fun displayAuthentiatedUserId() {
+        val userId = AuthenticatedUserModel.getAuthenticatedUserIdFromCashe()
         userIdTextView.setText(userId)
     }
 }

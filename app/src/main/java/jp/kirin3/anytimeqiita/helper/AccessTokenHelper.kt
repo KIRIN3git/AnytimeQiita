@@ -31,6 +31,11 @@ object AccessTokenHelper {
         })
     }
 
+    fun clearQiitaAccessToken(context: Context?) {
+        if (context == null) return
+        SettingsUtils.setQiitaAccessToken(context, "")
+    }
+
     fun getQiitaAccessToken(context: Context?): String {
         if (context == null) return ""
 

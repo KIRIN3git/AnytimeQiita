@@ -5,7 +5,7 @@
     android:orientation="vertical">
 
     <LinearLayout
-        android:id="@+id/fragment_setting_not_logged_layout"
+        android:id="@+id/fragment_setting_not_logged_in_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="horizontal"
@@ -23,24 +23,34 @@
             android:textAlignment="center"
             android:textColor="@color/lightPink"
             android:textSize="20sp"
-            android:textStyle="bold"
-            android:visibility="visible" />
+            android:textStyle="bold" />
 
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/fragment_setting_logging_layout"
+        android:id="@+id/fragment_setting_logged_in_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
         android:orientation="vertical"
         android:visibility="gone">
+
+        <Button
+            android:id="@+id/fragment_setting_logout_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/lightBlue2"
+            android:text="@string/logout"
+            android:textAlignment="center"
+            android:textColor="@color/lightPink"
+            android:textSize="20sp"
+            android:textStyle="bold" />
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-
-            android:layout_marginStart="30dp"
-            android:layout_marginTop="30dp"
             android:orientation="horizontal">
 
             <TextView

@@ -16,7 +16,7 @@ class TasksRemoteDataSource : TasksDataSource {
 
 //        var tasks: List<Task> = listOf<Task>(Task("Remote Title", ""))
 //        callback.onDataNotAvailable()
-//        callback.onTasksLoaded(tasks)
+//        callback.onStocksLoaded(tasks)
     }
 
     companion object {

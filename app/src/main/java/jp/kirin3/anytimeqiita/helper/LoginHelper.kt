@@ -2,6 +2,7 @@ package jp.kirin3.anytimeqiita.helper
 
 import android.content.Context
 import android.content.Intent
+import jp.kirin3.anytimeqiita.model.AuthenticatedUserModel
 import jp.kirin3.anytimeqiita.ui.reading.LoginModel
 import jp.kirin3.anytimeqiita.util.StringUtils
 import kirin3.jp.mljanken.util.LogUtils.LOGI
@@ -16,20 +17,44 @@ object LoginHelper {
         loginModel.startActionViewIntent(context)
     }
 
+    fun clearLoginAllInfo(context: Context?) {
+        clearLoginCode(context)
+        AccessTokenHelper.clearQiitaAccessToken(context)
+        AuthenticatedUserModel.clearAuthenticatedUserAllInfo()
+    }
+
+    fun getStatusFromModel(context: Context?): LoginModel.Status {
+        return  loginModel.getStatus(context)
+    }
+
+    fun isLoginCompleted(context: Context?):Boolean{
+        loginModel.getStatus(context).let{
+            if(it == LoginModel.Status.COMPLETE) return true
+        }
+
+        return false
+
+    }
+
     /**
      * ログインパラメータの有無判断
      * Stateチェックまでは行わない
-      */
+     */
     fun hasLoginParamToPrefarence(intent: Intent): Boolean {
 
-        if (loginModel.analyzeLoginIntent(intent)){
+        if (loginModel.analyzeLoginIntent(intent)) {
             return true
-        } else{
+        } else {
             return false
         }
     }
 
-    fun setLoginCodeToPrefarence(context: Context?, intent: Intent): Boolean {
+    fun clearLoginCode(context: Context?) {
+        if (context == null) return
+        SettingsUtils.setQiitaCode(context, "")
+    }
+
+    fun setLoginCodeFromIntentToPrefarence(context: Context?, intent: Intent): Boolean {
         if (context == null) return false
 
         SettingsUtils.setQiitaCode(context, "")
@@ -44,17 +69,18 @@ object LoginHelper {
         }
     }
 
+
     /**
      * ログイン時全取得処理
      */
-    fun processAfterLogin(intent: Intent,context: Context?): Boolean {
+    fun processAfterLogin(intent: Intent, context: Context?): Boolean {
 
-        if(context == null){
+        if (context == null) {
             return false
         }
 
         var latch = CountDownLatch(1);
-        if (!LoginHelper.setLoginCodeToPrefarence(context, intent)){
+        if (!LoginHelper.setLoginCodeFromIntentToPrefarence(context, intent)) {
             return false
         }
 
@@ -65,16 +91,16 @@ object LoginHelper {
         }
 
         latch = CountDownLatch(1)
-        AuthenticatedUserHelper.loadAuthenticatedUser(
+        AuthenticatedUserModel.loadAuthenticatedUser(
             context,
             SettingsUtils.getQiitaAccessToken(context),
             latch
         )
         latch.await()
 
-        if (AuthenticatedUserHelper.hasAuthenticatedUser()) {
+        if (AuthenticatedUserModel.hasAuthenticatedUser()) {
             return true
-        } else{
+        } else {
             return false
         }
     }

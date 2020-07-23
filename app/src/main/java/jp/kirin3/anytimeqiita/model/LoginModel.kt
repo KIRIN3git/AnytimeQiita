@@ -7,11 +7,22 @@ import androidx.annotation.Nullable
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import jp.kirin3.anytimeqiita.model.AuthenticatedUserModel
+import jp.kirin3.anytimeqiita.util.StringUtils
 import kirin3.jp.mljanken.util.LogUtils.LOGD
 import kirin3.jp.mljanken.util.LogUtils.LOGE
 import kirin3.jp.mljanken.util.LogUtils.LOGI
+import kirin3.jp.mljanken.util.SettingsUtils
 
 class LoginModel : ViewModel() {
+
+    enum class Status {
+        NOT_LOGIN,
+        NOT_CODE,
+        NOT_ACCESS_TOKEN,
+        NOT_AUTHENTICATED_USER,
+        COMPLETE
+    }
 
     companion object {
         private val QIITA_URL = "https://qiita.com/api/v2/oauth/authorize"
@@ -20,11 +31,30 @@ class LoginModel : ViewModel() {
 
         private val STATE_LENGTH = 24
 
+
+
     }
 
     private var state: String = ""
     private var paramState: String = ""
     var paramCode: String = ""
+
+
+    fun getStatus(context: Context?): Status {
+        if (context == null) return Status.NOT_LOGIN
+
+        if (StringUtils.isEmpty(SettingsUtils.getQiitaCode(context))) {
+            return Status.NOT_CODE
+        }
+        if (StringUtils.isEmpty(SettingsUtils.getQiitaAccessToken(context))) {
+            return Status.NOT_ACCESS_TOKEN
+        }
+        if (AuthenticatedUserModel.getAuthenticatedUserIdFromCashe() == null) {
+            return Status.NOT_AUTHENTICATED_USER
+        }
+        return Status.COMPLETE
+    }
+
 
     fun startActionViewIntent(context: Context?) {
         if (context == null) {

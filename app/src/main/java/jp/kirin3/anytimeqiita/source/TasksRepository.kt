@@ -44,9 +44,9 @@ class TasksRepository(
 /*
         // データをキャッシュする処理
         ApiClient.fetchAccessToken(code, object : TasksDataSource.LoadTasksCallback {
-            override fun onTasksLoaded(tasks: AccessTokenResponseData) {
+            override fun onStocksLoaded(tasks: AccessTokenResponseData) {
                 // Presenterにcallback
-                callback.onTasksLoaded(tasks)
+                callback.onStocksLoaded(tasks)
             }
 
             override fun onDataNotAvailable() {
@@ -57,9 +57,9 @@ class TasksRepository(
 
 /*
         tasksRemoteDataSource.getTasks(object : TasksDataSource.LoadTasksCallback {
-            override fun onTasksLoaded(tasks: List<AccessTokenResponseData>) {
+            override fun onStocksLoaded(tasks: List<AccessTokenResponseData>) {
                 // Presenterにcallback
-                callback.onTasksLoaded(tasks)
+                callback.onStocksLoaded(tasks)
             }
             override fun onDataNotAvailable() {
 

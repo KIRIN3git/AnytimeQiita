@@ -1,13 +1,12 @@
 package jp.kirin3.anytimeqiita.api
 
 import io.reactivex.Observer
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import jp.kirin3.anytimeqiita.MainApplication.Companion.QIITA_CLIENT_ID
 import jp.kirin3.anytimeqiita.MainApplication.Companion.QIITA_CLIENT_SEACRET
-import jp.kirin3.anytimeqiita.data.AccessTokenRequestData
-import jp.kirin3.anytimeqiita.data.AccessTokenResponseData
-import jp.kirin3.anytimeqiita.data.AuthenticatedUserResponceData
+import jp.kirin3.anytimeqiita.data.*
 import kirin3.jp.mljanken.util.LogUtils.LOGD
 import kirin3.jp.mljanken.util.LogUtils.LOGI
 import okhttp3.OkHttpClient
@@ -18,6 +17,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 object ApiClient {
     private val BASE_URL = "https://qiita.com/"
+    private val HOST = "qiita.com"
     private val HEADER_ACCESS_TOKEN_BEARER = "Bearer "
 
     private fun restClient(): Retrofit {
@@ -88,7 +88,10 @@ object ApiClient {
         }
 
         val service = restClient().create(AuthenticatedUserService::class.java)
-        val repos = service.fetchRepos(HEADER_ACCESS_TOKEN_BEARER + accessToken)
+
+        val requestHeader = HEADER_ACCESS_TOKEN_BEARER + accessToken
+
+        val repos = service.fetchRepos(requestHeader)
 
         repos
             .subscribeOn(Schedulers.io())
@@ -116,4 +119,63 @@ object ApiClient {
             })
     }
 
+    interface StocksApiCallback {
+        fun onTasksLoaded(responseData: List<StocksResponseData>)
+        fun onDataNotAvailable()
+    }
+
+    fun fetchStocks(userId: String?, page: String, callback: StocksApiCallback) {
+        val perPage = "10";
+        if (userId == null) {
+            callback.onDataNotAvailable()
+            return
+        }
+
+        val service = restClient().create(StocksService::class.java)
+
+//        val requestData = StocksRequestData(
+//            page,perPage
+//        )
+        val requestData: Map<String, String> = mapOf("page" to page, "perPage" to perPage)
+
+        val repos = service.fetchRepos(userId, HOST, requestData)
+
+        repos
+            .subscribeOn(Schedulers.io())
+            //.observeOn(AndroidSchedulers.mainThread())
+            .observeOn(Schedulers.io())
+            .subscribe(object : Observer<List<StocksResponseData>> {
+                override fun onSubscribe(d: Disposable) {
+                    LOGI("")
+                }
+
+                override fun onComplete() {
+                    LOGI("")
+                }
+
+                override fun onError(e: Throwable) {
+                    LOGD("通信 -> 失敗:$e")
+                    callback.onDataNotAvailable()
+                }
+
+                override fun onNext(responseData: List<StocksResponseData>) {
+                    LOGI("")
+//                    LOGI("RESPONSE_DATA[" + responseData.toString() + "]")
+                    for (data in responseData) {
+                        LOGI("data.title" + data.title)
+                        LOGI("data.url" + data.url)
+                        LOGI("data.coediting" + data.coediting)
+//                        LOGI("data.created_at" + data.created_at)
+//
+//                        if (data.group != null && data.group.name != null) {
+//                            LOGI("XXXXXXXXXXXXXXXXx" + data.group.name)
+//                        }
+//                        if (data.user != null && data.user.followees_count != null) {
+//                            LOGI("XXXXXXXXXXXXXYYYY" + data.user.followees_count)
+//                        }
+                    }
+                    callback.onTasksLoaded(responseData)
+                }
+            })
+    }
 }
