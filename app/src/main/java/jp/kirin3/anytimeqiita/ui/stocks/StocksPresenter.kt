@@ -19,7 +19,7 @@ class StockslPresenter(
     override fun startLoggedIn(stocksRecyclerView: RecyclerView) {
         stocksRepository.getStocksFromAny(object : StocksDataSource.LoadTasksCallback {
             override fun onStocksLoaded(stocks: List<StocksResponseData>) {
-                stocksView.showStocksRecyclerView(stocksRecyclerView, stocks)
+                stocksView.showStocksRecyclerView(stocks)
             }
 
             override fun onDataNotAvailable() {
@@ -29,7 +29,6 @@ class StockslPresenter(
     }
 
     override fun refreshLayout(
-        stocksRecyclerView: RecyclerView,
         refreshLayout: SwipeRefreshLayout
     ) {
         try {
@@ -38,12 +37,12 @@ class StockslPresenter(
                 "1",
                 object : StocksDataSource.LoadTasksCallback {
                     override fun onStocksLoaded(stocks: List<StocksResponseData>) {
-                        stocksView.showStocksRecyclerView(stocksRecyclerView, stocks)
-//                        refreshLayout.setRefreshing(false)
+                        stocksView.showStocksRecyclerView(stocks)
+                        refreshLayout.setRefreshing(false)
                     }
 
                     override fun onDataNotAvailable() {
-//                        refreshLayout.setRefreshing(false)
+                        refreshLayout.setRefreshing(false)
                     }
                 })
         } catch (e: Exception) {

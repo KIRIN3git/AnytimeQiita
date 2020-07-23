@@ -91,7 +91,6 @@ class StocksFragment : Fragment(), StocksContract.View, SwipeRefreshLayout.OnRef
     }
 
     override fun showStocksRecyclerView(
-        stocksRecyclerView: RecyclerView,
         stocks: List<StocksResponseData>?
     ) {
 
@@ -128,7 +127,7 @@ class StocksFragment : Fragment(), StocksContract.View, SwipeRefreshLayout.OnRef
     override fun onRefresh() {
 
         if (LoginHelper.isLoginCompleted(context) == true) {
-            presenter.refreshLayout(stocksRecyclerView, refreshLayout)
+            presenter.refreshLayout(refreshLayout)
         }
     }
 }
