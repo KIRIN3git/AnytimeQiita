@@ -9,7 +9,9 @@ import kirin3.jp.mljanken.util.LogUtils
 
 class StocksRepository() : ViewModel(), StocksDataSource {
 
-    private var cacheStocksList: List<StocksResponseData>? = null
+    private var cacheStocksList: MutableList<StocksResponseData>? = null
+    private var pageCount = 1
+    private val READ_COUNT = 5
 
     companion object {
 
@@ -71,8 +73,13 @@ class StocksRepository() : ViewModel(), StocksDataSource {
     }
 
 
-    fun setStocksToCache(stocksList: List<StocksResponseData>?) {
-        cacheStocksList = stocksList
+    fun setStocksToCache(stocksList: List<StocksResponseData>?, nextFlg: Boolean) {
+        if (stocksList == null) return
+
+        if (nextFlg && stocksList != null) {
+            cacheStocksList!!.addAll(stocksList)
+        }
+        cacheStocksList = stocksList.toMutableList()
     }
 
     fun getStocksFromCache(): List<StocksResponseData>? {
@@ -89,13 +96,18 @@ class StocksRepository() : ViewModel(), StocksDataSource {
 
     fun loadStocks(
         userId: String?,
-        page: String,
+        nextFlg: Boolean,
         callback: StocksDataSource.LoadTasksCallback
     ) {
 
+        if (nextFlg) {
+            pageCount++
+        }
+
         ApiClient.fetchStocks(
             userId,
-            page,
+            pageCount.toString(),
+            READ_COUNT.toString(),
             object : ApiClient.StocksApiCallback {
                 override fun onTasksLoaded(responseData: List<StocksResponseData>) {
 //                        LogUtils.LOGI("GET AuthenticatedUser responseData.id = " + responseData.body)

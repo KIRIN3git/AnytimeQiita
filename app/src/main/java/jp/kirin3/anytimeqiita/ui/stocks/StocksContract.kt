@@ -22,6 +22,8 @@ interface StocksContract {
 
 
         fun startLoggedIn(stocksRecyclerView:RecyclerView)
+        fun readNextStocks(stocksRecyclerView:RecyclerView)
+
         fun startNotLoggedIn()
 
         fun getMessage()

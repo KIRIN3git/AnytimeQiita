@@ -28,13 +28,25 @@ class StockslPresenter(
         })
     }
 
+    override fun readNextStocks(stocksRecyclerView: RecyclerView) {
+        stocksRepository.getStocksFromAny(object : StocksDataSource.LoadTasksCallback {
+            override fun onStocksLoaded(stocks: List<StocksResponseData>) {
+                stocksView.showStocksRecyclerView(stocks)
+            }
+
+            override fun onDataNotAvailable() {
+
+            }
+        })
+    }
+
     override fun refreshLayout(
         refreshLayout: SwipeRefreshLayout
     ) {
         try {
             stocksRepository.loadStocks(
                 AuthenticatedUserModel.getAuthenticatedUserIdFromCache(),
-                "1",
+                true,
                 object : StocksDataSource.LoadTasksCallback {
                     override fun onStocksLoaded(stocks: List<StocksResponseData>) {
                         stocksView.showStocksRecyclerView(stocks)

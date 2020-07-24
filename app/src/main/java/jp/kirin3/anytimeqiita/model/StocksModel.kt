@@ -24,6 +24,7 @@ class StocksModel() {
             ApiClient.fetchStocks(
                 userId,
                 page,
+                "10",
                 object : ApiClient.StocksApiCallback {
                     override fun onTasksLoaded(responseData: List<StocksResponseData>) {
 //                        LogUtils.LOGI("GET AuthenticatedUser responseData.id = " + responseData.body)

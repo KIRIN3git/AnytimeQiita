@@ -124,8 +124,7 @@ object ApiClient {
         fun onDataNotAvailable()
     }
 
-    fun fetchStocks(userId: String?, page: String, callback: StocksApiCallback) {
-        val perPage = "10";
+    fun fetchStocks(userId: String?, page: String,perPage:String, callback: StocksApiCallback) {
         if (userId == null) {
             callback.onDataNotAvailable()
             return

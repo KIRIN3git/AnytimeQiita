@@ -53,6 +53,7 @@ class StocksRecyclerAdapter(
             }
         }
 
+
         return StocksRecyclerViewHolder(view)
     }
 

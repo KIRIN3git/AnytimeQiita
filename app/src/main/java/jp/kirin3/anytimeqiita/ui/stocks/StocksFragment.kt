@@ -50,20 +50,6 @@ class StocksFragment : Fragment(), StocksContract.View, SwipeRefreshLayout.OnRef
         )
 
         setRefreshLayout(root)
-//
-//        val stocksList = StocksDatabase.selectStocksData()
-//        if (stocksList == null) {
-//            StocksRepository.loadStocks(
-//                context,
-//                AuthenticatedUserModel.getAuthenticatedUserIdFromCache(),
-//                "1",
-//                refreshLayout
-//            )
-//        } else {
-//            for (stock in stocksList)
-//                LOGI("stock.title = " + stock.title)
-//        }
-
 
         return root
     }
@@ -93,23 +79,34 @@ class StocksFragment : Fragment(), StocksContract.View, SwipeRefreshLayout.OnRef
     override fun showStocksRecyclerView(
         stocks: List<StocksResponseData>?
     ) {
-
         val ctext = context
         if (ctext == null || stocks == null) return
         viewAdapter = StocksRecyclerAdapter(ctext, this, stocks)
         viewManager = LinearLayoutManager(ctext, LinearLayoutManager.VERTICAL, false)
 
         stocksRecyclerView.apply {
-
             // MainThread
             val handler = Handler(Looper.getMainLooper())
             handler.post(Runnable {
                 // use a linear layout manager
                 layoutManager = viewManager
-
                 // specify an viewAdapter (see also next example)
                 adapter = viewAdapter
+                // ラストスクロールリスナー
+                addOnScrollListener(scrollListener())
             })
+        }
+    }
+
+    private inner class  scrollListener: RecyclerView.OnScrollListener() {
+        override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+            super.onScrollStateChanged(recyclerView, newState)
+
+            if (!recyclerView.canScrollVertically(1)) {
+                Toast.makeText(activity, "最終行です", Toast.LENGTH_LONG).show()
+
+                presenter.startLoggedIn(stocksRecyclerView)
+            }
         }
     }
 
