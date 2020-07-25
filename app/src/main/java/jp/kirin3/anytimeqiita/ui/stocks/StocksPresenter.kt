@@ -3,8 +3,8 @@ package jp.kirin3.anytimeqiita.ui.stocks
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import jp.kirin3.anytimeqiita.data.StocksResponseData
+import jp.kirin3.anytimeqiita.database.StocksDatabase
 import jp.kirin3.anytimeqiita.model.AuthenticatedUserModel
-import kirin3.jp.mljanken.util.LogUtils.LOGD
 
 class StockslPresenter(
     private val stocksRepository: StocksRepository,
@@ -29,40 +29,37 @@ class StockslPresenter(
     }
 
     override fun readNextStocks(stocksRecyclerView: RecyclerView) {
-        stocksRepository.getStocksFromAny(object : StocksDataSource.LoadTasksCallback {
-            override fun onStocksLoaded(stocks: List<StocksResponseData>) {
-                stocksView.showStocksRecyclerView(stocks)
-            }
+        stocksRepository.loadStocks(
+            AuthenticatedUserModel.getAuthenticatedUserIdFromCache(),
+            false,
+            object : StocksDataSource.LoadTasksCallback {
+                override fun onStocksLoaded(stocks: List<StocksResponseData>) {
+                    stocksView.showStocksRecyclerView(stocks)
+                }
 
-            override fun onDataNotAvailable() {
-
-            }
-        })
+                override fun onDataNotAvailable() {
+                }
+            })
     }
 
     override fun refreshLayout(
         refreshLayout: SwipeRefreshLayout
     ) {
-        try {
-            stocksRepository.loadStocks(
-                AuthenticatedUserModel.getAuthenticatedUserIdFromCache(),
-                true,
-                object : StocksDataSource.LoadTasksCallback {
-                    override fun onStocksLoaded(stocks: List<StocksResponseData>) {
-                        stocksView.showStocksRecyclerView(stocks)
-                        refreshLayout.setRefreshing(false)
-                    }
 
-                    override fun onDataNotAvailable() {
-                        refreshLayout.setRefreshing(false)
-                    }
-                })
-        } catch (e: Exception) {
-            LOGD(
-                " aaaaaaaaaaaaaaa " + e.toString()
-            )
+        stocksRepository.loadStocks(
+            AuthenticatedUserModel.getAuthenticatedUserIdFromCache(),
+            true,
+            object : StocksDataSource.LoadTasksCallback {
+                override fun onStocksLoaded(stocks: List<StocksResponseData>) {
+                    stocksView.showStocksRecyclerView(stocks)
+                    refreshLayout.setRefreshing(false)
+                }
 
-        }
+                override fun onDataNotAvailable() {
+                    refreshLayout.setRefreshing(false)
+                }
+            })
+
     }
 
     override fun startNotLoggedIn() {

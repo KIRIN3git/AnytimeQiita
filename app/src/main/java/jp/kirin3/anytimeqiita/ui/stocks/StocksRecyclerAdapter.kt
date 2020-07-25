@@ -12,10 +12,20 @@ import kirin3.jp.mljanken.util.TimeUtils
 class StocksRecyclerAdapter(
     private val context: Context,
     private val itemClickListener: StocksRecyclerViewHolder.ItemClickListener,
-    private val stocksList: List<StocksResponseData>
+    private val stocksList: MutableList<StocksResponseData>
 ) : RecyclerView.Adapter<StocksRecyclerViewHolder>() {
 
     private var recyclerView: RecyclerView? = null
+
+    fun addItem(addList: List<StocksResponseData>){
+        stocksList.addAll(addList)
+        notifyDataSetChanged()
+    }
+
+    fun clearItem(){
+        stocksList.clear()
+        notifyDataSetChanged()
+    }
 
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
         super.onAttachedToRecyclerView(recyclerView)

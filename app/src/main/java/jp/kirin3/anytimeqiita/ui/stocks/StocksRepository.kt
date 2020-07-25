@@ -6,12 +6,13 @@ import jp.kirin3.anytimeqiita.data.StocksResponseData
 import jp.kirin3.anytimeqiita.database.StocksDatabase
 import jp.kirin3.anytimeqiita.model.AuthenticatedUserModel
 import kirin3.jp.mljanken.util.LogUtils
+import kirin3.jp.mljanken.util.LogUtils.LOGD
 
 class StocksRepository() : ViewModel(), StocksDataSource {
 
     private var cacheStocksList: MutableList<StocksResponseData>? = null
     private var pageCount = 1
-    private val READ_COUNT = 5
+    private val READ_COUNT = 30
 
     companion object {
 
@@ -49,26 +50,23 @@ class StocksRepository() : ViewModel(), StocksDataSource {
 
 
     fun getStocksFromAny(callback: StocksDataSource.LoadTasksCallback) {
-        getStocksFromCache()?.let {
+
+        getStocksFromDB()?.let {
             callback.onStocksLoaded(it)
         } ?: let {
-            getStocksFromDB()?.let {
-                callback.onStocksLoaded(it)
-            } ?: let {
-                loadStocks(
-                    AuthenticatedUserModel.getAuthenticatedUserIdFromCache(),
-                    "1",
-                    object : StocksDataSource.LoadTasksCallback {
-                        override fun onStocksLoaded(stocks: List<StocksResponseData>) {
-                            callback.onStocksLoaded(stocks)
-                        }
-
-                        override fun onDataNotAvailable() {
-                            callback.onDataNotAvailable()
-                        }
+            loadStocks(
+                AuthenticatedUserModel.getAuthenticatedUserIdFromCache(),
+                false,
+                object : StocksDataSource.LoadTasksCallback {
+                    override fun onStocksLoaded(stocks: List<StocksResponseData>) {
+                        callback.onStocksLoaded(stocks)
                     }
-                )
-            }
+
+                    override fun onDataNotAvailable() {
+                        callback.onDataNotAvailable()
+                    }
+                }
+            )
         }
     }
 
@@ -88,45 +86,45 @@ class StocksRepository() : ViewModel(), StocksDataSource {
 
     fun getStocksFromDB(): List<StocksResponseData>? {
         StocksDatabase.selectStocksData()?.let {
-            setStocksToCache(it)
+            //            setStocksToCache(it)
+            setPageCount(it)
             return it
         }
         return null
     }
 
+    fun setPageCount(stocks: List<StocksResponseData>) {
+        pageCount = stocks.size + 1
+    }
+
     fun loadStocks(
         userId: String?,
-        nextFlg: Boolean,
+        loadFirst:Boolean,
         callback: StocksDataSource.LoadTasksCallback
     ) {
 
-        if (nextFlg) {
-            pageCount++
-        }
+        LOGD("pageCount " + pageCount + " READ_COUNT " + READ_COUNT)
 
+        if(loadFirst == true){
+            pageCount = 1
+        }
         ApiClient.fetchStocks(
             userId,
             pageCount.toString(),
             READ_COUNT.toString(),
             object : ApiClient.StocksApiCallback {
                 override fun onTasksLoaded(responseData: List<StocksResponseData>) {
-//                        LogUtils.LOGI("GET AuthenticatedUser responseData.id = " + responseData.body)
-
-                    // データをキャッシュ保存
-                    setStocksToCache(
-                        responseData
-                    )
 
                     // データをデータベース保存
                     StocksDatabase.insertStocksDataList(responseData)
 
-
-                    val dataList = StocksDatabase.selectStocksData()
-                    if (dataList != null) {
-                        for (data in dataList) {
-                            LogUtils.LOGD("XXXXXXXXA " + data.title)
-                        }
-                    }
+                    pageCount++
+//                    val dataList = StocksDatabase.selectStocksData()
+//                    if (dataList != null) {
+//                        for (data in dataList) {
+//                            LogUtils.LOGD("XXXXXXXXA " + data.title)
+//                        }
+//                    }
 
                     callback.onStocksLoaded(responseData)
 //                    refreshLayout.setRefreshing(false);
@@ -137,17 +135,11 @@ class StocksRepository() : ViewModel(), StocksDataSource {
                 override fun onDataNotAvailable() {
                     LogUtils.LOGI("Fail fetchAuthenticatedUser")
 
-                    setStocksToCache(
-                        null
-                    )
                     StocksDatabase.deleteStocksDataList()
-
 
                     callback.onDataNotAvailable()
 //                        latch.apply { countDown() }
                 }
             })
     }
-
-
 }
