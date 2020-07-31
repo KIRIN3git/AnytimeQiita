@@ -22,8 +22,12 @@ object SettingsUtils {
     val PREF_SETTING_MAX_CHAIN_WIN_NUM = "pref_setting_max_chain_win_num"
     val PREF_SETTING_MAX_CHAIN_LOSE_NUM = "pref_setting_max_chain_lose_num"
 
+
     val PREF_SETTING_CODE = "pref_setting_code"
     val PREF_SETTING_TOKEN = "pref_setting_token"
+    val PREF_SETTING_WEBVIEW_POSITION = "pref_setting_webview_position"
+    val PREF_SETTING_WEBVIEW_URL = "pref_setting_webview_url"
+
 
     fun setQiitaCode(context: Context, code: String) {
         val sp = PreferenceManager.getDefaultSharedPreferences(context)
@@ -48,6 +52,33 @@ object SettingsUtils {
         LOGD("GetPref token = " + sp.getString(PREF_SETTING_TOKEN, ""))
         return sp.getString(PREF_SETTING_TOKEN, "")
     }
+
+    fun setWebViewPosition(context: Context?, position: Int) {
+        val sp = PreferenceManager.getDefaultSharedPreferences(context)
+        sp.edit().putInt(PREF_SETTING_WEBVIEW_POSITION, position).apply()
+        LOGD("SetPref position = " + position)
+    }
+
+    fun getWebViewPosition(context: Context?): Int {
+        val sp = PreferenceManager.getDefaultSharedPreferences(context)
+        LOGD("GetPref position = " + sp.getInt(PREF_SETTING_WEBVIEW_POSITION, 0))
+        return sp.getInt(PREF_SETTING_WEBVIEW_POSITION, 0)
+    }
+
+
+
+    fun setWebViewUrl(context: Context?, url: String) {
+        val sp = PreferenceManager.getDefaultSharedPreferences(context)
+        sp.edit().putString(PREF_SETTING_WEBVIEW_URL, url).apply()
+        LOGD("SetPref url = " + url)
+    }
+
+    fun getWebViewUrl(context: Context?): String? {
+        val sp = PreferenceManager.getDefaultSharedPreferences(context)
+        LOGD("GetPref url = " + sp.getString(PREF_SETTING_WEBVIEW_URL, null))
+        return sp.getString(PREF_SETTING_WEBVIEW_URL, null)
+    }
+
 
 
     /**

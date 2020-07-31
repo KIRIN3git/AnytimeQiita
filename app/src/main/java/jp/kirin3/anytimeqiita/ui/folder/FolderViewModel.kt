@@ -9,7 +9,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import kirin3.jp.mljanken.util.LogUtils.LOGD
 
-class BookmarkViewModel : ViewModel() {
+class FolderViewModel : ViewModel() {
 
     companion object {
         private val QIITA_URL = "https://qiita.com/api/v2/oauth/authorize"
@@ -22,7 +22,7 @@ class BookmarkViewModel : ViewModel() {
 
 
     private val _text = MutableLiveData<String>().apply {
-        value = "This is bookmark Fragment"
+        value = "This is folder Fragment"
     }
     val text: LiveData<String> = _text
 }

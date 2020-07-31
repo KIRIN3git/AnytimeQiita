@@ -1,4 +1,4 @@
-package jp.kirin3.anytimeqiita.ui.bookmark
+package jp.kirin3.anytimeqiita.ui.folder
 
 import jp.kirin3.anytimeqiita.presenter.BasePresenter
 import jp.kirin3.anytimeqiita.view.BaseView
@@ -6,7 +6,7 @@ import jp.kirin3.anytimeqiita.view.BaseView
 /**
  * This specifies the contract between the view and the presenter.
  */
-interface BookmarkContract {
+interface FolderContract {
 
     interface View : BaseView<Presenter> {
         fun showMessage(msg: String)

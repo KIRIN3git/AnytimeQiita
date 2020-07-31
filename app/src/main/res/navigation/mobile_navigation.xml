@@ -12,16 +12,16 @@
         tools:layout="@layout/fragment_record" />
 
     <fragment
-        android:id="@+id/bottom_navigation_stock"
+        android:id="@+id/bottom_navigation_stocks"
         android:name="jp.kirin3.anytimeqiita.ui.stocks.StocksFragment"
         android:label="@string/title_stock"
         tools:layout="@layout/fragment_stocks" />
 
     <fragment
-        android:id="@+id/bottom_navigation_bookmark"
-        android:name="jp.kirin3.anytimeqiita.ui.bookmark.BookmarkFragment"
-        android:label="@string/title_bookmark"
-        tools:layout="@layout/fragment_bookmark" />
+        android:id="@+id/bottom_navigation_folder"
+        android:name="jp.kirin3.anytimeqiita.ui.folder.FolderFragment"
+        android:label="@string/title_folder"
+        tools:layout="@layout/fragment_folder" />
 
     <fragment
         android:id="@+id/bottom_navigation_reading"

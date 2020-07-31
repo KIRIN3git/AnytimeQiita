@@ -17,12 +17,12 @@ class StocksRecyclerAdapter(
 
     private var recyclerView: RecyclerView? = null
 
-    fun addItem(addList: List<StocksResponseData>){
+    fun addItem(addList: List<StocksResponseData>) {
         stocksList.addAll(addList)
         notifyDataSetChanged()
     }
 
-    fun clearItem(){
+    fun clearItem() {
         stocksList.clear()
         notifyDataSetChanged()
     }
@@ -40,13 +40,16 @@ class StocksRecyclerAdapter(
 
     override fun onBindViewHolder(holder: StocksRecyclerViewHolder, position: Int) {
         holder?.let {
-            it.textView.text = stocksList.get(position).title
+            it.titleTextView.text = stocksList.get(position).title
             it.lgtmTextView.text = stocksList.get(position).likes_count.toString()
 
-            it.dateTextView.text = TimeUtils.formatShortDate(context,stocksList.get(position).created_at)
+            it.dateTextView.text =
+                TimeUtils.formatShortDate(context, stocksList.get(position).created_at)
 
-            Picasso.get().load(stocksList.get(position).user!!.profile_image_url).into(it.iconImageView);
+//            itemClickListener.onItemClick(stocksList.get(position).title, position)
 
+            Picasso.get().load(stocksList.get(position).user!!.profile_image_url)
+                .into(it.iconImageView);
 
 //            it.itemTextView.text = stocksList.get(position)
 //            it.itemImageView.setImageResource(R.mipmap.ic_launcher)
@@ -57,11 +60,14 @@ class StocksRecyclerAdapter(
 
         val layoutInflater = LayoutInflater.from(context)
         val view = layoutInflater.inflate(R.layout.stocks_low, parent, false)
+
         view.setOnClickListener { view ->
             recyclerView?.let {
-                itemClickListener.onItemClick(view, it.getChildAdapterPosition(view))
+                itemClickListener.onItemClick(stocksList[it.getChildAdapterPosition(view)].url, it.getChildAdapterPosition(view))
             }
         }
+
+
 
 
         return StocksRecyclerViewHolder(view)

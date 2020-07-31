@@ -2,11 +2,9 @@ package jp.kirin3.anytimeqiita
 
 import android.app.Application
 import io.realm.Realm
+import io.realm.RealmConfiguration
 import jp.kirin3.anytimeqiita.util.log.ExtDebugTree
 import timber.log.Timber
-import io.realm.Realm.setDefaultConfiguration
-import io.realm.RealmConfiguration
-
 
 
 class MainApplication : Application() {
@@ -25,7 +23,11 @@ class MainApplication : Application() {
         }
 
         Realm.init(this)
-        val config = RealmConfiguration.Builder().name("myrealm.realm").build()
+        val config = RealmConfiguration
+            .Builder()
+//            .schemaVersion(2)
+//            .migration(MyMigration())
+            .name("myrealm.realm").build()
         // インスタンスの生成
         Realm.setDefaultConfiguration(config)
     }

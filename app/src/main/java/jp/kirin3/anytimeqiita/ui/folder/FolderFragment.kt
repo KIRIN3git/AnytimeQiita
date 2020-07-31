@@ -1,4 +1,4 @@
-package jp.kirin3.anytimeqiita.ui.bookmark
+package jp.kirin3.anytimeqiita.ui.folder
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,15 +8,14 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import jp.kirin3.anytimeqiita.R
-import jp.kirin3.anytimeqiita.injection.Injection
-import jp.kirin3.anytimeqiita.ui.reading.BookmarkViewModel
+import jp.kirin3.anytimeqiita.ui.reading.FolderViewModel
 import kirin3.jp.mljanken.util.LogUtils.LOGI
 
-class BookmarkFragment : Fragment(), BookmarkContract.View {
+class FolderFragment : Fragment(), FolderContract.View {
 
-    private lateinit var bookmarkViewModel: BookmarkViewModel
+    private lateinit var folderViewModel: FolderViewModel
     private lateinit var headText: TextView
-    override lateinit var presenter: BookmarkContract.Presenter
+    override lateinit var presenter: FolderContract.Presenter
 
     companion object {
 
@@ -25,7 +24,7 @@ class BookmarkFragment : Fragment(), BookmarkContract.View {
         private val REQUEST_EDIT_TASK = 1
 
         fun newInstance(taskId: String?) =
-            BookmarkFragment().apply {
+            FolderFragment().apply {
                 arguments = Bundle().apply { putString(ARGUMENT_TASK_ID, taskId) }
             }
     }
@@ -36,11 +35,11 @@ class BookmarkFragment : Fragment(), BookmarkContract.View {
         savedInstanceState: Bundle?
     ): View? {
         LOGI("")
-        bookmarkViewModel =
-            ViewModelProviders.of(this).get(BookmarkViewModel::class.java)
+        folderViewModel =
+            ViewModelProviders.of(this).get(FolderViewModel::class.java)
 
-        val root = inflater.inflate(R.layout.fragment_bookmark, container, false)
-        headText = root.findViewById(R.id.fragment_bookmark_head_text)
+        val root = inflater.inflate(R.layout.fragment_folder, container, false)
+        headText = root.findViewById(R.id.fragment_folder_head_text)
 
 
 

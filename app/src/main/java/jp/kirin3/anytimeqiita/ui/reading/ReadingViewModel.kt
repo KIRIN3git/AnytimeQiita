@@ -6,6 +6,11 @@ import androidx.lifecycle.ViewModel
 
 class ReadingViewModel : ViewModel() {
 
+    companion object{
+        var webViewPosition = 0
+
+
+    }
     private val _text = MutableLiveData<String>().apply {
         value = "This is reading Fragment"
     }

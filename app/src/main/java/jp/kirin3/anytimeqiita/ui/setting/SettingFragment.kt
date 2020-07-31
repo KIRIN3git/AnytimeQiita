@@ -61,9 +61,9 @@ class SettingFragment : Fragment() {
         }
 
 /*
-        val textView: TextView = root.findViewById(R.id.text_setting)
+        val titleTextView: TextView = root.findViewById(R.id.text_setting)
         settingViewModel.text.observe(this, Observer {
-            textView.text = it
+            titleTextView.text = it
         })
 */
         return root
