@@ -2,6 +2,7 @@ package jp.kirin3.anytimeqiita.injection
 
 import jp.kirin3.anytimeqiita.source.TasksRepository
 import jp.kirin3.anytimeqiita.source.remote.TasksRemoteDataSource
+import jp.kirin3.anytimeqiita.ui.stocks.FoldersRepository
 import jp.kirin3.anytimeqiita.ui.stocks.StocksRepository
 
 /**
@@ -27,5 +28,9 @@ object Injection {
 
     fun provideStocksRepository(): StocksRepository {
         return StocksRepository.getInstance()
+    }
+
+    fun provideFoldersRepository(): FoldersRepository {
+        return FoldersRepository.getInstance()
     }
 }

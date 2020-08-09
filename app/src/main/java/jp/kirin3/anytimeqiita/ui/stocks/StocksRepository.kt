@@ -119,17 +119,8 @@ class StocksRepository() : ViewModel(), StocksDataSource {
                     StocksDatabase.insertStocksDataList(responseData)
 
                     pageCount++
-//                    val dataList = StocksDatabase.selectStocksData()
-//                    if (dataList != null) {
-//                        for (data in dataList) {
-//                            LogUtils.LOGD("XXXXXXXXA " + data.title)
-//                        }
-//                    }
 
                     callback.onStocksLoaded(responseData)
-//                    refreshLayout.setRefreshing(false);
-
-//                        latch.apply { countDown() }
                 }
 
                 override fun onDataNotAvailable() {

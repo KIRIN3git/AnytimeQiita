@@ -19,9 +19,9 @@
 
     <fragment
         android:id="@+id/bottom_navigation_folder"
-        android:name="jp.kirin3.anytimeqiita.ui.folder.FolderFragment"
+        android:name="jp.kirin3.anytimeqiita.ui.folders.FoldersFragment"
         android:label="@string/title_folder"
-        tools:layout="@layout/fragment_folder" />
+        tools:layout="@layout/fragment_folders" />
 
     <fragment
         android:id="@+id/bottom_navigation_reading"

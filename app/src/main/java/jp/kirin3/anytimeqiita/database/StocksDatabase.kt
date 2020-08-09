@@ -12,14 +12,8 @@ object StocksDatabase {
 
         var realm = Realm.getDefaultInstance()
 
-        val nowUserData = realm.where<StocksResponseData>().findAll()
-
         realm.beginTransaction()
-//        if (resetFlg) {
-//            nowUserData.deleteAllFromRealm()
-//        }
         for (userData in userDataList) {
-            LOGI("YYYYYYYYYYYYYYY " + userData.title)
             realm.insert(userData)
         }
         realm.commitTransaction()

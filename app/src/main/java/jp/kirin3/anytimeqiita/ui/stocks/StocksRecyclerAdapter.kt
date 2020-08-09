@@ -44,7 +44,7 @@ class StocksRecyclerAdapter(
             it.lgtmTextView.text = stocksList.get(position).likes_count.toString()
 
             it.dateTextView.text =
-                TimeUtils.formatShortDate(context, stocksList.get(position).created_at)
+                TimeUtils.formatShortDate(context, stocksList.get(position).updated_at)
 
 //            itemClickListener.onItemClick(stocksList.get(position).title, position)
 
