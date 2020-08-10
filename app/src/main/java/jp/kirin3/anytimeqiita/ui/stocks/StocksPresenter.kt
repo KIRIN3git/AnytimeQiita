@@ -17,33 +17,41 @@ class StockslPresenter(
     }
 
     override fun startLoggedIn(stocksRecyclerView: RecyclerView) {
+        stocksView.setRefreshingIntarface(true)
         stocksRepository.getStocksFromAny(object : StocksDataSource.LoadTasksCallback {
             override fun onStocksLoaded(stocks: List<StocksResponseData>) {
+                stocksView.setRefreshingIntarface(false)
                 stocksView.showStocksRecyclerView(stocks)
             }
 
             override fun onDataNotAvailable() {
-
+                stocksView.setRefreshingIntarface(false)
             }
         })
     }
 
     override fun readNextStocks(stocksRecyclerView: RecyclerView) {
+        stocksView.setRefreshingIntarface(true)
+
         stocksRepository.loadStocks(
             AuthenticatedUserModel.getAuthenticatedUserIdFromCache(),
             false,
             object : StocksDataSource.LoadTasksCallback {
                 override fun onStocksLoaded(stocks: List<StocksResponseData>) {
+                    stocksView.setRefreshingIntarface(false)
+
                     stocksView.showStocksRecyclerView(stocks)
+
                 }
 
                 override fun onDataNotAvailable() {
+                    stocksView.setRefreshingIntarface(false)
+
                 }
             })
     }
 
     override fun refreshLayout(
-        refreshLayout: SwipeRefreshLayout
     ) {
 
         stocksRepository.loadStocks(
@@ -52,11 +60,11 @@ class StockslPresenter(
             object : StocksDataSource.LoadTasksCallback {
                 override fun onStocksLoaded(stocks: List<StocksResponseData>) {
                     stocksView.showStocksRecyclerView(stocks)
-                    refreshLayout.setRefreshing(false)
+                    stocksView.setRefreshingIntarface(false)
                 }
 
                 override fun onDataNotAvailable() {
-                    refreshLayout.setRefreshing(false)
+                    stocksView.setRefreshingIntarface(false)
                 }
             })
 

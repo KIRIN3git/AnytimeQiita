@@ -2,6 +2,7 @@ package jp.kirin3.anytimeqiita.ui.solders
 
 import android.content.Context
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import jp.kirin3.anytimeqiita.R
@@ -42,15 +43,15 @@ class FoldersRecyclerAdapter(
     override fun onBindViewHolder(holder: FoldersRecyclerViewHolder, position: Int) {
         holder?.let {
 
-            LOGI("WWWWWWWWWWW position " + position )
-            LOGI("WWWWWWWWWWW holdersList.get(position).name " + holdersList.get(position).name )
-
-            if(holdersList.get(position).name == null) LOGI("WWW1")
-            else LOGI("WWW2")
-
-            if(it.nameTextView.text == null) LOGI("WWW3")
-            else LOGI("WWW4")
             it.nameTextView.text = holdersList.get(position).name
+
+            if(holdersList.get(position).add_flg == true){
+                it.folderDefaultLayout.visibility = View.GONE
+                it.folderAddLayout.visibility = View.VISIBLE
+            } else{
+                it.folderDefaultLayout.visibility = View.VISIBLE
+                it.folderAddLayout.visibility = View.GONE
+            }
         }
     }
 

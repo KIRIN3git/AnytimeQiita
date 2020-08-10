@@ -16,6 +16,7 @@ interface StocksContract {
         fun showStocksRecyclerView(
             stocks: List<StocksResponseData>?
         )
+        fun setRefreshingIntarface(flg:Boolean)
     }
 
     interface Presenter : BasePresenter {
@@ -28,6 +29,6 @@ interface StocksContract {
 
         fun getMessage()
         fun processAccessToken(code: String)
-        fun refreshLayout(refreshLayout: SwipeRefreshLayout)
+        fun refreshLayout()
     }
 }

@@ -19,7 +19,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import jp.kirin3.anytimeqiita.R
+import jp.kirin3.anytimeqiita.data.FoldersBasicData
 import jp.kirin3.anytimeqiita.data.StocksResponseData
+import jp.kirin3.anytimeqiita.database.FoldersDatabase
 import jp.kirin3.anytimeqiita.database.StocksDatabase
 import jp.kirin3.anytimeqiita.helper.LoginHelper
 import jp.kirin3.anytimeqiita.injection.Injection
@@ -66,6 +68,7 @@ class StocksFragment : Fragment(), StocksContract.View, SwipeRefreshLayout.OnRef
         LOGI("")
 
         if (LoginHelper.isLoginCompleted(context) == true) {
+            refreshLayout.setRefreshing(true)
             presenter.startLoggedIn(stocksRecyclerView)
         }
     }
@@ -98,7 +101,7 @@ class StocksFragment : Fragment(), StocksContract.View, SwipeRefreshLayout.OnRef
         val handler = Handler(Looper.getMainLooper())
         handler.post(Runnable {
             if (setAdapterFlg == true) {
-                viewAdapter?.let{
+                viewAdapter?.let {
                     it.addItem(stocks)
                 }
             } else {
@@ -125,7 +128,7 @@ class StocksFragment : Fragment(), StocksContract.View, SwipeRefreshLayout.OnRef
     }
 
     private fun clearStocksRecyclerView() {
-        viewAdapter?.let{
+        viewAdapter?.let {
             it.clearItem()
         }
     }
@@ -138,7 +141,6 @@ class StocksFragment : Fragment(), StocksContract.View, SwipeRefreshLayout.OnRef
                 if (nowLoadingFlg == false) {
                     nowLoadingFlg = true
                     presenter.readNextStocks(stocksRecyclerView)
-                    refreshLayout.setRefreshing(true)
                 }
             }
         }
@@ -150,19 +152,26 @@ class StocksFragment : Fragment(), StocksContract.View, SwipeRefreshLayout.OnRef
     override fun onItemClick(url: String, position: Int) {
 
 //        Toast.makeText(context, "position $position was tapped $title", Toast.LENGTH_SHORT).show()
-        settingPrefectureDialog(url)
+
+
+        settingPrefectureDialog(url, FoldersDatabase.selectFoldersData())
     }
 
-    fun settingPrefectureDialog(url: String) {
-        val items = arrayOf(
-            "北海道（ほっかいどう）", "青森（あおもり）", "岩手（いわて）", "宮城（みやぎ）", "秋田（あきた）", "山形（やまがた）",
-            "福島（ふくしま）", "茨城（いばらき）", "栃木（とちぎ）", "群馬（ぐんま）", "埼玉（さいたま）", "千葉（ちば）", "東京（とうきょう）",
-            "神奈川（かながわ）", "新潟（にいがた）", "富山（とやま）", "石川（いしかわ）", "福井（ふくい）", "山梨（やまなし）", "長野（ながの）",
-            "岐阜（ぎふ）", "静岡（しずおか）", "愛知（あいち）", "三重（みえ）", "滋賀（しが）", "京都（きょうと）", "大阪（おおさか）", "兵庫（ひょうご）",
-            "奈良（なら）", "和歌山（わかやま）", "鳥取（とっとり）", "島根（しまね）", "岡山（おかやま）", "広島（ひろしま）", "山口（やまぐち）",
-            "徳島（とくしま）", "香川（かがわ）", "愛媛（えひめ）", "高知（こうち）", "福岡（ふくおか）", "佐賀（さが）", "長崎（ながさき）",
-            "熊本（くまもと）", "大分（おおいた）", "宮崎（みやざき）", "鹿児島（かごしま）", "沖縄（おきなわ）"
-        )
+    fun settingPrefectureDialog(url: String, folders: List<FoldersBasicData>?) {
+
+        var items: MutableList<String>? = null
+
+        folders?.let {
+            for (folder in folders) {
+                items?.let {
+                    items?.add(folder.name)
+                } ?: let {
+                    items = mutableListOf(folder.name)
+                }
+            }
+        }
+
+
         // タイトル部分のTextView
         val paddingLeftRight =
             TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8f, resources.displayMetrics)
@@ -195,15 +204,22 @@ class StocksFragment : Fragment(), StocksContract.View, SwipeRefreshLayout.OnRef
             findNavController().navigate(R.id.bottom_navigation_reading, params)
         }
 
-        AlertDialog.Builder(context!!)
-            .setCustomTitle(textView)
+        val builder = AlertDialog.Builder(context!!)
+        builder.setCustomTitle(textView)
             .setCancelable(false)
-            .setItems(items) { dialog, which ->
-                //                SettingsUtils.setSettingRadioIdPrefecture(context!!, which + 1)
-            }
             .setPositiveButton("CANCEL", null)
             .setNegativeButton("READING", onReadingClickListener)
-            .show()
+        if (items != null) {
+            builder.setItems(items?.toTypedArray()) { dialog, which ->
+                LOGI("www" + which)
+            }
+        }
+        builder.show()
+    }
+
+
+    override fun setRefreshingIntarface(refreshFlg: Boolean) {
+        refreshLayout.setRefreshing(refreshFlg)
     }
 
 
@@ -215,7 +231,7 @@ class StocksFragment : Fragment(), StocksContract.View, SwipeRefreshLayout.OnRef
             nowLoadingFlg == true
             clearStocksRecyclerView()
             StocksDatabase.deleteStocksDataList()
-            presenter.refreshLayout(refreshLayout)
+            presenter.refreshLayout()
         }
     }
 }

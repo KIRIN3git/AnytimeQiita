@@ -13,11 +13,14 @@
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/folder_default_lauout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/lightYellow3"
         android:orientation="horizontal"
+        android:visibility="visible"
         android:padding="6dp">
+
         <TextView
             android:id="@+id/numTextView"
             android:layout_width="wrap_content"
@@ -27,7 +30,6 @@
             android:textSize="18sp"
             android:textStyle="bold"
             android:background="@drawable/circle_background"
-            android:padding="20dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintHorizontal_bias="0.98"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -35,7 +37,6 @@
             app:layout_constraintTop_toTopOf="parent"
             android:gravity="center"
             app:layout_constraintVertical_bias="0.1" />
-
 
         <TextView
             android:id="@+id/nameTextView"
@@ -51,7 +52,28 @@
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.95" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/folder_add_lauout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/lightPink"
+        android:orientation="horizontal"
+        android:visibility="gone"
+        android:padding="6dp">
+
+        <ImageView
+            android:id="@+id/plusImageView"
+            android:src="@drawable/ic_add_circle_32dp"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintHorizontal_bias="0.05"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toBottomOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>

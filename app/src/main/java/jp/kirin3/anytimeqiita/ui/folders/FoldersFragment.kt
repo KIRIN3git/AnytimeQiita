@@ -24,6 +24,7 @@ import jp.kirin3.anytimeqiita.ui.solders.FoldersRecyclerAdapter
 import jp.kirin3.anytimeqiita.ui.stocks.FoldersRecyclerViewHolder
 import kirin3.jp.mljanken.util.LogUtils.LOGI
 import kirin3.jp.mljanken.util.SettingsUtils
+import java.util.*
 
 class FoldersFragment : Fragment(), FoldersContract.View,
     FoldersRecyclerViewHolder.ItemClickListener {
@@ -62,7 +63,7 @@ class FoldersFragment : Fragment(), FoldersContract.View,
 
         if (SettingsUtils.getCreateFirstFoldersFlg(context) == false) {
             presenter.createFirstFolders(foldersRecyclerView)
-            SettingsUtils.setCreateFirstFoldersFlg(context,true)
+            SettingsUtils.setCreateFirstFoldersFlg(context, true)
         }
 
         presenter.readFolders()
@@ -80,22 +81,17 @@ class FoldersFragment : Fragment(), FoldersContract.View,
 
 
     override fun showFoldersRecyclerView(
-        folders: List<FoldersBasicData>?
+        folders: MutableList<FoldersBasicData>?
     ) {
         val ctext = context
         if (ctext == null || folders == null) return
 
-//        // MainThread
-//        val handler = Handler(Looper.getMainLooper())
-//        handler.post(Runnable {
         if (setAdapterFlg == true) {
             viewAdapter?.let {
                 it.addItem(folders)
             }
         } else {
-
-
-
+            addLastAddFolder(folders)
             viewAdapter = FoldersRecyclerAdapter(ctext, this, folders.toMutableList())
             viewManager = LinearLayoutManager(ctext, LinearLayoutManager.VERTICAL, false)
 
@@ -115,6 +111,11 @@ class FoldersFragment : Fragment(), FoldersContract.View,
 //        })
     }
 
+    private fun addLastAddFolder(folders:MutableList<FoldersBasicData>){
+        val folder:FoldersBasicData = FoldersBasicData(4,"", Date(),true)
+        folders.add(folder)
+    }
+
     private fun clearFoldersRecyclerView() {
         viewAdapter?.let {
             it.clearItem()
@@ -132,13 +133,7 @@ class FoldersFragment : Fragment(), FoldersContract.View,
 
     fun settingPrefectureDialog(url: String) {
         val items = arrayOf(
-            "北海道（ほっかいどう）", "青森（あおもり）", "岩手（いわて）", "宮城（みやぎ）", "秋田（あきた）", "山形（やまがた）",
-            "福島（ふくしま）", "茨城（いばらき）", "栃木（とちぎ）", "群馬（ぐんま）", "埼玉（さいたま）", "千葉（ちば）", "東京（とうきょう）",
-            "神奈川（かながわ）", "新潟（にいがた）", "富山（とやま）", "石川（いしかわ）", "福井（ふくい）", "山梨（やまなし）", "長野（ながの）",
-            "岐阜（ぎふ）", "静岡（しずおか）", "愛知（あいち）", "三重（みえ）", "滋賀（しが）", "京都（きょうと）", "大阪（おおさか）", "兵庫（ひょうご）",
-            "奈良（なら）", "和歌山（わかやま）", "鳥取（とっとり）", "島根（しまね）", "岡山（おかやま）", "広島（ひろしま）", "山口（やまぐち）",
-            "徳島（とくしま）", "香川（かがわ）", "愛媛（えひめ）", "高知（こうち）", "福岡（ふくおか）", "佐賀（さが）", "長崎（ながさき）",
-            "熊本（くまもと）", "大分（おおいた）", "宮崎（みやざき）", "鹿児島（かごしま）", "沖縄（おきなわ）"
+            "北海道（ほっかいどう）", "青森（あおもり）", "岩手（いわて）", "宮城（みやぎ）"
         )
         // タイトル部分のTextView
         val paddingLeftRight =

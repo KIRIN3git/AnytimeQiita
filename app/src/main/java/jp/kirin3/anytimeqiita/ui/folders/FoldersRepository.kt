@@ -25,8 +25,6 @@ class FoldersRepository() : ViewModel(), FoldersDataSource {
 
     companion object {
 
-        private var checkCreateFirstFoldersFlg = false
-
         private var INSTANCE: FoldersRepository? = null
 
 
@@ -77,29 +75,6 @@ class FoldersRepository() : ViewModel(), FoldersDataSource {
 //                }
 //            )
 //        }
-    }
-
-
-    fun setStocksToCache(stocksList: List<StocksResponseData>?, nextFlg: Boolean) {
-        if (stocksList == null) return
-
-        if (nextFlg && stocksList != null) {
-            cacheStocksList!!.addAll(stocksList)
-        }
-        cacheStocksList = stocksList.toMutableList()
-    }
-
-    fun getStocksFromCache(): List<StocksResponseData>? {
-        return cacheStocksList
-    }
-
-    fun getStocksFromDB(): List<StocksResponseData>? {
-        StocksDatabase.selectStocksData()?.let {
-            //            setStocksToCache(it)
-            setPageCount(it)
-            return it
-        }
-        return null
     }
 
     fun setPageCount(stocks: List<StocksResponseData>) {

@@ -3,7 +3,6 @@ package jp.kirin3.anytimeqiita.database
 import io.realm.Realm
 import io.realm.kotlin.where
 import jp.kirin3.anytimeqiita.data.StocksResponseData
-import kirin3.jp.mljanken.util.LogUtils.LOGI
 
 object StocksDatabase {
 
@@ -25,10 +24,10 @@ object StocksDatabase {
 
         var realm = Realm.getDefaultInstance()
 
-        val nowUserData = realm.where<StocksResponseData>().findAll()
+        val stocksData = realm.where<StocksResponseData>().findAll()
 
         realm.beginTransaction()
-        nowUserData.deleteAllFromRealm()
+        stocksData.deleteAllFromRealm()
         realm.commitTransaction()
 
         realm.close()

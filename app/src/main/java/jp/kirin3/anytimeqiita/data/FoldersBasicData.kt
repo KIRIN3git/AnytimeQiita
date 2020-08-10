@@ -7,6 +7,7 @@ import java.util.*
 open class FoldersBasicData(
     @Index var seqid: Int = 0,
     var name: String = "",
-    var created_at: Date = Date()
+    var created_at: Date = Date(),
+    var add_flg: Boolean = false
 ) : RealmObject()
 

@@ -23,46 +23,11 @@ class FoldersPresenter(
     override fun readFolders() {
         foldersRepository.getFolders(object : FoldersDataSource.LoadTasksCallback {
             override fun onFoldersLoaded(folders: List<FoldersBasicData>) {
-                foldersView.showFoldersRecyclerView(folders)
+                foldersView.showFoldersRecyclerView(folders.toMutableList())
             }
-
             override fun onDataNotAvailable() {
             }
         })
-    }
-
-    override fun readNextFolders(foldersRecyclerView: RecyclerView) {
-//        foldersRepository.loadFolders(
-//            AuthenticatedUserModel.getAuthenticatedUserIdFromCache(),
-//            false,
-//            object : FoldersDataSource.LoadTasksCallback {
-//                override fun onFoldersLoaded(folders: List<FoldersBasicData>) {
-//                    foldersView.showFoldersRecyclerView(folders)
-//                }
-//
-//                override fun onDataNotAvailable() {
-//                }
-//            })
-    }
-
-    override fun refreshLayout(
-        refreshLayout: SwipeRefreshLayout
-    ) {
-
-//        foldersRepository.loadFolders(
-//            AuthenticatedUserModel.getAuthenticatedUserIdFromCache(),
-//            true,
-//            object : FoldersDataSource.LoadTasksCallback {
-//                override fun onFoldersLoaded(folders: List<FoldersBasicData>) {
-//                    foldersView.showFoldersRecyclerView(folders)
-//                    refreshLayout.setRefreshing(false)
-//                }
-//
-//                override fun onDataNotAvailable() {
-//                    refreshLayout.setRefreshing(false)
-//                }
-//            })
-
     }
 
     override fun startNotLoggedIn() {

@@ -11,4 +11,7 @@ class FoldersRecyclerViewHolder(view:View): RecyclerView.ViewHolder(view){
         fun onItemClick(url:String, position: Int)
     }
     var nameTextView = view.nameTextView
+    var folderDefaultLayout = view.folder_default_lauout
+    var folderAddLayout = view.folder_add_lauout
+
 }

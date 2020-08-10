@@ -14,7 +14,7 @@ interface FoldersContract {
     interface View : BaseView<Presenter> {
         fun showMessage(msg: String)
         fun showFoldersRecyclerView(
-            folders: List<FoldersBasicData>?
+            folders: MutableList<FoldersBasicData>?
         )
     }
 
@@ -23,12 +23,10 @@ interface FoldersContract {
 
         fun createFirstFolders(foldersRecyclerView:RecyclerView)
         fun readFolders()
-        fun readNextFolders(foldersRecyclerView:RecyclerView)
 
         fun startNotLoggedIn()
 
         fun getMessage()
         fun processAccessToken(code: String)
-        fun refreshLayout(refreshLayout: SwipeRefreshLayout)
     }
 }
