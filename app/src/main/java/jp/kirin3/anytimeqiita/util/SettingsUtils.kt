@@ -2,6 +2,7 @@ package kirin3.jp.mljanken.util
 
 import android.content.Context
 import androidx.preference.PreferenceManager
+import jp.kirin3.anytimeqiita.ui.stocks.FoldersRepository
 import kirin3.jp.mljanken.util.LogUtils.LOGD
 
 object SettingsUtils {
@@ -13,6 +14,7 @@ object SettingsUtils {
     val PREF_SETTING_WEBVIEW_POSITION = "pref_setting_webview_position"
     val PREF_SETTING_WEBVIEW_URL = "pref_setting_webview_url"
     val PREF_SETTING_CREATE_FIRST_FOLDERS_FLG = "pref_create_first_folder_flg"
+    val PREF_SETTING_FOLDERS_SEQID = "pref_create_folders_seqid"
 
     fun setQiitaCode(context: Context, code: String) {
         val sp = PreferenceManager.getDefaultSharedPreferences(context)
@@ -72,6 +74,18 @@ object SettingsUtils {
         val sp = PreferenceManager.getDefaultSharedPreferences(context)
         LOGD("GetPref " + PREF_SETTING_CREATE_FIRST_FOLDERS_FLG + " = " + sp.getBoolean(PREF_SETTING_CREATE_FIRST_FOLDERS_FLG, false))
         return sp.getBoolean(PREF_SETTING_CREATE_FIRST_FOLDERS_FLG, false)
+    }
+
+    fun setFolderSeqid(context: Context?, seqid: Int) {
+        val sp = PreferenceManager.getDefaultSharedPreferences(context)
+        sp.edit().putInt(PREF_SETTING_FOLDERS_SEQID, seqid).apply()
+        LOGD("SetPref " + PREF_SETTING_FOLDERS_SEQID + " = " + seqid)
+    }
+
+    fun getFolderSeqid(context: Context?): Int {
+        val sp = PreferenceManager.getDefaultSharedPreferences(context)
+        LOGD("GetPref " + PREF_SETTING_FOLDERS_SEQID + " = " + sp.getInt(PREF_SETTING_FOLDERS_SEQID, FoldersRepository.FOLDERS_FIRST_SEQID))
+        return sp.getInt(PREF_SETTING_FOLDERS_SEQID, FoldersRepository.FOLDERS_FIRST_SEQID)
     }
 
 

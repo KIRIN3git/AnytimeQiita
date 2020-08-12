@@ -8,6 +8,7 @@ import jp.kirin3.anytimeqiita.database.FoldersDatabase
 import jp.kirin3.anytimeqiita.database.StocksDatabase
 import kirin3.jp.mljanken.util.LogUtils
 import kirin3.jp.mljanken.util.LogUtils.LOGD
+import kirin3.jp.mljanken.util.SettingsUtils
 import java.util.*
 
 class FoldersRepository() : ViewModel(), FoldersDataSource {
@@ -24,6 +25,11 @@ class FoldersRepository() : ViewModel(), FoldersDataSource {
         )
 
     companion object {
+
+        /**
+         * FIRST_FOLDERSの数に起因する
+         */
+        val FOLDERS_FIRST_SEQID = 3
 
         private var INSTANCE: FoldersRepository? = null
 
@@ -51,9 +57,19 @@ class FoldersRepository() : ViewModel(), FoldersDataSource {
     }
 
 
-    fun setFirstFolders() {
+    fun createFirstFolders() {
         FoldersDatabase.insertFoldersDataList(FIRST_FOLDERS)
     }
+
+    fun createNewFolder(seqid: Int, name: String) {
+
+        val folder: List<FoldersBasicData> =
+            listOf(
+                FoldersBasicData(seqid, name, Date())
+            )
+        FoldersDatabase.insertFoldersDataList(folder)
+    }
+
 
 
     fun getStocksFromAny(callback: FoldersDataSource.LoadTasksCallback) {

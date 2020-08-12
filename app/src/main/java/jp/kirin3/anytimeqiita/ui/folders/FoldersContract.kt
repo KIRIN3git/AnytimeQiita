@@ -21,7 +21,8 @@ interface FoldersContract {
     interface Presenter : BasePresenter {
 
 
-        fun createFirstFolders(foldersRecyclerView:RecyclerView)
+        fun createFirstFolders()
+        fun createNewFolder(seqid:Int,name:String)
         fun readFolders()
 
         fun startNotLoggedIn()

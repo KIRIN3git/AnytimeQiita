@@ -16,8 +16,12 @@ class FoldersPresenter(
         foldersView.presenter = this
     }
 
-    override fun createFirstFolders(foldersRecyclerView: RecyclerView) {
-        foldersRepository.setFirstFolders()
+    override fun createFirstFolders() {
+        foldersRepository.createFirstFolders()
+    }
+
+    override fun createNewFolder(seqid:Int,name:String) {
+        foldersRepository.createNewFolder(seqid,name)
     }
 
     override fun readFolders() {

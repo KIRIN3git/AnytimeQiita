@@ -7,6 +7,7 @@ import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
@@ -62,7 +63,7 @@ class FoldersFragment : Fragment(), FoldersContract.View,
         LOGI("")
 
         if (SettingsUtils.getCreateFirstFoldersFlg(context) == false) {
-            presenter.createFirstFolders(foldersRecyclerView)
+            presenter.createFirstFolders()
             SettingsUtils.setCreateFirstFoldersFlg(context, true)
         }
 
@@ -86,33 +87,27 @@ class FoldersFragment : Fragment(), FoldersContract.View,
         val ctext = context
         if (ctext == null || folders == null) return
 
-        if (setAdapterFlg == true) {
-            viewAdapter?.let {
-                it.addItem(folders)
-            }
-        } else {
-            addLastAddFolder(folders)
-            viewAdapter = FoldersRecyclerAdapter(ctext, this, folders.toMutableList())
-            viewManager = LinearLayoutManager(ctext, LinearLayoutManager.VERTICAL, false)
 
-            foldersRecyclerView.apply {
-                // use a linear layout manager
-                layoutManager = viewManager
-                // specify an viewAdapter (see also next example)
-                adapter = viewAdapter
-            }
+        addLastAddFolder(folders)
+        viewAdapter = FoldersRecyclerAdapter(ctext, this, folders.toMutableList())
+        viewManager = LinearLayoutManager(ctext, LinearLayoutManager.VERTICAL, false)
 
-            // 位置の復元
-            foldersRecyclerView.layoutManager?.onRestoreInstanceState(FoldersModel.parcelable)
+        foldersRecyclerView.apply {
+            // use a linear layout manager
+            layoutManager = viewManager
+            // specify an viewAdapter (see also next example)
+            adapter = viewAdapter
         }
 
-        setAdapterFlg = true
+        // 位置の復元
+        foldersRecyclerView.layoutManager?.onRestoreInstanceState(FoldersModel.parcelable)
+
         nowLoadingFlg = false
 //        })
     }
 
-    private fun addLastAddFolder(folders:MutableList<FoldersBasicData>){
-        val folder:FoldersBasicData = FoldersBasicData(4,"", Date(),true)
+    private fun addLastAddFolder(folders: MutableList<FoldersBasicData>) {
+        val folder: FoldersBasicData = FoldersBasicData(4, "", Date(), true)
         folders.add(folder)
     }
 
@@ -131,10 +126,8 @@ class FoldersFragment : Fragment(), FoldersContract.View,
         settingPrefectureDialog(url)
     }
 
-    fun settingPrefectureDialog(url: String) {
-        val items = arrayOf(
-            "北海道（ほっかいどう）", "青森（あおもり）", "岩手（いわて）", "宮城（みやぎ）"
-        )
+    fun settingPrefectureDialog(url: String, folders: List<FoldersBasicData>?) {
+
         // タイトル部分のTextView
         val paddingLeftRight =
             TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8f, resources.displayMetrics)
@@ -159,7 +152,7 @@ class FoldersFragment : Fragment(), FoldersContract.View,
         textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20f)
 
 
-        var onReadingClickListener = DialogInterface.OnClickListener { dialog, id ->
+        var onCreateClickListener = DialogInterface.OnClickListener { dialog, id ->
             val params = bundleOf(
                 ReadingFragment.URL_PARAM_FLG to url,
                 ReadingFragment.REFRESH_FLG_PARAM_FLG to true
@@ -167,14 +160,67 @@ class FoldersFragment : Fragment(), FoldersContract.View,
             findNavController().navigate(R.id.bottom_navigation_reading, params)
         }
 
-        AlertDialog.Builder(context!!)
-            .setCustomTitle(textView)
+        var editText: EditText = EditText(context!!)
+
+        val builder = AlertDialog.Builder(context!!)
+        builder.setCustomTitle(textView)
             .setCancelable(false)
-            .setItems(items) { dialog, which ->
-                //                SettingsUtils.setSettingRadioIdPrefecture(context!!, which + 1)
-            }
             .setPositiveButton("CANCEL", null)
-            .setNegativeButton("READING", onReadingClickListener)
+            .setNegativeButton("CREATE", onCreateClickListener)
+            .setView(editText)
             .show()
     }
+
+
+    fun settingPrefectureDialog(url: String) {
+
+        // タイトル部分のTextView
+        val paddingLeftRight =
+            TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8f, resources.displayMetrics)
+                .toInt()
+        val paddingTopBottom =
+            TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8f, resources.displayMetrics)
+                .toInt()
+        val textView = TextView(context!!)
+        // タイトルの背景色
+        textView.setBackgroundColor(ContextCompat.getColor(context!!, R.color.orange))
+        // タイトルの文字色
+        textView.setTextColor(Color.WHITE)
+        textView.layoutParams =
+            ViewGroup.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            )
+        textView.setPadding(paddingLeftRight, paddingTopBottom, paddingLeftRight, paddingTopBottom)
+        // テキスト
+        textView.text = "title"
+        // テキストサイズ
+        textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20f)
+
+        var editText = EditText(context!!)
+
+        var onCreateClickListener = DialogInterface.OnClickListener { dialog, id ->
+            if (editText.text.toString().length > 0) {
+                presenter.createNewFolder(getNextSeqid(), editText.text.toString())
+                presenter.readFolders()
+            }
+            LOGI("editText.text.toString()" + editText.text.toString())
+        }
+
+
+        val builder = AlertDialog.Builder(context!!)
+        builder.setCustomTitle(textView)
+            .setCancelable(false)
+            .setPositiveButton("CANCEL", null)
+            .setNegativeButton("CREATE", onCreateClickListener)
+            .setView(editText)
+            .show()
+    }
+
+    private fun getNextSeqid(): Int {
+        val seqid = SettingsUtils.getFolderSeqid(context) + 1
+        SettingsUtils.setFolderSeqid(context, seqid)
+        return seqid
+    }
+
 }
