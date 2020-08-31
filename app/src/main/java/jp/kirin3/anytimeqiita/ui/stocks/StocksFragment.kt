@@ -1,17 +1,14 @@
 package jp.kirin3.anytimeqiita.ui.stocks
 
+import android.content.Context
 import android.content.DialogInterface
-import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
-import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
@@ -27,6 +24,7 @@ import jp.kirin3.anytimeqiita.helper.LoginHelper
 import jp.kirin3.anytimeqiita.injection.Injection
 import jp.kirin3.anytimeqiita.model.StocksModel
 import jp.kirin3.anytimeqiita.ui.reading.ReadingFragment
+import jp.kirin3.anytimeqiita.util.DialogUtils
 import kirin3.jp.mljanken.util.LogUtils.LOGI
 
 class StocksFragment : Fragment(), StocksContract.View, SwipeRefreshLayout.OnRefreshListener,
@@ -99,32 +97,32 @@ class StocksFragment : Fragment(), StocksContract.View, SwipeRefreshLayout.OnRef
 
         // MainThread
         val handler = Handler(Looper.getMainLooper())
-        handler.post(Runnable {
-            if (setAdapterFlg == true) {
-                viewAdapter?.let {
-                    it.addItem(stocks)
-                }
-            } else {
-                viewAdapter = StocksRecyclerAdapter(ctext, this, stocks.toMutableList())
-                viewManager = LinearLayoutManager(ctext, LinearLayoutManager.VERTICAL, false)
+        //       handler.post(Runnable {
+        if (setAdapterFlg == true) {
+            viewAdapter?.let {
+                it.addItem(stocks)
+            }
+        } else {
+            viewAdapter = StocksRecyclerAdapter(ctext, this, stocks.toMutableList())
+            viewManager = LinearLayoutManager(ctext, LinearLayoutManager.VERTICAL, false)
 
-                stocksRecyclerView.apply {
-                    // use a linear layout manager
-                    layoutManager = viewManager
-                    // specify an viewAdapter (see also next example)
-                    adapter = viewAdapter
-                    // ラストスクロールリスナー
-                    addOnScrollListener(scrollListener())
-                }
-
-                // 位置の復元
-                stocksRecyclerView.layoutManager?.onRestoreInstanceState(StocksModel.parcelable)
+            stocksRecyclerView.apply {
+                // use a linear layout manager
+                layoutManager = viewManager
+                // specify an viewAdapter (see also next example)
+                adapter = viewAdapter
+                // ラストスクロールリスナー
+                addOnScrollListener(scrollListener())
             }
 
-            setAdapterFlg = true
-            nowLoadingFlg = false
-            refreshLayout.setRefreshing(false)
-        })
+            // 位置の復元
+            stocksRecyclerView.layoutManager?.onRestoreInstanceState(StocksModel.parcelable)
+        }
+
+        setAdapterFlg = true
+        nowLoadingFlg = false
+        refreshLayout.setRefreshing(false)
+//        })
     }
 
     private fun clearStocksRecyclerView() {
@@ -154,10 +152,15 @@ class StocksFragment : Fragment(), StocksContract.View, SwipeRefreshLayout.OnRef
 //        Toast.makeText(context, "position $position was tapped $title", Toast.LENGTH_SHORT).show()
 
 
-        settingPrefectureDialog(url, FoldersDatabase.selectFoldersData())
+        settingPrefectureDialog(context, url, FoldersDatabase.selectFoldersData())
     }
 
-    fun settingPrefectureDialog(url: String, folders: List<FoldersBasicData>?) {
+    fun settingPrefectureDialog(ctext: Context?, url: String, folders: List<FoldersBasicData>?) {
+
+        if (ctext == null) return
+
+
+        val textView = DialogUtils.getDialogText(ctext, resources, "フォルダー")
 
         var items: MutableList<String>? = null
 
@@ -171,31 +174,6 @@ class StocksFragment : Fragment(), StocksContract.View, SwipeRefreshLayout.OnRef
             }
         }
 
-
-        // タイトル部分のTextView
-        val paddingLeftRight =
-            TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8f, resources.displayMetrics)
-                .toInt()
-        val paddingTopBottom =
-            TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8f, resources.displayMetrics)
-                .toInt()
-        val textView = TextView(context!!)
-        // タイトルの背景色
-        textView.setBackgroundColor(ContextCompat.getColor(context!!, R.color.orange))
-        // タイトルの文字色
-        textView.setTextColor(Color.WHITE)
-        textView.layoutParams =
-            ViewGroup.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT
-            )
-        textView.setPadding(paddingLeftRight, paddingTopBottom, paddingLeftRight, paddingTopBottom)
-        // テキスト
-        textView.text = "title"
-        // テキストサイズ
-        textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20f)
-
-
         var onReadingClickListener = DialogInterface.OnClickListener { dialog, id ->
             val params = bundleOf(
                 ReadingFragment.URL_PARAM_FLG to url,
@@ -204,7 +182,7 @@ class StocksFragment : Fragment(), StocksContract.View, SwipeRefreshLayout.OnRef
             findNavController().navigate(R.id.bottom_navigation_reading, params)
         }
 
-        val builder = AlertDialog.Builder(context!!)
+        val builder = AlertDialog.Builder(ctext)
         builder.setCustomTitle(textView)
             .setCancelable(false)
             .setPositiveButton("CANCEL", null)
@@ -215,6 +193,11 @@ class StocksFragment : Fragment(), StocksContract.View, SwipeRefreshLayout.OnRef
             }
         }
         builder.show()
+    }
+
+
+    private fun addFolder() {
+
     }
 
 

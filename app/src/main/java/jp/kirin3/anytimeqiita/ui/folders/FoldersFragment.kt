@@ -1,28 +1,23 @@
 package jp.kirin3.anytimeqiita.ui.folders
 
+import android.content.Context
 import android.content.DialogInterface
-import android.graphics.Color
 import android.os.Bundle
-import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
-import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
-import androidx.core.content.ContextCompat
-import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import jp.kirin3.anytimeqiita.R
 import jp.kirin3.anytimeqiita.data.FoldersBasicData
 import jp.kirin3.anytimeqiita.injection.Injection
 import jp.kirin3.anytimeqiita.model.FoldersModel
-import jp.kirin3.anytimeqiita.ui.reading.ReadingFragment
 import jp.kirin3.anytimeqiita.ui.solders.FoldersRecyclerAdapter
 import jp.kirin3.anytimeqiita.ui.stocks.FoldersRecyclerViewHolder
+import jp.kirin3.anytimeqiita.util.DialogUtils
 import kirin3.jp.mljanken.util.LogUtils.LOGI
 import kirin3.jp.mljanken.util.SettingsUtils
 import java.util.*
@@ -121,48 +116,18 @@ class FoldersFragment : Fragment(), FoldersContract.View,
      * FoldersRecyclerViewHolder.ItemClickListener
      */
     override fun onItemClick(url: String, position: Int) {
-
-//        Toast.makeText(context, "position $position was tapped $title", Toast.LENGTH_SHORT).show()
-        settingPrefectureDialog(url)
+        settingPrefectureDialog(context, url)
     }
 
-    fun settingPrefectureDialog(url: String, folders: List<FoldersBasicData>?) {
+    fun settingPrefectureDialog(ctext: Context?, url: String) {
 
-        // タイトル部分のTextView
-        val paddingLeftRight =
-            TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8f, resources.displayMetrics)
-                .toInt()
-        val paddingTopBottom =
-            TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8f, resources.displayMetrics)
-                .toInt()
-        val textView = TextView(context!!)
-        // タイトルの背景色
-        textView.setBackgroundColor(ContextCompat.getColor(context!!, R.color.orange))
-        // タイトルの文字色
-        textView.setTextColor(Color.WHITE)
-        textView.layoutParams =
-            ViewGroup.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT
-            )
-        textView.setPadding(paddingLeftRight, paddingTopBottom, paddingLeftRight, paddingTopBottom)
-        // テキスト
-        textView.text = "title"
-        // テキストサイズ
-        textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20f)
+        if (ctext == null) return
 
+        val textView = DialogUtils.getDialogText(ctext, resources, "フォルダー")
+        var editText = EditText(ctext)
+        var onCreateClickListener = getDialogClickListener(editText)
 
-        var onCreateClickListener = DialogInterface.OnClickListener { dialog, id ->
-            val params = bundleOf(
-                ReadingFragment.URL_PARAM_FLG to url,
-                ReadingFragment.REFRESH_FLG_PARAM_FLG to true
-            )
-            findNavController().navigate(R.id.bottom_navigation_reading, params)
-        }
-
-        var editText: EditText = EditText(context!!)
-
-        val builder = AlertDialog.Builder(context!!)
+        val builder = AlertDialog.Builder(ctext)
         builder.setCustomTitle(textView)
             .setCancelable(false)
             .setPositiveButton("CANCEL", null)
@@ -171,50 +136,13 @@ class FoldersFragment : Fragment(), FoldersContract.View,
             .show()
     }
 
-
-    fun settingPrefectureDialog(url: String) {
-
-        // タイトル部分のTextView
-        val paddingLeftRight =
-            TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8f, resources.displayMetrics)
-                .toInt()
-        val paddingTopBottom =
-            TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8f, resources.displayMetrics)
-                .toInt()
-        val textView = TextView(context!!)
-        // タイトルの背景色
-        textView.setBackgroundColor(ContextCompat.getColor(context!!, R.color.orange))
-        // タイトルの文字色
-        textView.setTextColor(Color.WHITE)
-        textView.layoutParams =
-            ViewGroup.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT
-            )
-        textView.setPadding(paddingLeftRight, paddingTopBottom, paddingLeftRight, paddingTopBottom)
-        // テキスト
-        textView.text = "title"
-        // テキストサイズ
-        textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20f)
-
-        var editText = EditText(context!!)
-
-        var onCreateClickListener = DialogInterface.OnClickListener { dialog, id ->
+    private fun getDialogClickListener(editText:EditText): DialogInterface.OnClickListener {
+        return DialogInterface.OnClickListener { dialog, id ->
             if (editText.text.toString().length > 0) {
                 presenter.createNewFolder(getNextSeqid(), editText.text.toString())
                 presenter.readFolders()
             }
-            LOGI("editText.text.toString()" + editText.text.toString())
         }
-
-
-        val builder = AlertDialog.Builder(context!!)
-        builder.setCustomTitle(textView)
-            .setCancelable(false)
-            .setPositiveButton("CANCEL", null)
-            .setNegativeButton("CREATE", onCreateClickListener)
-            .setView(editText)
-            .show()
     }
 
     private fun getNextSeqid(): Int {

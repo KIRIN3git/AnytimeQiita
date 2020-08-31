@@ -1,11 +1,12 @@
 package jp.kirin3.anytimeqiita.data
 
 import io.realm.RealmObject
+import io.realm.annotations.Index
 import io.realm.annotations.PrimaryKey
 import java.util.*
 
 open class StocksResponseData(
-    @PrimaryKey var id: String = "",
+    @Index var id: String = "",
     var coediting: Boolean = false,
     var user: UserData? = UserData(),
     var title: String = "",

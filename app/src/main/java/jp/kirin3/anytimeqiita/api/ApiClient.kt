@@ -141,8 +141,8 @@ object ApiClient {
 
         repos
             .subscribeOn(Schedulers.io())
-            //.observeOn(AndroidSchedulers.mainThread())
-            .observeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            //.observeOn(Schedulers.io())
             .subscribe(object : Observer<List<StocksResponseData>> {
                 override fun onSubscribe(d: Disposable) {
                     LOGI("")
