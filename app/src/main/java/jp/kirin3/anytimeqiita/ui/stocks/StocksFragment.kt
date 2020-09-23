@@ -1,22 +1,19 @@
 package jp.kirin3.anytimeqiita.ui.stocks
 
-import android.content.Context
-import android.content.DialogInterface
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AlertDialog
 import androidx.core.os.bundleOf
+import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import jp.kirin3.anytimeqiita.R
-import jp.kirin3.anytimeqiita.data.FoldersBasicData
 import jp.kirin3.anytimeqiita.data.StocksResponseData
 import jp.kirin3.anytimeqiita.database.FoldersDatabase
 import jp.kirin3.anytimeqiita.database.StocksDatabase
@@ -24,11 +21,13 @@ import jp.kirin3.anytimeqiita.helper.LoginHelper
 import jp.kirin3.anytimeqiita.injection.Injection
 import jp.kirin3.anytimeqiita.model.StocksModel
 import jp.kirin3.anytimeqiita.ui.reading.ReadingFragment
-import jp.kirin3.anytimeqiita.util.DialogUtils
+import jp.kirin3.anytimeqiita.util.AlertDialogFragment
+import jp.kirin3.anytimeqiita.util.AlertDialogParameter
 import kirin3.jp.mljanken.util.LogUtils.LOGI
 
 class StocksFragment : Fragment(), StocksContract.View, SwipeRefreshLayout.OnRefreshListener,
-    StocksRecyclerViewHolder.ItemClickListener {
+    StocksRecyclerViewHolder.ItemClickListener,
+    AlertDialogFragment.NoticeDialogListener {
 
     private lateinit var refreshLayout: SwipeRefreshLayout
     private lateinit var stocksRecyclerView: RecyclerView
@@ -36,6 +35,8 @@ class StocksFragment : Fragment(), StocksContract.View, SwipeRefreshLayout.OnRef
     private lateinit var viewManager: RecyclerView.LayoutManager
     private var setAdapterFlg: Boolean = false
     private var nowLoadingFlg: Boolean = false
+    private var dialogUrl: String? = null
+    private var dialogFolders: MutableList<String>? = null
 
     override lateinit var presenter: StocksContract.Presenter
 
@@ -56,10 +57,13 @@ class StocksFragment : Fragment(), StocksContract.View, SwipeRefreshLayout.OnRef
             this
         )
 
+
+
         setRefreshLayout(root)
 
         return root
     }
+
 
     override fun onResume() {
         super.onResume()
@@ -92,19 +96,19 @@ class StocksFragment : Fragment(), StocksContract.View, SwipeRefreshLayout.OnRef
     override fun showStocksRecyclerView(
         stocks: List<StocksResponseData>?
     ) {
-        val ctext = context
-        if (ctext == null || stocks == null) return
+        val nonNullContext = context ?: return
+        if (stocks == null) return
 
         // MainThread
         val handler = Handler(Looper.getMainLooper())
-        //       handler.post(Runnable {
+        //  handler.post(Runnable {
         if (setAdapterFlg == true) {
             viewAdapter?.let {
                 it.addItem(stocks)
             }
         } else {
-            viewAdapter = StocksRecyclerAdapter(ctext, this, stocks.toMutableList())
-            viewManager = LinearLayoutManager(ctext, LinearLayoutManager.VERTICAL, false)
+            viewAdapter = StocksRecyclerAdapter(nonNullContext, this, stocks.toMutableList())
+            viewManager = LinearLayoutManager(nonNullContext, LinearLayoutManager.VERTICAL, false)
 
             stocksRecyclerView.apply {
                 // use a linear layout manager
@@ -122,7 +126,6 @@ class StocksFragment : Fragment(), StocksContract.View, SwipeRefreshLayout.OnRef
         setAdapterFlg = true
         nowLoadingFlg = false
         refreshLayout.setRefreshing(false)
-//        })
     }
 
     private fun clearStocksRecyclerView() {
@@ -150,61 +153,62 @@ class StocksFragment : Fragment(), StocksContract.View, SwipeRefreshLayout.OnRef
     override fun onItemClick(url: String, position: Int) {
 
 //        Toast.makeText(context, "position $position was tapped $title", Toast.LENGTH_SHORT).show()
+        setDialogData(url)
 
-
-        settingPrefectureDialog(context, url, FoldersDatabase.selectFoldersData())
+        showSelectStocksAlertDialog()
+        //settingPrefectureDialog(context, url, FoldersDatabase.selectFoldersData())
     }
 
-    fun settingPrefectureDialog(ctext: Context?, url: String, folders: List<FoldersBasicData>?) {
-
-        if (ctext == null) return
-
-
-        val textView = DialogUtils.getDialogText(ctext, resources, "フォルダー")
-
-        var items: MutableList<String>? = null
-
+    private fun setDialogData(url: String) {
+        dialogUrl = url
+        val folders = FoldersDatabase.selectFoldersData()
+        dialogFolders = mutableListOf()
         folders?.let {
             for (folder in folders) {
-                items?.let {
-                    items?.add(folder.name)
-                } ?: let {
-                    items = mutableListOf(folder.name)
-                }
+                dialogFolders?.add(folder.name)
             }
         }
-
-        var onReadingClickListener = DialogInterface.OnClickListener { dialog, id ->
-            val params = bundleOf(
-                ReadingFragment.URL_PARAM_FLG to url,
-                ReadingFragment.REFRESH_FLG_PARAM_FLG to true
-            )
-            findNavController().navigate(R.id.bottom_navigation_reading, params)
-        }
-
-        val builder = AlertDialog.Builder(ctext)
-        builder.setCustomTitle(textView)
-            .setCancelable(false)
-            .setPositiveButton("CANCEL", null)
-            .setNegativeButton("READING", onReadingClickListener)
-        if (items != null) {
-            builder.setItems(items?.toTypedArray()) { dialog, which ->
-                LOGI("www" + which)
-            }
-        }
-        builder.show()
     }
 
 
-    private fun addFolder() {
+    override fun onDialogPositiveClick(dialog: DialogFragment) {
+        val params = bundleOf(
+            ReadingFragment.URL_PARAM_FLG to dialogUrl,
+            ReadingFragment.REFRESH_FLG_PARAM_FLG to true
+        )
+        findNavController().navigate(R.id.bottom_navigation_reading, params)
+    }
 
+    override fun onDialogNegativeClick(dialog: DialogFragment) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onDialogNeutralClick(dialog: DialogFragment) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onDialogListClick(dialog: DialogFragment, id: Int) {
+        LOGI("id " + id)
+    }
+
+    private fun showSelectStocksAlertDialog() {
+        childFragmentManager.beginTransaction().add(
+            AlertDialogFragment.newInstance(
+                AlertDialogParameter(
+                    title = R.string.folder,
+                    titleBackgroundColor = R.color.orange,
+                    positiveButtonText = R.string.reading,
+                    list = dialogFolders
+                )
+            ),
+            null
+        ).commitNowAllowingStateLoss()
     }
 
 
     override fun setRefreshingIntarface(refreshFlg: Boolean) {
         refreshLayout.setRefreshing(refreshFlg)
     }
-
 
     /**
      * SwipeRefreshLayout.OnRefreshListener

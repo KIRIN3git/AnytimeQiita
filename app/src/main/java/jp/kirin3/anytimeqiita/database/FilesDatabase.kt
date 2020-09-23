@@ -2,11 +2,11 @@ package jp.kirin3.anytimeqiita.database
 
 import io.realm.Realm
 import io.realm.kotlin.where
-import jp.kirin3.anytimeqiita.data.RelationData
+import jp.kirin3.anytimeqiita.data.FilesData
 
-object RelationDatabase {
+object FilesDatabase {
 
-    fun insertRelationDataList(relationList: List<RelationData>?) {
+    fun insertFailsDataList(relationList: List<FilesData>?) {
         if (relationList == null) return
 
         var realm = Realm.getDefaultInstance()
@@ -20,10 +20,10 @@ object RelationDatabase {
         realm.close()
     }
 
-    fun deleteRelationDataList() {
+    fun deleteFailsDataList() {
         var realm = Realm.getDefaultInstance()
 
-        val relationData = realm.where<RelationData>().findAll()
+        val relationData = realm.where<FilesData>().findAll()
 
         realm.beginTransaction()
         relationData.deleteAllFromRealm()
@@ -33,10 +33,10 @@ object RelationDatabase {
 
     }
 
-    fun selectRelationData(): List<RelationData>? {
+    fun selectFailsData(): List<FilesData>? {
         var realm = Realm.getDefaultInstance()
 
-        val relation = realm.where<RelationData>().findAll()
+        val relation = realm.where<FilesData>().findAll()
         if (relation.count() == 0) return null
         val relationList = realm.copyFromRealm(relation)
 

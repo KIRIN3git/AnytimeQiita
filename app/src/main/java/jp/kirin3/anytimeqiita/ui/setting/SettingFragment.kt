@@ -1,18 +1,25 @@
 package jp.kirin3.anytimeqiita.ui.setting
 
 import android.os.Bundle
+import android.text.Spannable
+import android.text.SpannableStringBuilder
+import android.text.TextPaint
+import android.text.method.LinkMovementMethod
+import android.text.style.ClickableSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import jp.kirin3.anytimeqiita.R
 import jp.kirin3.anytimeqiita.helper.LoginHelper
 import jp.kirin3.anytimeqiita.model.AuthenticatedUserModel
 import jp.kirin3.anytimeqiita.ui.reading.LoginModel
+import kirin3.jp.mljanken.util.LogUtils
 
 class SettingFragment : Fragment() {
 
@@ -22,6 +29,9 @@ class SettingFragment : Fragment() {
     private lateinit var notLoggedLayout: LinearLayout
     private lateinit var loggingLayout: LinearLayout
     private lateinit var userIdTextView: TextView
+
+
+    private lateinit var linkTextView: TextView
 
     /*
         private val loginButton: Button by lazy { fragment_setting_login_button }

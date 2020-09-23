@@ -7,7 +7,6 @@ import android.util.TypedValue
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.core.content.ContextCompat
-import jp.kirin3.anytimeqiita.R
 
 
 object DialogUtils {
@@ -15,7 +14,12 @@ object DialogUtils {
     /**
      * ダイアログタイトルTextViewの取得
      */
-    fun getDialogText(context: Context?, resources: Resources, title: String): TextView? {
+    fun getDialogText(
+        context: Context?,
+        resources: Resources,
+        title: String,
+        colorId: Int
+    ): TextView? {
 
         if (context == null) return null
 
@@ -28,7 +32,7 @@ object DialogUtils {
                 .toInt()
         val textView = TextView(context)
         // タイトルの背景色
-        textView.setBackgroundColor(ContextCompat.getColor(context, R.color.orange))
+        textView.setBackgroundColor(ContextCompat.getColor(context, colorId))
         // タイトルの文字色
         textView.setTextColor(Color.WHITE)
         textView.layoutParams =

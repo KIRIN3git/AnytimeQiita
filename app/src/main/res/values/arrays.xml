@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="weight_units_label">
+        <item>@string/app_name</item>
+        <item>@string/app_name</item>
+        <item>@string/app_name</item>
+        <item>@string/app_name</item>
+    </array>
+    <array name="weight_units">
+        <item>1.0</item>
+        <item>0.001</item>
+        <item>0.03527</item>
+        <item>0.0022</item>
+    </array>
+</resources>

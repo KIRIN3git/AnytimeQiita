@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
+import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -82,7 +83,6 @@ class FoldersFragment : Fragment(), FoldersContract.View,
         val ctext = context
         if (ctext == null || folders == null) return
 
-
         addLastAddFolder(folders)
         viewAdapter = FoldersRecyclerAdapter(ctext, this, folders.toMutableList())
         viewManager = LinearLayoutManager(ctext, LinearLayoutManager.VERTICAL, false)
@@ -115,17 +115,21 @@ class FoldersFragment : Fragment(), FoldersContract.View,
     /**
      * FoldersRecyclerViewHolder.ItemClickListener
      */
-    override fun onItemClick(url: String, position: Int) {
-        settingPrefectureDialog(context, url)
+    override fun onItemClick(name: String, position: Int, add_flg: Boolean) {
+        if (add_flg) {
+            settingAddFolderPrefectureDialog(context)
+        } else {
+            settingEditFolderPrefectureDialog(context, name, position)
+        }
     }
 
-    fun settingPrefectureDialog(ctext: Context?, url: String) {
+    private fun settingAddFolderPrefectureDialog(ctext: Context?) {
 
         if (ctext == null) return
 
-        val textView = DialogUtils.getDialogText(ctext, resources, "フォルダー")
+        val textView = DialogUtils.getDialogText(ctext, resources, "フォルダー",R.color.orange)
         var editText = EditText(ctext)
-        var onCreateClickListener = getDialogClickListener(editText)
+        var onCreateClickListener = getAddFolderDialogClickListener(editText)
 
         val builder = AlertDialog.Builder(ctext)
         builder.setCustomTitle(textView)
@@ -136,10 +140,40 @@ class FoldersFragment : Fragment(), FoldersContract.View,
             .show()
     }
 
-    private fun getDialogClickListener(editText:EditText): DialogInterface.OnClickListener {
+    private fun settingEditFolderPrefectureDialog(ctext: Context?, name: String, position: Int) {
+
+        if (ctext == null) return
+
+        val textView = DialogUtils.getDialogText(ctext, resources, "フォルダー",R.color.orange)
+        var editText = EditText(ctext)
+        editText.setText(name, TextView.BufferType.NORMAL)
+        var onCreateClickListener = getEditFolderDialogClickListener(editText, position)
+
+        val builder = AlertDialog.Builder(ctext)
+        builder.setCustomTitle(textView)
+            .setCancelable(false)
+            .setPositiveButton("キャンセル", null)
+            .setNegativeButton("更新", onCreateClickListener)
+            .setView(editText)
+            .show()
+    }
+
+    private fun getAddFolderDialogClickListener(editText: EditText): DialogInterface.OnClickListener {
         return DialogInterface.OnClickListener { dialog, id ->
             if (editText.text.toString().length > 0) {
                 presenter.createNewFolder(getNextSeqid(), editText.text.toString())
+                presenter.readFolders()
+            }
+        }
+    }
+
+    private fun getEditFolderDialogClickListener(
+        editText: EditText,
+        position: Int
+    ): DialogInterface.OnClickListener {
+        return DialogInterface.OnClickListener { dialog, id ->
+            if (editText.text.toString().length > 0) {
+                presenter.editFolderName(getNextSeqid(), editText.text.toString(), position)
                 presenter.readFolders()
             }
         }

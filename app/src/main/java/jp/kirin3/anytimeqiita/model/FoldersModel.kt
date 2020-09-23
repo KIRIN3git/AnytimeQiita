@@ -16,5 +16,9 @@ class FoldersModel() : ViewModel() {
             cacheFoldersList = foldersList
         }
 
+        fun getFoldersFromCache():List<FoldersBasicData>?{
+            return cacheFoldersList
+        }
+
     }
 }

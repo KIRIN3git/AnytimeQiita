@@ -31,7 +31,6 @@ object FoldersDatabase {
         realm.commitTransaction()
 
         realm.close()
-
     }
 
     fun selectFoldersData(): List<FoldersBasicData>? {

@@ -1,7 +1,5 @@
 package jp.kirin3.anytimeqiita.ui.folders
 
-import androidx.recyclerview.widget.RecyclerView
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import jp.kirin3.anytimeqiita.data.FoldersBasicData
 import jp.kirin3.anytimeqiita.presenter.BasePresenter
 import jp.kirin3.anytimeqiita.view.BaseView
@@ -22,7 +20,8 @@ interface FoldersContract {
 
 
         fun createFirstFolders()
-        fun createNewFolder(seqid:Int,name:String)
+        fun createNewFolder(seqid: Int, name: String)
+        fun editFolderName(seqid: Int, name: String, position: Int)
         fun readFolders()
 
         fun startNotLoggedIn()

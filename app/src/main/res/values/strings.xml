@@ -13,4 +13,11 @@
     <string name="logout">ログアウト</string>
     <string name="login_success">ログインに成功しました</string>
     <string name="login_fail">ログインに失敗しました</string>
+
+    <string name="ok">OK</string>
+    <string name="ng">NG</string>
+    <string name="reading">読む</string>
+    <string name="folder">フォルダ</string>
+    <string name="main_text">詳細はこちらから閲覧できます。</string>
+    <string name="link_text">こちら</string>
 </resources>

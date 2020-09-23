@@ -8,8 +8,6 @@ import androidx.recyclerview.widget.RecyclerView
 import jp.kirin3.anytimeqiita.R
 import jp.kirin3.anytimeqiita.data.FoldersBasicData
 import jp.kirin3.anytimeqiita.ui.stocks.FoldersRecyclerViewHolder
-import kirin3.jp.mljanken.util.LogUtils.LOGI
-import kirin3.jp.mljanken.util.TimeUtils
 
 class FoldersRecyclerAdapter(
     private val context: Context,
@@ -37,7 +35,6 @@ class FoldersRecyclerAdapter(
     override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
         super.onDetachedFromRecyclerView(recyclerView)
         this.recyclerView = null
-
     }
 
     override fun onBindViewHolder(holder: FoldersRecyclerViewHolder, position: Int) {
@@ -45,10 +42,10 @@ class FoldersRecyclerAdapter(
 
             it.nameTextView.text = holdersList.get(position).name
 
-            if(holdersList.get(position).add_flg == true){
+            if (holdersList.get(position).add_flg == true) {
                 it.folderDefaultLayout.visibility = View.GONE
                 it.folderAddLayout.visibility = View.VISIBLE
-            } else{
+            } else {
                 it.folderDefaultLayout.visibility = View.VISIBLE
                 it.folderAddLayout.visibility = View.GONE
             }
@@ -64,7 +61,8 @@ class FoldersRecyclerAdapter(
             recyclerView?.let {
                 itemClickListener.onItemClick(
                     holdersList[it.getChildAdapterPosition(view)].name,
-                    it.getChildAdapterPosition(view)
+                    it.getChildAdapterPosition(view),
+                    holdersList[it.getChildAdapterPosition(view)].add_flg
                 )
             }
         }

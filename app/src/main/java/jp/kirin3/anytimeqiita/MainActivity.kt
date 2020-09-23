@@ -56,6 +56,7 @@ class MainActivity : BaseActivity() {
 
         //BottomNavigatinにNavigationを設定
         bottomNavigationView.setupWithNavController(navController)
+
     }
 
     fun showLoginSuccessToast() {
