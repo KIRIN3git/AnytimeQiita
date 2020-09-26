@@ -10,10 +10,8 @@ object StocksDatabase {
         if (userDataList == null) return
 
 
-        xxxxxxxxxxxxxxxxxxxx
-
         yyyyyyyyyyyyyyyyyy
-        
+
         var realm = Realm.getDefaultInstance()
 
         realm.beginTransaction()
@@ -23,6 +21,9 @@ object StocksDatabase {
         realm.commitTransaction()
 
         realm.close()
+
+
+        zzzzzzzzzzzzzzzzzzzzzzz
     }
 
     fun deleteStocksDataList() {
