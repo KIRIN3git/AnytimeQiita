@@ -2,11 +2,11 @@ package jp.kirin3.anytimeqiita.database
 
 import io.realm.Realm
 import io.realm.kotlin.where
-import jp.kirin3.anytimeqiita.data.FoldersBasicData
+import jp.kirin3.anytimeqiita.data.FoldersData
 
 object FoldersDatabase {
 
-    fun insertFoldersDataList(foldersList: List<FoldersBasicData>?) {
+    fun insertFoldersDataList(foldersList: List<FoldersData>?) {
         if (foldersList == null) return
 
         var realm = Realm.getDefaultInstance()
@@ -24,7 +24,7 @@ object FoldersDatabase {
 
         var realm = Realm.getDefaultInstance()
 
-        val nowUserData = realm.where<FoldersBasicData>().findAll()
+        val nowUserData = realm.where<FoldersData>().findAll()
 
         realm.beginTransaction()
         nowUserData.deleteAllFromRealm()
@@ -33,11 +33,11 @@ object FoldersDatabase {
         realm.close()
     }
 
-    fun selectFoldersData(): List<FoldersBasicData>? {
+    fun selectFoldersData(): List<FoldersData>? {
 
         var realm = Realm.getDefaultInstance()
 
-        val folders = realm.where<FoldersBasicData>().findAll()
+        val folders = realm.where<FoldersData>().findAll()
         if (folders.count() == 0) return null
         val foldersList = realm.copyFromRealm(folders)
 

@@ -6,4 +6,4 @@ import io.realm.annotations.Required
 open class AuthenticatedUserResponceData(
     @Required var id: String = "",
     var itemsCount: Int = 0
-):RealmObject()
+) : RealmObject()

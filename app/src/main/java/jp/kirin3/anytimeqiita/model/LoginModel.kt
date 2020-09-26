@@ -9,7 +9,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import jp.kirin3.anytimeqiita.model.AuthenticatedUserModel
 import jp.kirin3.anytimeqiita.util.StringUtils
-import kirin3.jp.mljanken.util.LogUtils.LOGD
 import kirin3.jp.mljanken.util.LogUtils.LOGE
 import kirin3.jp.mljanken.util.LogUtils.LOGI
 import kirin3.jp.mljanken.util.SettingsUtils
@@ -25,14 +24,10 @@ class LoginModel : ViewModel() {
     }
 
     companion object {
-        private val QIITA_URL = "https://qiita.com/api/v2/oauth/authorize"
-        private val QIITA_CLIENT_ID = "2d2713c9fb8be9972a134670392dc4df46388034"
-        private val QIITA_SCOPE = "read_qiita"
-
-        private val STATE_LENGTH = 24
-
-
-
+        private const val QIITA_URL = "https://qiita.com/api/v2/oauth/authorize"
+        private const val QIITA_CLIENT_ID = "2d2713c9fb8be9972a134670392dc4df46388034"
+        private const val QIITA_SCOPE = "read_qiita"
+        private const val STATE_LENGTH = 24
     }
 
     private var state: String = ""
@@ -54,7 +49,6 @@ class LoginModel : ViewModel() {
         }
         return Status.COMPLETE
     }
-
 
     fun startActionViewIntent(context: Context?) {
         if (context == null) {

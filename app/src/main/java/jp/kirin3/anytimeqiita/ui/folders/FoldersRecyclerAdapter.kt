@@ -6,18 +6,18 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import jp.kirin3.anytimeqiita.R
-import jp.kirin3.anytimeqiita.data.FoldersBasicData
+import jp.kirin3.anytimeqiita.data.FoldersData
 import jp.kirin3.anytimeqiita.ui.stocks.FoldersRecyclerViewHolder
 
 class FoldersRecyclerAdapter(
     private val context: Context,
     private val itemClickListener: FoldersRecyclerViewHolder.ItemClickListener,
-    private val holdersList: MutableList<FoldersBasicData>
+    private val holdersList: MutableList<FoldersData>
 ) : RecyclerView.Adapter<FoldersRecyclerViewHolder>() {
 
     private var recyclerView: RecyclerView? = null
 
-    fun addItem(addList: List<FoldersBasicData>) {
+    fun addItem(addList: List<FoldersData>) {
         holdersList.addAll(addList)
         notifyDataSetChanged()
     }

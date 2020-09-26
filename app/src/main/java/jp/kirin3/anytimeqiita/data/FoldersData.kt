@@ -4,7 +4,7 @@ import io.realm.RealmObject
 import io.realm.annotations.Index
 import java.util.*
 
-open class FoldersBasicData(
+open class FoldersData(
     @Index var seqid: Int = 0,
     var name: String = "",
     var created_at: Date = Date(),

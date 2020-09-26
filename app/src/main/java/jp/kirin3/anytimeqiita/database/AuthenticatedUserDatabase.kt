@@ -11,9 +11,7 @@ object AuthenticatedUserDatabase {
     fun insertAuthenticatedUserData(userData: AuthenticatedUserResponceData) {
         if (userData == null) return
 
-
         var realm = Realm.getDefaultInstance()
-
         val nowUserData = realm.where<AuthenticatedUserResponceData>().findAll()
 
         realm.beginTransaction()
@@ -22,7 +20,6 @@ object AuthenticatedUserDatabase {
         realm.commitTransaction()
 
         realm.close()
-
     }
 
     fun deleteAuthenticatedUserData() {

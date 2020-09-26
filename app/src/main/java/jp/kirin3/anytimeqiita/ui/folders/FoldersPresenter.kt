@@ -1,6 +1,6 @@
 package jp.kirin3.anytimeqiita.ui.folders
 
-import jp.kirin3.anytimeqiita.data.FoldersBasicData
+import jp.kirin3.anytimeqiita.data.FoldersData
 import jp.kirin3.anytimeqiita.database.FoldersDatabase
 import jp.kirin3.anytimeqiita.model.FoldersModel
 import jp.kirin3.anytimeqiita.ui.stocks.FoldersDataSource
@@ -36,7 +36,7 @@ class FoldersPresenter(
 
     override fun readFolders() {
         foldersRepository.getFolders(object : FoldersDataSource.LoadTasksCallback {
-            override fun onFoldersLoaded(folders: List<FoldersBasicData>) {
+            override fun onFoldersLoaded(folders: List<FoldersData>) {
                 foldersView.showFoldersRecyclerView(folders.toMutableList())
                 FoldersModel.setFoldersToCache(folders)
             }

@@ -53,7 +53,6 @@ class StockslPresenter(
 
     override fun refreshLayout(
     ) {
-
         stocksRepository.loadStocks(
             AuthenticatedUserModel.getAuthenticatedUserIdFromCache(),
             true,

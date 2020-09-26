@@ -6,7 +6,19 @@ import jp.kirin3.anytimeqiita.data.FilesData
 
 object FilesDatabase {
 
-    fun insertFailsDataList(relationList: List<FilesData>?) {
+    fun insertOneFailsDataList(file: FilesData?) {
+        if (file == null) return
+
+        var realm = Realm.getDefaultInstance()
+
+        realm.beginTransaction()
+        realm.insert(file)
+        realm.commitTransaction()
+
+        realm.close()
+    }
+
+    fun insertAllFailsDataList(relationList: List<FilesData>?) {
         if (relationList == null) return
 
         var realm = Realm.getDefaultInstance()

@@ -13,7 +13,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import jp.kirin3.anytimeqiita.R
-import jp.kirin3.anytimeqiita.data.FoldersBasicData
+import jp.kirin3.anytimeqiita.data.FoldersData
 import jp.kirin3.anytimeqiita.injection.Injection
 import jp.kirin3.anytimeqiita.model.FoldersModel
 import jp.kirin3.anytimeqiita.ui.solders.FoldersRecyclerAdapter
@@ -78,7 +78,7 @@ class FoldersFragment : Fragment(), FoldersContract.View,
 
 
     override fun showFoldersRecyclerView(
-        folders: MutableList<FoldersBasicData>?
+        folders: MutableList<FoldersData>?
     ) {
         val ctext = context
         if (ctext == null || folders == null) return
@@ -101,8 +101,8 @@ class FoldersFragment : Fragment(), FoldersContract.View,
 //        })
     }
 
-    private fun addLastAddFolder(folders: MutableList<FoldersBasicData>) {
-        val folder: FoldersBasicData = FoldersBasicData(4, "", Date(), true)
+    private fun addLastAddFolder(folders: MutableList<FoldersData>) {
+        val folder: FoldersData = FoldersData(4, "", Date(), true)
         folders.add(folder)
     }
 

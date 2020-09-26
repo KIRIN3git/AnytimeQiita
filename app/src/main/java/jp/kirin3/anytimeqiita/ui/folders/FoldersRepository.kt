@@ -2,13 +2,12 @@ package jp.kirin3.anytimeqiita.ui.stocks
 
 import androidx.lifecycle.ViewModel
 import jp.kirin3.anytimeqiita.api.ApiClient
-import jp.kirin3.anytimeqiita.data.FoldersBasicData
+import jp.kirin3.anytimeqiita.data.FoldersData
 import jp.kirin3.anytimeqiita.data.StocksResponseData
 import jp.kirin3.anytimeqiita.database.FoldersDatabase
 import jp.kirin3.anytimeqiita.database.StocksDatabase
 import kirin3.jp.mljanken.util.LogUtils
 import kirin3.jp.mljanken.util.LogUtils.LOGD
-import kirin3.jp.mljanken.util.SettingsUtils
 import java.util.*
 
 class FoldersRepository() : ViewModel(), FoldersDataSource {
@@ -17,11 +16,11 @@ class FoldersRepository() : ViewModel(), FoldersDataSource {
     private var pageCount = 1
     private val READ_COUNT = 30
 
-    private val FIRST_FOLDERS: List<FoldersBasicData> =
+    private val FIRST_FOLDERS: List<FoldersData> =
         listOf(
-            FoldersBasicData(0, "今読む", Date()),
-            FoldersBasicData(1, "定期的に読む", Date()),
-            FoldersBasicData(2, "後でまとめる", Date())
+            FoldersData(0, "今読む", Date()),
+            FoldersData(1, "定期的に読む", Date()),
+            FoldersData(2, "後でまとめる", Date())
         )
 
     companion object {
@@ -63,9 +62,9 @@ class FoldersRepository() : ViewModel(), FoldersDataSource {
 
     fun createNewFolder(seqid: Int, name: String) {
 
-        val folder: List<FoldersBasicData> =
+        val folder: List<FoldersData> =
             listOf(
-                FoldersBasicData(seqid, name, Date())
+                FoldersData(seqid, name, Date())
             )
         FoldersDatabase.insertFoldersDataList(folder)
     }

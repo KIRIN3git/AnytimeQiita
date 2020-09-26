@@ -14,7 +14,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import jp.kirin3.anytimeqiita.R
+import jp.kirin3.anytimeqiita.data.FilesData
 import jp.kirin3.anytimeqiita.data.StocksResponseData
+import jp.kirin3.anytimeqiita.database.FilesDatabase
 import jp.kirin3.anytimeqiita.database.FoldersDatabase
 import jp.kirin3.anytimeqiita.database.StocksDatabase
 import jp.kirin3.anytimeqiita.helper.LoginHelper
@@ -35,8 +37,12 @@ class StocksFragment : Fragment(), StocksContract.View, SwipeRefreshLayout.OnRef
     private lateinit var viewManager: RecyclerView.LayoutManager
     private var setAdapterFlg: Boolean = false
     private var nowLoadingFlg: Boolean = false
-    private var dialogUrl: String? = null
-    private var dialogFolders: MutableList<String>? = null
+
+    // ダイアログタップ時の保存で＾た
+    private var dialogStockId: String? = null
+    private var dialogStockUrl: String? = null
+    private var dialogFoldersName: MutableList<String>? = null
+    private var dialogFoldersSeqid: MutableList<Int>? = null
 
     override lateinit var presenter: StocksContract.Presenter
 
@@ -56,8 +62,6 @@ class StocksFragment : Fragment(), StocksContract.View, SwipeRefreshLayout.OnRef
             Injection.provideStocksRepository(),
             this
         )
-
-
 
         setRefreshLayout(root)
 
@@ -150,30 +154,32 @@ class StocksFragment : Fragment(), StocksContract.View, SwipeRefreshLayout.OnRef
     /**
      * StocksRecyclerViewHolder.ItemClickListener
      */
-    override fun onItemClick(url: String, position: Int) {
+    override fun onItemClick(stockId: String, url: String) {
 
 //        Toast.makeText(context, "position $position was tapped $title", Toast.LENGTH_SHORT).show()
-        setDialogData(url)
+        setDialogData(stockId, url)
 
         showSelectStocksAlertDialog()
         //settingPrefectureDialog(context, url, FoldersDatabase.selectFoldersData())
     }
 
-    private fun setDialogData(url: String) {
-        dialogUrl = url
+    private fun setDialogData(stockId: String, url: String) {
+        dialogStockId = stockId
+        dialogStockUrl = url
         val folders = FoldersDatabase.selectFoldersData()
-        dialogFolders = mutableListOf()
+        dialogFoldersName = mutableListOf()
+        dialogFoldersSeqid = mutableListOf()
         folders?.let {
             for (folder in folders) {
-                dialogFolders?.add(folder.name)
+                dialogFoldersName?.add(folder.name)
+                dialogFoldersSeqid?.add(folder.seqid)
             }
         }
     }
 
-
     override fun onDialogPositiveClick(dialog: DialogFragment) {
         val params = bundleOf(
-            ReadingFragment.URL_PARAM_FLG to dialogUrl,
+            ReadingFragment.URL_PARAM_FLG to dialogStockUrl,
             ReadingFragment.REFRESH_FLG_PARAM_FLG to true
         )
         findNavController().navigate(R.id.bottom_navigation_reading, params)
@@ -187,8 +193,13 @@ class StocksFragment : Fragment(), StocksContract.View, SwipeRefreshLayout.OnRef
         TODO("Not yet implemented")
     }
 
-    override fun onDialogListClick(dialog: DialogFragment, id: Int) {
-        LOGI("id " + id)
+    override fun onDialogListClick(dialog: DialogFragment, which: Int) {
+        var folderSeqid = 0
+        dialogFoldersSeqid?.let {
+            folderSeqid = it[which]
+        } ?: return
+
+        FilesDatabase.insertOneFailsDataList(FilesData(folderSeqid, dialogStockId))
     }
 
     private fun showSelectStocksAlertDialog() {
@@ -198,7 +209,7 @@ class StocksFragment : Fragment(), StocksContract.View, SwipeRefreshLayout.OnRef
                     title = R.string.folder,
                     titleBackgroundColor = R.color.orange,
                     positiveButtonText = R.string.reading,
-                    list = dialogFolders
+                    list = dialogFoldersName
                 )
             ),
             null

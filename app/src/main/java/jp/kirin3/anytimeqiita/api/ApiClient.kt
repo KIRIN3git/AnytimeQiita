@@ -164,14 +164,6 @@ object ApiClient {
                         LOGI("data.title" + data.title)
                         LOGI("data.url" + data.url)
                         LOGI("data.coediting" + data.coediting)
-//                        LOGI("data.created_at" + data.created_at)
-//
-//                        if (data.group != null && data.group.name != null) {
-//                            LOGI("XXXXXXXXXXXXXXXXx" + data.group.name)
-//                        }
-//                        if (data.user != null && data.user.followees_count != null) {
-//                            LOGI("XXXXXXXXXXXXXYYYY" + data.user.followees_count)
-//                        }
                     }
                     callback.onTasksLoaded(responseData)
                 }

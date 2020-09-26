@@ -1,6 +1,6 @@
 package jp.kirin3.anytimeqiita.ui.folders
 
-import jp.kirin3.anytimeqiita.data.FoldersBasicData
+import jp.kirin3.anytimeqiita.data.FoldersData
 import jp.kirin3.anytimeqiita.presenter.BasePresenter
 import jp.kirin3.anytimeqiita.view.BaseView
 
@@ -12,7 +12,7 @@ interface FoldersContract {
     interface View : BaseView<Presenter> {
         fun showMessage(msg: String)
         fun showFoldersRecyclerView(
-            folders: MutableList<FoldersBasicData>?
+            folders: MutableList<FoldersData>?
         )
     }
 

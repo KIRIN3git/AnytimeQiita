@@ -24,16 +24,15 @@ object LoginHelper {
     }
 
     fun getStatusFromModel(context: Context?): LoginModel.Status {
-        return  loginModel.getStatus(context)
+        return loginModel.getStatus(context)
     }
 
-    fun isLoginCompleted(context: Context?):Boolean{
-        loginModel.getStatus(context).let{
-            if(it == LoginModel.Status.COMPLETE) return true
+    fun isLoginCompleted(context: Context?): Boolean {
+        loginModel.getStatus(context).let {
+            if (it == LoginModel.Status.COMPLETE) return true
         }
 
         return false
-
     }
 
     /**
@@ -41,12 +40,7 @@ object LoginHelper {
      * Stateチェックまでは行わない
      */
     fun hasLoginParamToPrefarence(intent: Intent): Boolean {
-
-        if (loginModel.analyzeLoginIntent(intent)) {
-            return true
-        } else {
-            return false
-        }
+        return loginModel.analyzeLoginIntent(intent)
     }
 
     fun clearLoginCode(context: Context?) {
@@ -68,7 +62,6 @@ object LoginHelper {
             return false
         }
     }
-
 
     /**
      * ログイン時全取得処理
@@ -98,10 +91,6 @@ object LoginHelper {
         )
         latch.await()
 
-        if (AuthenticatedUserModel.hasAuthenticatedUser()) {
-            return true
-        } else {
-            return false
-        }
+        return AuthenticatedUserModel.hasAuthenticatedUser()
     }
 }
