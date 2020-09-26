@@ -9,6 +9,9 @@ object StocksDatabase {
     fun insertStocksDataList(userDataList: List<StocksResponseData>?) {
         if (userDataList == null) return
 
+
+        xxxxxxxxxxxxxxxxxxxx
+
         var realm = Realm.getDefaultInstance()
 
         realm.beginTransaction()
