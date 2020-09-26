@@ -25,6 +25,8 @@ class MainActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         LOGI("")
 
+        xxxxxxxxxxxxxxx
+
         setContentView(R.layout.activity_main)
         val bottomNavigationView: BottomNavigationView =
             findViewById(R.id.activity_main_bottom_navigation_view)
@@ -45,12 +47,12 @@ class MainActivity : BaseActivity() {
 
 
         if (LoginHelper.hasLoginParamToPrefarence(intent)) {
-            if(processAfterLogin(intent,this)){
+            if (processAfterLogin(intent, this)) {
                 showLoginSuccessToast()
-            } else{
+            } else {
                 showLoginFailToast()
             }
-        } else{
+        } else {
             AuthenticatedUserModel.setAuthnticatedUserToCache()
         }
 
@@ -77,7 +79,6 @@ class MainActivity : BaseActivity() {
 
     fun FragmentManager.getCurrentNavigationFragment(): Fragment? =
         primaryNavigationFragment?.childFragmentManager?.fragments?.first()
-
 
 
     override fun onDestroy() {
