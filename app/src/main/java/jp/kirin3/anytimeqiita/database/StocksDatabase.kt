@@ -12,6 +12,8 @@ object StocksDatabase {
 
         xxxxxxxxxxxxxxxxxxxx
 
+        yyyyyyyyyyyyyyyyyy
+        
         var realm = Realm.getDefaultInstance()
 
         realm.beginTransaction()
