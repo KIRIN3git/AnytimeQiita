@@ -38,7 +38,7 @@ class StocksFragment : Fragment(), StocksContract.View, SwipeRefreshLayout.OnRef
     private var setAdapterFlg: Boolean = false
     private var nowLoadingFlg: Boolean = false
 
-    // ダイアログタップ時の保存で＾た
+    // ダイアログタップ時の保存データ
     private var dialogStockId: String? = null
     private var dialogStockUrl: String? = null
     private var dialogFoldersName: MutableList<String>? = null
@@ -67,7 +67,6 @@ class StocksFragment : Fragment(), StocksContract.View, SwipeRefreshLayout.OnRef
 
         return root
     }
-
 
     override fun onResume() {
         super.onResume()
@@ -199,7 +198,19 @@ class StocksFragment : Fragment(), StocksContract.View, SwipeRefreshLayout.OnRef
             folderSeqid = it[which]
         } ?: return
 
+        if (isNotFileInsert(FilesData(folderSeqid, dialogStockId))) return
         FilesDatabase.insertOneFailsDataList(FilesData(folderSeqid, dialogStockId))
+    }
+
+    private fun isNotFileInsert(searchFile: FilesData?): Boolean {
+        if (searchFile == null) return true
+        val files = FilesDatabase.selectFailsData() ?: return true
+        for (file in files) {
+            if (file.stocks_id.equals(searchFile.stocks_id) && file.folders_seqid == searchFile.folders_seqid) {
+                return true
+            }
+        }
+        return false
     }
 
     private fun showSelectStocksAlertDialog() {
