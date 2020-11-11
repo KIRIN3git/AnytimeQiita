@@ -46,8 +46,6 @@ class StocksRecyclerAdapter(
             it.dateTextView.text =
                 TimeUtils.formatShortDate(context, stocksList.get(position).updated_at)
 
-//            itemClickListener.onItemClick(stocksList.get(position).title, position)
-
             Picasso.get().load(stocksList.get(position).user!!.profile_image_url)
                 .into(it.iconImageView);
 
@@ -66,9 +64,6 @@ class StocksRecyclerAdapter(
                 itemClickListener.onItemClick(stocksList[it.getChildAdapterPosition(view)].id, stocksList[it.getChildAdapterPosition(view)].url)
             }
         }
-
-
-
 
         return StocksRecyclerViewHolder(view)
     }

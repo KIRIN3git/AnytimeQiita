@@ -7,6 +7,6 @@ import io.realm.RealmObject
  * フォルダ内のデータとしてストックデータと結びつく
  */
 open class FilesData(
-    var folders_seqid: Int = -1,
+    var folders_seqid: Int? = null,
     var stocks_id: String? = null
 ) : RealmObject()

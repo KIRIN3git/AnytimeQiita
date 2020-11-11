@@ -5,6 +5,7 @@ import jp.kirin3.anytimeqiita.database.FoldersDatabase
 import jp.kirin3.anytimeqiita.model.FoldersModel
 import jp.kirin3.anytimeqiita.ui.stocks.FoldersDataSource
 import jp.kirin3.anytimeqiita.ui.stocks.FoldersRepository
+import kirin3.jp.mljanken.util.LogUtils.LOGI
 
 class FoldersPresenter(
     private val foldersRepository: FoldersRepository,
@@ -26,11 +27,11 @@ class FoldersPresenter(
 
     override fun editFolderName(seqid: Int, name: String, position: Int) {
 
-        var newCache = FoldersModel.getFoldersFromCache()?.also{
+        var newFoldersList = FoldersModel.getFoldersFromCache()?.also{
             it[position].name = name
         }
         FoldersDatabase.deleteFoldersDataList()
-        FoldersDatabase.insertFoldersDataList(newCache)
+        FoldersDatabase.insertFoldersDataList(newFoldersList)
         readFolders()
     }
 
@@ -42,6 +43,7 @@ class FoldersPresenter(
             }
 
             override fun onDataNotAvailable() {
+                LOGI("NoData")
             }
         })
     }

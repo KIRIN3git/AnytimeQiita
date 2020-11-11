@@ -14,7 +14,7 @@ object AdmobHelper {
 
 
     var interstitialAdNextGame: InterstitialAd? = null
-    var test: String? = null
+    var fragment_folders_dialog: String? = null
 
     // 初回アクティビティのみ
     // バナーもインターステシャルも必要

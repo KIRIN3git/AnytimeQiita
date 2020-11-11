@@ -6,6 +6,7 @@ import jp.kirin3.anytimeqiita.data.FoldersData
 
 object FoldersDatabase {
 
+    private const val SEQID = "seqid"
     fun insertFoldersDataList(foldersList: List<FoldersData>?) {
         if (foldersList == null) return
 
@@ -28,6 +29,21 @@ object FoldersDatabase {
 
         realm.beginTransaction()
         nowUserData.deleteAllFromRealm()
+        realm.commitTransaction()
+
+        realm.close()
+    }
+
+    fun deleteFoldersDataListBySeqid(seqid: Int) {
+
+        var realm = Realm.getDefaultInstance()
+
+        val userData = realm.where<FoldersData>()
+            .equalTo(SEQID, seqid)
+            .findAll()
+
+        realm.beginTransaction()
+        userData.deleteAllFromRealm()
         realm.commitTransaction()
 
         realm.close()

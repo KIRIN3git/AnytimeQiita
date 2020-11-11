@@ -41,8 +41,8 @@ class StocksFragment : Fragment(), StocksContract.View, SwipeRefreshLayout.OnRef
     // ダイアログタップ時の保存データ
     private var dialogStockId: String? = null
     private var dialogStockUrl: String? = null
-    private var dialogFoldersName: MutableList<String>? = null
-    private var dialogFoldersSeqid: MutableList<Int>? = null
+    private var dialogFoldersNameList: MutableList<String>? = null
+    private var dialogFoldersSeqidList: MutableList<Int>? = null
 
     override lateinit var presenter: StocksContract.Presenter
 
@@ -110,8 +110,8 @@ class StocksFragment : Fragment(), StocksContract.View, SwipeRefreshLayout.OnRef
                 it.addItem(stocks)
             }
         } else {
-            viewAdapter = StocksRecyclerAdapter(nonNullContext, this, stocks.toMutableList())
             viewManager = LinearLayoutManager(nonNullContext, LinearLayoutManager.VERTICAL, false)
+            viewAdapter = StocksRecyclerAdapter(nonNullContext, this, stocks.toMutableList())
 
             stocksRecyclerView.apply {
                 // use a linear layout manager
@@ -156,29 +156,28 @@ class StocksFragment : Fragment(), StocksContract.View, SwipeRefreshLayout.OnRef
     override fun onItemClick(stockId: String, url: String) {
 
 //        Toast.makeText(context, "position $position was tapped $title", Toast.LENGTH_SHORT).show()
-        setDialogData(stockId, url)
-
+        setStocksDialogData(stockId, url)
         showSelectStocksAlertDialog()
         //settingPrefectureDialog(context, url, FoldersDatabase.selectFoldersData())
     }
 
-    private fun setDialogData(stockId: String, url: String) {
+    private fun setStocksDialogData(stockId: String, url: String) {
         dialogStockId = stockId
         dialogStockUrl = url
         val folders = FoldersDatabase.selectFoldersData()
-        dialogFoldersName = mutableListOf()
-        dialogFoldersSeqid = mutableListOf()
+        dialogFoldersNameList = mutableListOf()
+        dialogFoldersSeqidList = mutableListOf()
         folders?.let {
             for (folder in folders) {
-                dialogFoldersName?.add(folder.name)
-                dialogFoldersSeqid?.add(folder.seqid)
+                dialogFoldersNameList?.add(folder.name)
+                dialogFoldersSeqidList?.add(folder.seqid)
             }
         }
     }
 
     override fun onDialogPositiveClick(dialog: DialogFragment) {
         val params = bundleOf(
-            ReadingFragment.URL_PARAM_FLG to dialogStockUrl,
+            ReadingFragment.URL_PARAM to dialogStockUrl,
             ReadingFragment.REFRESH_FLG_PARAM_FLG to true
         )
         findNavController().navigate(R.id.bottom_navigation_reading, params)
@@ -194,7 +193,7 @@ class StocksFragment : Fragment(), StocksContract.View, SwipeRefreshLayout.OnRef
 
     override fun onDialogListClick(dialog: DialogFragment, which: Int) {
         var folderSeqid = 0
-        dialogFoldersSeqid?.let {
+        dialogFoldersSeqidList?.let {
             folderSeqid = it[which]
         } ?: return
 
@@ -204,7 +203,7 @@ class StocksFragment : Fragment(), StocksContract.View, SwipeRefreshLayout.OnRef
 
     private fun isNotFileInsert(searchFile: FilesData?): Boolean {
         if (searchFile == null) return true
-        val files = FilesDatabase.selectFailsData() ?: return true
+        val files = FilesDatabase.selectFailsData() ?: return false
         for (file in files) {
             if (file.stocks_id.equals(searchFile.stocks_id) && file.folders_seqid == searchFile.folders_seqid) {
                 return true
@@ -220,7 +219,7 @@ class StocksFragment : Fragment(), StocksContract.View, SwipeRefreshLayout.OnRef
                     title = R.string.folder,
                     titleBackgroundColor = R.color.orange,
                     positiveButtonText = R.string.reading,
-                    list = dialogFoldersName
+                    list = dialogFoldersNameList
                 )
             ),
             null

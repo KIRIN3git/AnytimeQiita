@@ -8,7 +8,7 @@ import jp.kirin3.anytimeqiita.ui.stocks.StocksRepository
 /**
  * Enables injection of mock implementations for
  * [TasksDataSource] at compile time. This is useful for testing, since it allows us to use
- * a fake instance of the class to isolate the dependencies and run a test hermetically.
+ * a fake instance of the class to isolate the dependencies and run a fragment_folders_dialog hermetically.
  *
  * モック実装のインジェクションを可能にします
  * コンパイル時の[TasksDataSource]。 これはテストに役立ちます。

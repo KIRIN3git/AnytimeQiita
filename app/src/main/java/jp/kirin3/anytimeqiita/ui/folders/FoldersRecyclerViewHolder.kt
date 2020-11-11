@@ -7,10 +7,12 @@ import kotlinx.android.synthetic.main.folders_low.view.*
 class FoldersRecyclerViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
     interface ItemClickListener {
-        fun onItemClick(url: String, position: Int, add_flg: Boolean)
+        fun onFolderClick(seqid:Int,name: String, position: Int, lastItemFlg: Boolean)
+        fun onLastFolderClick()
     }
 
     var nameTextView = view.nameTextView
+    var numTextView = view.numTextView
     var folderDefaultLayout = view.folder_default_lauout
     var folderAddLayout = view.folder_add_lauout
 

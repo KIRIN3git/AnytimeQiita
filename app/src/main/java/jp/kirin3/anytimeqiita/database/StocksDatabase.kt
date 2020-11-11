@@ -6,6 +6,8 @@ import jp.kirin3.anytimeqiita.data.StocksResponseData
 
 object StocksDatabase {
 
+    private const val ID = "id"
+
     fun insertStocksDataList(userDataList: List<StocksResponseData>?) {
         if (userDataList == null) return
 
@@ -45,6 +47,20 @@ object StocksDatabase {
         realm.close()
 
         return stocksList
+    }
 
+    fun selectStocksDataById(id:String): StocksResponseData? {
+
+        var realm = Realm.getDefaultInstance()
+
+        val stocks = realm.where<StocksResponseData>()
+            .equalTo(ID, id)
+            .findAll()
+        if (stocks.count() != 1) return null
+        val stocksList = realm.copyFromRealm(stocks)
+
+        realm.close()
+
+        return stocksList[0]
     }
 }

@@ -14,8 +14,6 @@ import kirin3.jp.mljanken.util.LogUtils
 import kirin3.jp.mljanken.util.LogUtils.LOGI
 import kirin3.jp.mljanken.util.SettingsUtils
 import kotlinx.android.synthetic.main.fragment_reading.*
-import kotlinx.android.synthetic.main.fragment_reading.view.*
-import kotlinx.android.synthetic.main.fragment_reading.view.fragment_reading_progress
 
 class ReadingFragment : Fragment() {
 
@@ -24,7 +22,7 @@ class ReadingFragment : Fragment() {
     private var refreshFlg:Boolean = false
 
     companion object {
-        val URL_PARAM_FLG = "URL"
+        val URL_PARAM = "URL"
         val REFRESH_FLG_PARAM_FLG = "REFRESH_FLG"
     }
 
@@ -40,7 +38,6 @@ class ReadingFragment : Fragment() {
 
         getParam()
 
-
         readingWebView = root.findViewById(R.id.fragment_reading_webview)
         setWebView()
 
@@ -49,7 +46,7 @@ class ReadingFragment : Fragment() {
 
     fun getParam(){
         arguments?.run {
-            getString(URL_PARAM_FLG)?.let {
+            getString(URL_PARAM)?.let {
                 SettingsUtils.setWebViewUrl(context, it)
             }
             getBoolean(REFRESH_FLG_PARAM_FLG)?.let {

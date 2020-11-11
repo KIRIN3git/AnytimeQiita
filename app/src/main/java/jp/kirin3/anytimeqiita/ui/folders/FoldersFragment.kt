@@ -9,28 +9,41 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
+import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import jp.kirin3.anytimeqiita.R
 import jp.kirin3.anytimeqiita.data.FoldersData
+import jp.kirin3.anytimeqiita.data.StocksResponseData
+import jp.kirin3.anytimeqiita.database.FilesDatabase
+import jp.kirin3.anytimeqiita.database.FoldersDatabase
+import jp.kirin3.anytimeqiita.database.StocksDatabase
 import jp.kirin3.anytimeqiita.injection.Injection
 import jp.kirin3.anytimeqiita.model.FoldersModel
+import jp.kirin3.anytimeqiita.source.dialog.FoldersDialogFragment
+import jp.kirin3.anytimeqiita.source.dialog.FoldersDialogParameter
 import jp.kirin3.anytimeqiita.ui.solders.FoldersRecyclerAdapter
 import jp.kirin3.anytimeqiita.ui.stocks.FoldersRecyclerViewHolder
 import jp.kirin3.anytimeqiita.util.DialogUtils
 import kirin3.jp.mljanken.util.LogUtils.LOGI
 import kirin3.jp.mljanken.util.SettingsUtils
-import java.util.*
 
 class FoldersFragment : Fragment(), FoldersContract.View,
-    FoldersRecyclerViewHolder.ItemClickListener {
+    FoldersRecyclerViewHolder.ItemClickListener, FoldersDialogFragment.FolderDialogListener {
 
     private lateinit var foldersRecyclerView: RecyclerView
     private var viewAdapter: FoldersRecyclerAdapter? = null
     private lateinit var viewManager: RecyclerView.LayoutManager
     private var setAdapterFlg: Boolean = false
     private var nowLoadingFlg: Boolean = false
+
+    // ダイアログデータ
+    private var dialogStocksList: MutableList<StocksResponseData>? = null
+    private var dialogSeqid: Int? = null
+    private var dialogFolderName: String? = null
+    private var dialogPosition: Int? = null
+
 
     override lateinit var presenter: FoldersContract.Presenter
 
@@ -76,16 +89,23 @@ class FoldersFragment : Fragment(), FoldersContract.View,
         LOGI("")
     }
 
-
     override fun showFoldersRecyclerView(
-        folders: MutableList<FoldersData>?
+        foldersList: MutableList<FoldersData>
     ) {
-        val ctext = context
-        if (ctext == null || folders == null) return
+        val nonNullContext = context ?: return
+        val filesList = FilesDatabase.selectFailsData()
+        val stocksList = StocksDatabase.selectStocksData()
 
-        addLastAddFolder(folders)
-        viewAdapter = FoldersRecyclerAdapter(ctext, this, folders.toMutableList())
-        viewManager = LinearLayoutManager(ctext, LinearLayoutManager.VERTICAL, false)
+//        addLastAddFolder(folders)
+
+        viewManager = LinearLayoutManager(nonNullContext, LinearLayoutManager.VERTICAL, false)
+        viewAdapter = FoldersRecyclerAdapter(
+            nonNullContext,
+            this,
+            foldersList.toMutableList(),
+            filesList,
+            stocksList
+        )
 
         foldersRecyclerView.apply {
             // use a linear layout manager
@@ -98,12 +118,6 @@ class FoldersFragment : Fragment(), FoldersContract.View,
         foldersRecyclerView.layoutManager?.onRestoreInstanceState(FoldersModel.parcelable)
 
         nowLoadingFlg = false
-//        })
-    }
-
-    private fun addLastAddFolder(folders: MutableList<FoldersData>) {
-        val folder: FoldersData = FoldersData(4, "", Date(), true)
-        folders.add(folder)
     }
 
     private fun clearFoldersRecyclerView() {
@@ -112,59 +126,98 @@ class FoldersFragment : Fragment(), FoldersContract.View,
         }
     }
 
-    /**
-     * FoldersRecyclerViewHolder.ItemClickListener
-     */
-    override fun onItemClick(name: String, position: Int, add_flg: Boolean) {
-        if (add_flg) {
-            settingAddFolderPrefectureDialog(context)
-        } else {
-            settingEditFolderPrefectureDialog(context, name, position)
+    override fun onFolderClick(
+        seqid: Int,
+        folderName: String,
+        position: Int,
+        lastItemFlg: Boolean
+    ) {
+        showFoldersDialog(seqid, folderName, position)
+    }
+
+    override fun onLastFolderClick() {
+        settingAddEditFolderPrefectureDialog(context)
+    }
+
+    private fun setFilesDialogData(seqid: Int, folderName: String, position: Int) {
+        dialogSeqid = seqid
+        dialogFolderName = folderName
+        dialogPosition = position
+        dialogStocksList = mutableListOf()
+        val filesList = FilesDatabase.selectFailsDataBySeqid(seqid) ?: return
+
+        for (file in filesList) {
+            file.stocks_id?.let { stocks_id ->
+                StocksDatabase.selectStocksDataById(stocks_id)?.let { stockResponseData ->
+                    dialogStocksList?.add(stockResponseData)
+                }
+            }
         }
     }
 
-    private fun settingAddFolderPrefectureDialog(ctext: Context?) {
+    private fun showFoldersDialog(seqid: Int, folderName: String, position: Int) {
+        setFilesDialogData(seqid, folderName, position)
 
-        if (ctext == null) return
-
-        val textView = DialogUtils.getDialogText(ctext, resources, "フォルダー",R.color.orange)
-        var editText = EditText(ctext)
-        var onCreateClickListener = getAddFolderDialogClickListener(editText)
-
-        val builder = AlertDialog.Builder(ctext)
-        builder.setCustomTitle(textView)
-            .setCancelable(false)
-            .setPositiveButton("CANCEL", null)
-            .setNegativeButton("CREATE", onCreateClickListener)
-            .setView(editText)
-            .show()
+        childFragmentManager.beginTransaction().add(
+            FoldersDialogFragment.newInstance(
+                FoldersDialogParameter(
+                    dialogStocksList,
+                    seqid,
+                    folderName,
+                    position
+                )
+            ),
+            null
+        ).commitNowAllowingStateLoss()
     }
 
-    private fun settingEditFolderPrefectureDialog(ctext: Context?, name: String, position: Int) {
+    /**
+     * FoldersDialogFragment.FolderDialogListener
+     */
+    override fun onDeleteFolderButtonClick(dialog: DialogFragment, folders_seqid: Int) {
+        FilesDatabase.deleteFailsDataListByFoldersSeqid(folders_seqid)
+        FoldersDatabase.deleteFoldersDataListBySeqid(folders_seqid)
+        presenter.readFolders()
+    }
 
-        if (ctext == null) return
+    override fun onChangeFolderNameButtonClick(
+        dialog: DialogFragment,
+        folderName: String,
+        position: Int
+    ) {
+        settingEditFolderPrefectureDialog(context, folderName, position)
+    }
 
-        val textView = DialogUtils.getDialogText(ctext, resources, "フォルダー",R.color.orange)
-        var editText = EditText(ctext)
+    override fun onDeleteFileButtonLongClick(
+        dialog: DialogFragment,
+        folders_seqid: Int,
+        stocks_id: String
+    ) {
+        val nonNullDialogSeqid = dialogSeqid ?: return
+        val nonNullDialogFolderName = dialogFolderName ?: return
+        val nonNullDialogPosition = dialogPosition ?: return
+
+        FilesDatabase.deleteFailsDataListByFoldersSeqidAndStocksId(folders_seqid, stocks_id)
+        presenter.readFolders()
+        showFoldersDialog(nonNullDialogSeqid, nonNullDialogFolderName, nonNullDialogPosition)
+    }
+
+    private fun settingEditFolderPrefectureDialog(context: Context?, name: String, position: Int) {
+
+        if (context == null) return
+
+        val textView = DialogUtils.getDialogText(context, resources, "フォルダー", R.color.orange)
+        var editText = EditText(context)
         editText.setText(name, TextView.BufferType.NORMAL)
         var onCreateClickListener = getEditFolderDialogClickListener(editText, position)
 
-        val builder = AlertDialog.Builder(ctext)
+        val builder = AlertDialog.Builder(context)
         builder.setCustomTitle(textView)
             .setCancelable(false)
             .setPositiveButton("キャンセル", null)
             .setNegativeButton("更新", onCreateClickListener)
             .setView(editText)
             .show()
-    }
-
-    private fun getAddFolderDialogClickListener(editText: EditText): DialogInterface.OnClickListener {
-        return DialogInterface.OnClickListener { dialog, id ->
-            if (editText.text.toString().length > 0) {
-                presenter.createNewFolder(getNextSeqid(), editText.text.toString())
-                presenter.readFolders()
-            }
-        }
     }
 
     private fun getEditFolderDialogClickListener(
@@ -179,10 +232,35 @@ class FoldersFragment : Fragment(), FoldersContract.View,
         }
     }
 
+    private fun settingAddEditFolderPrefectureDialog(context: Context?) {
+
+        if (context == null) return
+
+        val textView = DialogUtils.getDialogText(context, resources, "フォルダー", R.color.orange)
+        var editText = EditText(context)
+        var onCreateClickListener = getAddFolderDialogClickListener(editText)
+
+        val builder = AlertDialog.Builder(context)
+        builder.setCustomTitle(textView)
+            .setCancelable(false)
+            .setPositiveButton("キャンセル", null)
+            .setNegativeButton("登録", onCreateClickListener)
+            .setView(editText)
+            .show()
+    }
+
+    private fun getAddFolderDialogClickListener(editText: EditText): DialogInterface.OnClickListener {
+        return DialogInterface.OnClickListener { dialog, id ->
+            if (editText.text.toString().length > 0) {
+                presenter.createNewFolder(getNextSeqid(), editText.text.toString())
+                presenter.readFolders()
+            }
+        }
+    }
+
     private fun getNextSeqid(): Int {
         val seqid = SettingsUtils.getFolderSeqid(context) + 1
         SettingsUtils.setFolderSeqid(context, seqid)
         return seqid
     }
-
 }

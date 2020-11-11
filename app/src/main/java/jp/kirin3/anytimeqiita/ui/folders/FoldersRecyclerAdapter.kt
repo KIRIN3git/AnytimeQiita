@@ -6,24 +6,28 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import jp.kirin3.anytimeqiita.R
+import jp.kirin3.anytimeqiita.data.FilesData
 import jp.kirin3.anytimeqiita.data.FoldersData
+import jp.kirin3.anytimeqiita.data.StocksResponseData
 import jp.kirin3.anytimeqiita.ui.stocks.FoldersRecyclerViewHolder
 
 class FoldersRecyclerAdapter(
     private val context: Context,
     private val itemClickListener: FoldersRecyclerViewHolder.ItemClickListener,
-    private val holdersList: MutableList<FoldersData>
+    private val foldersList: MutableList<FoldersData>,
+    private val filesList: List<FilesData>?,
+    private val stocksList: List<StocksResponseData>?
 ) : RecyclerView.Adapter<FoldersRecyclerViewHolder>() {
 
     private var recyclerView: RecyclerView? = null
 
     fun addItem(addList: List<FoldersData>) {
-        holdersList.addAll(addList)
+        foldersList.addAll(addList)
         notifyDataSetChanged()
     }
 
     fun clearItem() {
-        holdersList.clear()
+        foldersList.clear()
         notifyDataSetChanged()
     }
 
@@ -40,16 +44,28 @@ class FoldersRecyclerAdapter(
     override fun onBindViewHolder(holder: FoldersRecyclerViewHolder, position: Int) {
         holder?.let {
 
-            it.nameTextView.text = holdersList.get(position).name
 
-            if (holdersList.get(position).add_flg == true) {
+            if (isLastPosition(position)) {
                 it.folderDefaultLayout.visibility = View.GONE
                 it.folderAddLayout.visibility = View.VISIBLE
             } else {
+                it.numTextView.text = countStocksNum(foldersList[position].seqid).toString()
+                it.nameTextView.text = foldersList[position].name
                 it.folderDefaultLayout.visibility = View.VISIBLE
                 it.folderAddLayout.visibility = View.GONE
             }
         }
+    }
+
+    private fun countStocksNum(seqid: Int): Int {
+        var count = 0
+        if (filesList == null) return 0
+        for (file in filesList) {
+            if (file.folders_seqid == seqid) {
+                count++
+            }
+        }
+        return count
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FoldersRecyclerViewHolder {
@@ -59,21 +75,33 @@ class FoldersRecyclerAdapter(
 
         view.setOnClickListener { view ->
             recyclerView?.let {
-                itemClickListener.onItemClick(
-                    holdersList[it.getChildAdapterPosition(view)].name,
-                    it.getChildAdapterPosition(view),
-                    holdersList[it.getChildAdapterPosition(view)].add_flg
-                )
+                if (isLastPosition(it.getChildAdapterPosition(view))) {
+                    itemClickListener.onLastFolderClick()
+                } else {
+                    itemClickListener.onFolderClick(
+                        foldersList[it.getChildAdapterPosition(view)].seqid,
+                        foldersList[it.getChildAdapterPosition(view)].name,
+                        it.getChildAdapterPosition(view),
+                        isLastPosition(it.getChildAdapterPosition(view))
+                    )
+                }
             }
         }
 
         return FoldersRecyclerViewHolder(view)
     }
 
-    // recyclerViewのコンテンツのサイズ
+    /** recyclerViewのコンテンツのサイズ
+     * 末尾にフォルダ追加用itemを追加
+     */
     override fun getItemCount(): Int {
-        return holdersList.size
+        return foldersList.size + 1
     }
 
-
+    /**
+     * 追加用カード確認
+     */
+    private fun isLastPosition(position: Int): Boolean {
+        return position + 1 == itemCount
+    }
 }

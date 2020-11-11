@@ -6,6 +6,8 @@ import jp.kirin3.anytimeqiita.data.FilesData
 
 object FilesDatabase {
 
+    private const val FOLDERS_SEQID = "folders_seqid"
+    private const val STOCKS_ID = "stocks_id"
     fun insertOneFailsDataList(file: FilesData?) {
         if (file == null) return
 
@@ -45,6 +47,33 @@ object FilesDatabase {
 
     }
 
+    fun deleteFailsDataListByFoldersSeqid(folders_seqid: Int) {
+        var realm = Realm.getDefaultInstance()
+
+        val filesData = realm.where<FilesData>()
+            .equalTo(FOLDERS_SEQID, folders_seqid)
+            .findAll()
+        realm.beginTransaction()
+        filesData.deleteAllFromRealm()
+        realm.commitTransaction()
+
+        realm.close()
+    }
+
+    fun deleteFailsDataListByFoldersSeqidAndStocksId(folders_seqid: Int, stocks_id: String) {
+        var realm = Realm.getDefaultInstance()
+
+        val filesData = realm.where<FilesData>()
+            .equalTo(FOLDERS_SEQID, folders_seqid)
+            .equalTo(STOCKS_ID, stocks_id)
+            .findAll()
+        realm.beginTransaction()
+        filesData.deleteAllFromRealm()
+        realm.commitTransaction()
+
+        realm.close()
+    }
+
     fun selectFailsData(): List<FilesData>? {
         var realm = Realm.getDefaultInstance()
 
@@ -55,6 +84,19 @@ object FilesDatabase {
         realm.close()
 
         return relationList
+    }
 
+    fun selectFailsDataBySeqid(seqid: Int): List<FilesData>? {
+        var realm = Realm.getDefaultInstance()
+
+        val relation = realm.where<FilesData>()
+            .equalTo(FOLDERS_SEQID, seqid)
+            .findAll()
+        if (relation.count() == 0) return null
+        val relationList = realm.copyFromRealm(relation)
+
+        realm.close()
+
+        return relationList
     }
 }

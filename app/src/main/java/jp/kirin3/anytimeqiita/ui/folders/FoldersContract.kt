@@ -12,7 +12,7 @@ interface FoldersContract {
     interface View : BaseView<Presenter> {
         fun showMessage(msg: String)
         fun showFoldersRecyclerView(
-            folders: MutableList<FoldersData>?
+            folders: MutableList<FoldersData>
         )
     }
 
@@ -23,9 +23,7 @@ interface FoldersContract {
         fun createNewFolder(seqid: Int, name: String)
         fun editFolderName(seqid: Int, name: String, position: Int)
         fun readFolders()
-
         fun startNotLoggedIn()
-
         fun getMessage()
         fun processAccessToken(code: String)
     }

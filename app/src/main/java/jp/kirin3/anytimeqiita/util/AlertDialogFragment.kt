@@ -47,7 +47,7 @@ class AlertDialogFragment : DialogFragment() {
         val nonNullContext: Context =
             context ?: throw java.lang.IllegalStateException("AlertDialog context cannot be null")
         val parameter = arguments?.getParcelable<AlertDialogParameter>(PARAMETER)
-            ?: throw java.lang.IllegalStateException("AlertDialog parameter cannnot be null")
+            ?: throw java.lang.IllegalStateException("AlertDialog parameter cannot be null")
 
         return AlertDialog.Builder(nonNullContext).also { builder ->
             parameter.iconId?.let {

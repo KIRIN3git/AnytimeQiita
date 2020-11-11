@@ -20,4 +20,6 @@
     <string name="folder">フォルダ</string>
     <string name="main_text">詳細はこちらから閲覧できます。</string>
     <string name="link_text">こちら</string>
+    <string name="change_name">名前変更</string>
+    <string name="delete">削除</string>
 </resources>
