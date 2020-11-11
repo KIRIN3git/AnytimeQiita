@@ -3,9 +3,23 @@
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
-    <string name="title_bookmark">ブックマーク</string>
+    <string name="title_folder">フォルダ</string>
     <string name="title_stock">ストック</string>
     <string name="title_record">レコード</string>
     <string name="title_reading">リーディング</string>
     <string name="title_setting">セッティング</string>
+
+    <string name="login">ログイン</string>
+    <string name="logout">ログアウト</string>
+    <string name="login_success">ログインに成功しました</string>
+    <string name="login_fail">ログインに失敗しました</string>
+
+    <string name="ok">OK</string>
+    <string name="ng">NG</string>
+    <string name="reading">読む</string>
+    <string name="folder">フォルダ</string>
+    <string name="main_text">詳細はこちらから閲覧できます。</string>
+    <string name="link_text">こちら</string>
+    <string name="change_name">名前変更</string>
+    <string name="delete">削除</string>
 </resources>
