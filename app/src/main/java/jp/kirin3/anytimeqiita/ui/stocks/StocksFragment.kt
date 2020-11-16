@@ -19,9 +19,9 @@ import jp.kirin3.anytimeqiita.data.StocksResponseData
 import jp.kirin3.anytimeqiita.database.FilesDatabase
 import jp.kirin3.anytimeqiita.database.FoldersDatabase
 import jp.kirin3.anytimeqiita.database.StocksDatabase
-import jp.kirin3.anytimeqiita.helper.LoginHelper
 import jp.kirin3.anytimeqiita.injection.Injection
 import jp.kirin3.anytimeqiita.model.StocksModel
+import jp.kirin3.anytimeqiita.ui.reading.LoginModel
 import jp.kirin3.anytimeqiita.ui.reading.ReadingFragment
 import jp.kirin3.anytimeqiita.util.AlertDialogFragment
 import jp.kirin3.anytimeqiita.util.AlertDialogParameter
@@ -72,7 +72,7 @@ class StocksFragment : Fragment(), StocksContract.View, SwipeRefreshLayout.OnRef
         super.onResume()
         LOGI("")
 
-        if (LoginHelper.isLoginCompleted(context) == true) {
+        if (LoginModel.isLoginCompleted(context) == true) {
             refreshLayout.setRefreshing(true)
             presenter.startLoggedIn(stocksRecyclerView)
         }
@@ -178,7 +178,7 @@ class StocksFragment : Fragment(), StocksContract.View, SwipeRefreshLayout.OnRef
     override fun onDialogPositiveClick(dialog: DialogFragment) {
         val params = bundleOf(
             ReadingFragment.URL_PARAM to dialogStockUrl,
-            ReadingFragment.REFRESH_FLG_PARAM_FLG to true
+            ReadingFragment.IS_REFRESH_WEBVIEW_PARAM to true
         )
         findNavController().navigate(R.id.bottom_navigation_reading, params)
     }
@@ -235,7 +235,7 @@ class StocksFragment : Fragment(), StocksContract.View, SwipeRefreshLayout.OnRef
      * SwipeRefreshLayout.OnRefreshListener
      */
     override fun onRefresh() {
-        if (LoginHelper.isLoginCompleted(context) == true && nowLoadingFlg == false) {
+        if (LoginModel.isLoginCompleted(context) == true && nowLoadingFlg == false) {
             nowLoadingFlg == true
             clearStocksRecyclerView()
             StocksDatabase.deleteStocksDataList()

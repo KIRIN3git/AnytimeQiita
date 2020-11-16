@@ -23,7 +23,7 @@ class ReadingFragment : Fragment() {
 
     companion object {
         val URL_PARAM = "URL"
-        val REFRESH_FLG_PARAM_FLG = "REFRESH_FLG"
+        val IS_REFRESH_WEBVIEW_PARAM = "IS_REFRESH"
     }
 
     override fun onCreateView(
@@ -49,7 +49,7 @@ class ReadingFragment : Fragment() {
             getString(URL_PARAM)?.let {
                 SettingsUtils.setWebViewUrl(context, it)
             }
-            getBoolean(REFRESH_FLG_PARAM_FLG)?.let {
+            getBoolean(IS_REFRESH_WEBVIEW_PARAM)?.let {
                 refreshFlg = it
                 if( it == true){
                     SettingsUtils.setWebViewPosition(context,0)

@@ -19,10 +19,6 @@ class StocksRepository() : ViewModel(), StocksDataSource {
         private var INSTANCE: StocksRepository? = null
 
 
-        fun setStocksToCache(): StocksRepository {
-            return INSTANCE ?: StocksRepository()
-                .apply { INSTANCE = this }
-        }
 
 
         /**

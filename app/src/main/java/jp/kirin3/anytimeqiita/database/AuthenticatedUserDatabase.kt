@@ -1,18 +1,16 @@
 package jp.kirin3.anytimeqiita.database
 
 import io.realm.Realm
-import io.realm.RealmResults
 import io.realm.kotlin.where
-import jp.kirin3.anytimeqiita.data.AuthenticatedUserResponceData
-import kirin3.jp.mljanken.util.LogUtils
+import jp.kirin3.anytimeqiita.data.AuthenticatedUserData
 
 object AuthenticatedUserDatabase {
 
-    fun insertAuthenticatedUserData(userData: AuthenticatedUserResponceData) {
+    fun insertAuthenticatedUserData(userData: AuthenticatedUserData) {
         if (userData == null) return
 
         var realm = Realm.getDefaultInstance()
-        val nowUserData = realm.where<AuthenticatedUserResponceData>().findAll()
+        val nowUserData = realm.where<AuthenticatedUserData>().findAll()
 
         realm.beginTransaction()
         nowUserData.deleteAllFromRealm()
@@ -26,7 +24,7 @@ object AuthenticatedUserDatabase {
 
         var realm = Realm.getDefaultInstance()
 
-        val nowUserData = realm.where<AuthenticatedUserResponceData>().findAll()
+        val nowUserData = realm.where<AuthenticatedUserData>().findAll()
 
         realm.beginTransaction()
         nowUserData.deleteAllFromRealm()
@@ -36,11 +34,11 @@ object AuthenticatedUserDatabase {
 
     }
 
-    fun selectAuthenticatedUserData(): AuthenticatedUserResponceData? {
+    fun selectAuthenticatedUserData(): AuthenticatedUserData? {
 
         var realm = Realm.getDefaultInstance()
 
-        val users = realm.where<AuthenticatedUserResponceData>().findAll()
+        val users = realm.where<AuthenticatedUserData>().findAll()
         if(users.count() == 0) return null
         val user = realm.copyFromRealm(users[0])
 

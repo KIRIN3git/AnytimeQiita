@@ -6,7 +6,10 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import jp.kirin3.anytimeqiita.MainApplication.Companion.QIITA_CLIENT_ID
 import jp.kirin3.anytimeqiita.MainApplication.Companion.QIITA_CLIENT_SEACRET
-import jp.kirin3.anytimeqiita.data.*
+import jp.kirin3.anytimeqiita.data.AccessTokenRequestData
+import jp.kirin3.anytimeqiita.data.AccessTokenResponseData
+import jp.kirin3.anytimeqiita.data.AuthenticatedUserData
+import jp.kirin3.anytimeqiita.data.StocksResponseData
 import kirin3.jp.mljanken.util.LogUtils.LOGD
 import kirin3.jp.mljanken.util.LogUtils.LOGI
 import okhttp3.OkHttpClient
@@ -48,12 +51,9 @@ object ApiClient {
         )
         val repos = service.fetchRepos(requestData)
 
-//        LOGI("repos.toString()" + repos.)
-
         repos
             .subscribeOn(Schedulers.io())
-            //.observeOn(AndroidSchedulers.mainThread())
-            .observeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe(object : Observer<AccessTokenResponseData> {
                 override fun onSubscribe(d: Disposable) {
                     LOGI("")
@@ -77,7 +77,7 @@ object ApiClient {
     }
 
     interface AuthenticatedUserApiCallback {
-        fun onTasksLoaded(responseData: AuthenticatedUserResponceData)
+        fun onTasksLoaded(responseData: AuthenticatedUserData)
         fun onDataNotAvailable()
     }
 
@@ -95,9 +95,8 @@ object ApiClient {
 
         repos
             .subscribeOn(Schedulers.io())
-            //.observeOn(AndroidSchedulers.mainThread())
-            .observeOn(Schedulers.io())
-            .subscribe(object : Observer<AuthenticatedUserResponceData> {
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(object : Observer<AuthenticatedUserData> {
                 override fun onSubscribe(d: Disposable) {
                     LOGI("")
                 }
@@ -111,7 +110,7 @@ object ApiClient {
                     callback.onDataNotAvailable()
                 }
 
-                override fun onNext(responseData: AuthenticatedUserResponceData) {
+                override fun onNext(responseData: AuthenticatedUserData) {
                     LOGI("")
                     LOGI("RESPONSE_DATA[" + responseData.toString() + "]")
                     callback.onTasksLoaded(responseData)
@@ -124,7 +123,7 @@ object ApiClient {
         fun onDataNotAvailable()
     }
 
-    fun fetchStocks(userId: String?, page: String,perPage:String, callback: StocksApiCallback) {
+    fun fetchStocks(userId: String?, page: String, perPage: String, callback: StocksApiCallback) {
         if (userId == null) {
             callback.onDataNotAvailable()
             return
@@ -142,7 +141,6 @@ object ApiClient {
         repos
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            //.observeOn(Schedulers.io())
             .subscribe(object : Observer<List<StocksResponseData>> {
                 override fun onSubscribe(d: Disposable) {
                     LOGI("")

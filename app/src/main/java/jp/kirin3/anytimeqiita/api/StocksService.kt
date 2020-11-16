@@ -1,8 +1,6 @@
 package jp.kirin3.anytimeqiita.api
 
 import io.reactivex.Observable
-import jp.kirin3.anytimeqiita.data.AuthenticatedUserResponceData
-import jp.kirin3.anytimeqiita.data.StocksRequestData
 import jp.kirin3.anytimeqiita.data.StocksResponseData
 import retrofit2.http.*
 

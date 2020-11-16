@@ -44,7 +44,6 @@ class FoldersFragment : Fragment(), FoldersContract.View,
     private var dialogFolderName: String? = null
     private var dialogPosition: Int? = null
 
-
     override lateinit var presenter: FoldersContract.Presenter
 
     override fun onCreateView(
