@@ -11,6 +11,8 @@
 /.idea/misc.xml
 /.idea/*
 /.idea/misc.xml
+/.idea/gradle.xml
+/.idea/compiler.xml
 .DS_Store
 /build
 /captures
