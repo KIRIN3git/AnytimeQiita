@@ -12,6 +12,8 @@ interface SettingContract {
 
     interface View : BaseView<Presenter> {
         fun setLoggingModeInterface(login: Boolean)
+        fun showLoginSuccessToast()
+        fun showLoginailureToast()
     }
 
     interface Presenter : BasePresenter {

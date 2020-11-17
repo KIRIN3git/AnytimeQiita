@@ -83,12 +83,10 @@ class SettingFragment : Fragment(), SettingContract.View {
 
     override fun setLoggingModeInterface(login: Boolean) {
         if (login) {
-            showLoginSuccessToast()
             notLoggedLayout.visibility = View.GONE
             loggingLayout.visibility = View.VISIBLE
             displayAuthentiatedUserId()
         } else {
-            showLoginFailToast()
             notLoggedLayout.visibility = View.VISIBLE
             loggingLayout.visibility = View.GONE
         }
@@ -99,7 +97,7 @@ class SettingFragment : Fragment(), SettingContract.View {
         userIdTextView.setText(userId)
     }
 
-    fun showLoginSuccessToast() {
+    override fun showLoginSuccessToast() {
         Toast.makeText(
             context,
             this.getString(R.string.login_success),
@@ -107,7 +105,7 @@ class SettingFragment : Fragment(), SettingContract.View {
         ).show()
     }
 
-    fun showLoginFailToast() {
+    override fun showLoginailureToast() {
         Toast.makeText(
             context,
             this.getString(R.string.login_fail),

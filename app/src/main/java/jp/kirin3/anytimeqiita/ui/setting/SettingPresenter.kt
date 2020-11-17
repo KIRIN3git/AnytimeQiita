@@ -1,8 +1,6 @@
 package jp.kirin3.anytimeqiita.ui.setting
 
 import android.content.Context
-import kirin3.jp.mljanken.util.LogUtils
-import kirin3.jp.mljanken.util.LogUtils.LOGI
 import kirin3.jp.mljanken.util.SettingsUtils
 
 
@@ -29,16 +27,19 @@ class SettingPresenter(
                         SettingsUtils.getQiitaAccessToken(context),
                         object : SettingDataSource.LoadAuthenticatedUserCallback {
                             override fun onAuthenticatedUserLoaded() {
+                                settingView.showLoginSuccessToast()
                                 settingView.setLoggingModeInterface(true)
                             }
 
                             override fun onAuthenticatedUserNotAvailable() {
+                                settingView.showLoginailureToast()
                                 settingView.setLoggingModeInterface(false)
                             }
                         })
                 }
 
                 override fun onAccessTokenNotAvailable() {
+                    settingView.showLoginailureToast()
                     settingView.setLoggingModeInterface(false)
                 }
             })
