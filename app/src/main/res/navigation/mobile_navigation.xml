@@ -34,6 +34,9 @@
         android:name="jp.kirin3.anytimeqiita.ui.setting.SettingFragment"
         android:label="@string/title_setting"
         tools:layout="@layout/fragment_setting">
+        <argument
+            android:name="isLoginMode"
+            app:argType="boolean" />
         <!--
         <action
             android:id="@+id/action_setting_to_login"

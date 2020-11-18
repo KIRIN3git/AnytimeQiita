@@ -17,8 +17,6 @@ interface FoldersContract {
     }
 
     interface Presenter : BasePresenter {
-
-
         fun createFirstFolders()
         fun createNewFolder(seqid: Int, name: String)
         fun editFolderName(seqid: Int, name: String, position: Int)

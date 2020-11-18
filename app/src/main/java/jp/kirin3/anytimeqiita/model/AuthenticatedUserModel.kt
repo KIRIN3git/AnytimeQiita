@@ -3,25 +3,26 @@ package jp.kirin3.anytimeqiita.model
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import jp.kirin3.anytimeqiita.api.ApiClient
-import jp.kirin3.anytimeqiita.data.AuthenticatedUserResponceData
+import jp.kirin3.anytimeqiita.data.AuthenticatedUserData
 import jp.kirin3.anytimeqiita.database.AuthenticatedUserDatabase
 import jp.kirin3.anytimeqiita.util.StringUtils
 import kirin3.jp.mljanken.util.LogUtils
-import java.util.concurrent.CountDownLatch
 
 class AuthenticatedUserModel : ViewModel() {
 
+    interface LoadCallback {
+        fun onSuccess()
+        fun onFailure()
+    }
+
     companion object {
-        // companion object {
-        private var cacheAuthenticatedUser: AuthenticatedUserResponceData? = null
-        // }
+        private var cacheAuthenticatedUser: AuthenticatedUserData? = null
 
-
-        fun setAuthenticatedUserToCache(userData: AuthenticatedUserResponceData?) {
+        fun setAuthenticatedUserToCache(userData: AuthenticatedUserData?) {
             cacheAuthenticatedUser = userData
         }
 
-        fun getAuthenticatedUserFromCache(): AuthenticatedUserResponceData? {
+        fun getAuthenticatedUserFromCache(): AuthenticatedUserData? {
             return cacheAuthenticatedUser
         }
 
@@ -39,45 +40,44 @@ class AuthenticatedUserModel : ViewModel() {
             return true
         }
 
-        fun clearAuthenticatedUserAllInfo(){
+        fun clearAuthenticatedUserFromDbAndCache() {
             AuthenticatedUserDatabase.deleteAuthenticatedUserData()
             cacheAuthenticatedUser = null
         }
 
-        fun loadAuthenticatedUser(context: Context?, accessToken: String?, latch: CountDownLatch) {
-            if (context == null) return
+//        fun loadAuthenticatedUser(context: Context?, accessToken: String?, callback: LoadCallback) {
+//            if (context == null) return
+//
+//            ApiClient.fetchAuthenticatedUser(
+//                accessToken,
+//                object : ApiClient.AuthenticatedUserApiCallback {
+//                    override fun onTasksLoaded(responseData: AuthenticatedUserData) {
+//                        LogUtils.LOGI("GET AuthenticatedUser responseData.id = " + responseData.id)
+//                        // データをキャッシュ保存
+//                        setAuthenticatedUserToCache(
+//                            responseData
+//                        )
+//
+//                        // データをデータベース保存
+//                        AuthenticatedUserDatabase.insertAuthenticatedUserData(responseData)
+//                        callback.onSuccess()
+//                    }
+//
+//                    override fun onDataNotAvailable() {
+//                        LogUtils.LOGI("Fail fetchAuthenticatedUser")
+//
+//                        setAuthenticatedUserToCache(
+//                            null
+//                        )
+//                        AuthenticatedUserDatabase.deleteAuthenticatedUserData()
+//                        callback.onFailure()
+//                    }
+//                })
+//        }
 
-            ApiClient.fetchAuthenticatedUser(
-                accessToken,
-                object : ApiClient.AuthenticatedUserApiCallback {
-                    override fun onTasksLoaded(responseData: AuthenticatedUserResponceData) {
-                        LogUtils.LOGI("GET AuthenticatedUser responseData.id = " + responseData.id)
-                        // データをキャッシュ保存
-                        setAuthenticatedUserToCache(
-                            responseData
-                        )
-
-                        // データをデータベース保存
-                        AuthenticatedUserDatabase.insertAuthenticatedUserData(responseData)
-                        latch.apply { countDown() }
-                    }
-
-                    override fun onDataNotAvailable() {
-                        LogUtils.LOGI("Fail fetchAuthenticatedUser")
-
-                        setAuthenticatedUserToCache(
-                            null
-                        )
-                        AuthenticatedUserDatabase.deleteAuthenticatedUserData()
-
-                        latch.apply { countDown() }
-                    }
-                })
-        }
-
-        fun setAuthnticatedUserToCache(){
+        fun setAuthnticatedUserFromDbToCache() {
             val userData = AuthenticatedUserDatabase.selectAuthenticatedUserData()
-            if(userData != null){
+            if (userData != null) {
                 setAuthenticatedUserToCache(userData)
             }
         }
@@ -96,7 +96,11 @@ class AuthenticatedUserModel : ViewModel() {
             return false
         }
 
-        fun getAuthenticatedUserIdFromCashe(): String? {
+        fun getAuthenticatedUserIdFromCacheOrDb(): String? {
+            getAuthenticatedUserFromCache()?.let {
+                return it.id
+            }
+            setAuthnticatedUserFromDbToCache()
             getAuthenticatedUserFromCache()?.let {
                 return it.id
             }

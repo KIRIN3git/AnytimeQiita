@@ -123,7 +123,7 @@ class FoldersDialogFragment : DialogFragment(), StocksRecyclerViewHolder.ItemCli
     override fun onItemClick(stockId: String, url: String) {
 //        val params = bundleOf(
 //            ReadingFragment.URL_PARAM to url,
-//            ReadingFragment.REFRESH_FLG_PARAM_FLG to true
+//            ReadingFragment.IS_REFRESH_WEBVIEW_PARAM to true
 //        )
 //        findNavController().navigate(R.id.bottom_navigation_reading, params)
 //        dismissAllowingStateLoss()
@@ -134,7 +134,7 @@ class FoldersDialogFragment : DialogFragment(), StocksRecyclerViewHolder.ItemCli
 
             val params = bundleOf(
                 ReadingFragment.URL_PARAM to it[position].url,
-                ReadingFragment.REFRESH_FLG_PARAM_FLG to true
+                ReadingFragment.IS_REFRESH_WEBVIEW_PARAM to true
             )
             findNavController().navigate(R.id.bottom_navigation_reading, params)
             dismissAllowingStateLoss()
