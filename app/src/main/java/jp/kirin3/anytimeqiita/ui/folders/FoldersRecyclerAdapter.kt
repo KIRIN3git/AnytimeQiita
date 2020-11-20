@@ -44,7 +44,6 @@ class FoldersRecyclerAdapter(
     override fun onBindViewHolder(holder: FoldersRecyclerViewHolder, position: Int) {
         holder?.let {
 
-
             if (isLastPosition(position)) {
                 it.folderDefaultLayout.visibility = View.GONE
                 it.folderAddLayout.visibility = View.VISIBLE

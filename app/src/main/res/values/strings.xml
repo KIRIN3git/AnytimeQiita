@@ -17,9 +17,15 @@
     <string name="ok">OK</string>
     <string name="ng">NG</string>
     <string name="reading">読む</string>
-    <string name="folder">フォルダ</string>
+    <string name="message_input_folder_name">フォルダ名を入力</string>
+    <string name="message_can_i_delete_the_folder">フォルダを削除しても良いですか？</string>
     <string name="main_text">詳細はこちらから閲覧できます。</string>
     <string name="link_text">こちら</string>
     <string name="change_name">名前変更</string>
-    <string name="delete">削除</string>
+    <string name="word_delete_folder">フォルダ削除</string>
+    <string name="word_register_folder">フォルダ登録</string>
+    <string name="word_cancel">キャンセル</string>
+    <string name="word_register">登録</string>
+    <string name="word_yes">はい</string>
+    <string name="word_no">いいえ</string>
 </resources>

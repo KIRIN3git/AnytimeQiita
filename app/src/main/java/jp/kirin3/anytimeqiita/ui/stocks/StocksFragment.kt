@@ -216,7 +216,7 @@ class StocksFragment : Fragment(), StocksContract.View, SwipeRefreshLayout.OnRef
         childFragmentManager.beginTransaction().add(
             AlertDialogFragment.newInstance(
                 AlertDialogParameter(
-                    title = R.string.folder,
+                    title = R.string.message_input_folder_name,
                     titleBackgroundColor = R.color.orange,
                     positiveButtonText = R.string.reading,
                     list = dialogFoldersNameList

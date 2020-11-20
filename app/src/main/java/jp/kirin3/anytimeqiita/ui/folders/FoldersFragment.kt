@@ -174,9 +174,26 @@ class FoldersFragment : Fragment(), FoldersContract.View,
      * FoldersDialogFragment.FolderDialogListener
      */
     override fun onDeleteFolderButtonClick(dialog: DialogFragment, folders_seqid: Int) {
-        FilesDatabase.deleteFailsDataListByFoldersSeqid(folders_seqid)
-        FoldersDatabase.deleteFoldersDataListBySeqid(folders_seqid)
-        presenter.readFolders()
+        val nonNullContext = context ?: return
+        val alertDlg = AlertDialog.Builder(nonNullContext)
+
+//        alertDlg.setTitle("ダイアログタイトル")
+        alertDlg.setMessage(nonNullContext.getText(R.string.message_can_i_delete_the_folder))
+        alertDlg.setPositiveButton(
+            nonNullContext.getText(R.string.word_yes)
+        ) { dialog, which ->
+            FilesDatabase.deleteFailsDataListByFoldersSeqid(folders_seqid)
+            FoldersDatabase.deleteFoldersDataListBySeqid(folders_seqid)
+            presenter.readFolders()
+
+        }
+        alertDlg.setNegativeButton(
+            nonNullContext.getText(R.string.word_no)
+        ) { dialog, which ->
+            // NO-OP
+        }
+        // 表示
+        alertDlg.create().show()
     }
 
     override fun onChangeFolderNameButtonClick(
@@ -205,7 +222,12 @@ class FoldersFragment : Fragment(), FoldersContract.View,
 
         if (context == null) return
 
-        val textView = DialogUtils.getDialogText(context, resources, "フォルダー", R.color.orange)
+        val textView = DialogUtils.getDialogText(
+            context,
+            resources,
+            R.string.message_input_folder_name,
+            R.color.orange
+        )
         var editText = EditText(context)
         editText.setText(name, TextView.BufferType.NORMAL)
         var onCreateClickListener = getEditFolderDialogClickListener(editText, position)
@@ -235,15 +257,20 @@ class FoldersFragment : Fragment(), FoldersContract.View,
 
         if (context == null) return
 
-        val textView = DialogUtils.getDialogText(context, resources, "フォルダー", R.color.orange)
+        val textView = DialogUtils.getDialogText(
+            context,
+            resources,
+            R.string.message_input_folder_name,
+            R.color.orange
+        )
         var editText = EditText(context)
         var onCreateClickListener = getAddFolderDialogClickListener(editText)
 
         val builder = AlertDialog.Builder(context)
         builder.setCustomTitle(textView)
             .setCancelable(false)
-            .setPositiveButton("キャンセル", null)
-            .setNegativeButton("登録", onCreateClickListener)
+            .setPositiveButton(context.getText(R.string.word_cancel), null)
+            .setNegativeButton(context.getText(R.string.word_register), onCreateClickListener)
             .setView(editText)
             .show()
     }

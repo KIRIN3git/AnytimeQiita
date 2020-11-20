@@ -58,7 +58,7 @@ class AlertDialogFragment : DialogFragment() {
                     val customText = DialogUtils.getDialogText(
                         nonNullContext,
                         resources,
-                        getString(title),
+                        title,
                         color
                     )
                     builder.setCustomTitle(customText)

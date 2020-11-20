@@ -17,7 +17,7 @@ object DialogUtils {
     fun getDialogText(
         context: Context?,
         resources: Resources,
-        title: String,
+        titleId: Int,
         colorId: Int
     ): TextView? {
 
@@ -42,7 +42,7 @@ object DialogUtils {
             )
         textView.setPadding(paddingLeftRight, paddingTopBottom, paddingLeftRight, paddingTopBottom)
         // テキスト
-        textView.text = title
+        textView.text = context.getText(titleId)
         // テキストサイズ
         textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20f)
 

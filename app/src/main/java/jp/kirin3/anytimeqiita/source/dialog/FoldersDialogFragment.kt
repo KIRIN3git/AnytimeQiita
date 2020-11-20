@@ -79,6 +79,8 @@ class FoldersDialogFragment : DialogFragment(), StocksRecyclerViewHolder.ItemCli
 
             paramStocksList = parameter.stocksList
             dialog.setContentView(R.layout.fragment_folders_dialog)
+
+            dialog.header_text_view.text = parameter.folderName
             paramStocksList?.let {
                 viewManager =
                     LinearLayoutManager(nonNullContext, LinearLayoutManager.VERTICAL, false)
@@ -97,7 +99,7 @@ class FoldersDialogFragment : DialogFragment(), StocksRecyclerViewHolder.ItemCli
                             viewListener
                         )
                     )
-                }/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                }
             }
             dialog.change_folder_name_button.setOnClickListener {
                 listener?.onChangeFolderNameButtonClick(
