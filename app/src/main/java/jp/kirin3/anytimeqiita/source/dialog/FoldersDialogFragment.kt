@@ -51,7 +51,7 @@ class FoldersDialogFragment : DialogFragment(), StocksRecyclerViewHolder.ItemCli
             position: Int
         )
 
-        fun onDeleteFileButtonLongClick(
+        fun onFolderButtonLongClick(
             dialog: DialogFragment,
             folders_seqid: Int,
             stocks_id: String
@@ -112,7 +112,7 @@ class FoldersDialogFragment : DialogFragment(), StocksRecyclerViewHolder.ItemCli
             dialog.delete_folder_button.setOnClickListener {
                 listener?.onDeleteFolderButtonClick(
                     this,
-                    parameter.seqid
+                    parameter.seqId
                 )
                 dismissAllowingStateLoss()
             }
@@ -149,9 +149,9 @@ class FoldersDialogFragment : DialogFragment(), StocksRecyclerViewHolder.ItemCli
             ?: throw java.lang.IllegalStateException("Dialog parameter cannot be null")
 
         paramStocksList?.let {
-            listener?.onDeleteFileButtonLongClick(
+            listener?.onFolderButtonLongClick(
                 this,
-                parameter.seqid,
+                parameter.seqId,
                 it[position].id
             )
             dismissAllowingStateLoss()
@@ -173,7 +173,7 @@ class FoldersDialogFragment : DialogFragment(), StocksRecyclerViewHolder.ItemCli
 @Parcelize
 data class FoldersDialogParameter(
     val stocksList: MutableList<StocksResponseData>? = null,
-    val seqid: Int,
+    val seqId: Int,
     val folderName: String,
     val position: Int
 ) : Parcelable

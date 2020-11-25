@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.RecyclerView
 import jp.kirin3.anytimeqiita.R
 import jp.kirin3.anytimeqiita.data.FilesData
 import jp.kirin3.anytimeqiita.data.FoldersData
-import jp.kirin3.anytimeqiita.data.StocksResponseData
 import jp.kirin3.anytimeqiita.ui.stocks.FoldersRecyclerViewHolder
 
 class FoldersRecyclerAdapter(
@@ -16,7 +15,7 @@ class FoldersRecyclerAdapter(
     private val itemClickListener: FoldersRecyclerViewHolder.ItemClickListener,
     private val foldersList: MutableList<FoldersData>,
     private val filesList: List<FilesData>?,
-    private val stocksList: List<StocksResponseData>?
+    private val isAddLast: Boolean
 ) : RecyclerView.Adapter<FoldersRecyclerViewHolder>() {
 
     private var recyclerView: RecyclerView? = null
@@ -44,7 +43,7 @@ class FoldersRecyclerAdapter(
     override fun onBindViewHolder(holder: FoldersRecyclerViewHolder, position: Int) {
         holder?.let {
 
-            if (isLastPosition(position)) {
+            if (isLastPosition(position) && isAddLast) {
                 it.folderDefaultLayout.visibility = View.GONE
                 it.folderAddLayout.visibility = View.VISIBLE
             } else {
@@ -74,7 +73,7 @@ class FoldersRecyclerAdapter(
 
         view.setOnClickListener { view ->
             recyclerView?.let {
-                if (isLastPosition(it.getChildAdapterPosition(view))) {
+                if (isLastPosition(it.getChildAdapterPosition(view)) && isAddLast) {
                     itemClickListener.onLastFolderClick()
                 } else {
                     itemClickListener.onFolderClick(
@@ -94,7 +93,11 @@ class FoldersRecyclerAdapter(
      * 末尾にフォルダ追加用itemを追加
      */
     override fun getItemCount(): Int {
-        return foldersList.size + 1
+        return foldersList.size + if (isAddLast) {
+            1
+        } else {
+            0
+        }
     }
 
     /**
