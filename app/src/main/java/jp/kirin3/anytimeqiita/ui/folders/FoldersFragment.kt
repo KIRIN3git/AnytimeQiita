@@ -93,7 +93,6 @@ class FoldersFragment : Fragment(), FoldersContract.View,
     ) {
         val nonNullContext = context ?: return
         val filesList = FilesDatabase.selectFailsData()
-        val stocksList = StocksDatabase.selectStocksData()
 
 //        addLastAddFolder(folders)
 
@@ -103,7 +102,7 @@ class FoldersFragment : Fragment(), FoldersContract.View,
             this,
             foldersList.toMutableList(),
             filesList,
-            stocksList
+            true
         )
 
         foldersRecyclerView.apply {
@@ -204,7 +203,7 @@ class FoldersFragment : Fragment(), FoldersContract.View,
         settingEditFolderPrefectureDialog(context, folderName, position)
     }
 
-    override fun onDeleteFileButtonLongClick(
+    override fun onFolderButtonLongClick(
         dialog: DialogFragment,
         folders_seqid: Int,
         stocks_id: String
@@ -285,8 +284,8 @@ class FoldersFragment : Fragment(), FoldersContract.View,
     }
 
     private fun getNextSeqid(): Int {
-        val seqid = SettingsUtils.getFolderSeqid(context) + 1
-        SettingsUtils.setFolderSeqid(context, seqid)
-        return seqid
+        val seqId = SettingsUtils.getFolderSeqid(context) + 1
+        SettingsUtils.setFolderSeqid(context, seqId)
+        return seqId
     }
 }

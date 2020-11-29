@@ -8,7 +8,7 @@ object FilesDatabase {
 
     private const val FOLDERS_SEQID = "folders_seqid"
     private const val STOCKS_ID = "stocks_id"
-    fun insertOneFailsDataList(file: FilesData?) {
+    fun insertOneFailsData(file: FilesData?) {
         if (file == null) return
 
         var realm = Realm.getDefaultInstance()

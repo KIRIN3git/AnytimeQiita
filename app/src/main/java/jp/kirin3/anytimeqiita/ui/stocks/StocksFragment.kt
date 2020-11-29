@@ -21,15 +21,14 @@ import jp.kirin3.anytimeqiita.database.FoldersDatabase
 import jp.kirin3.anytimeqiita.database.StocksDatabase
 import jp.kirin3.anytimeqiita.injection.Injection
 import jp.kirin3.anytimeqiita.model.StocksModel
+import jp.kirin3.anytimeqiita.source.dialog.StocksDialogFragment
+import jp.kirin3.anytimeqiita.source.dialog.StocksDialogParameter
 import jp.kirin3.anytimeqiita.ui.reading.LoginModel
 import jp.kirin3.anytimeqiita.ui.reading.ReadingFragment
-import jp.kirin3.anytimeqiita.util.AlertDialogFragment
-import jp.kirin3.anytimeqiita.util.AlertDialogParameter
 import kirin3.jp.mljanken.util.LogUtils.LOGI
 
 class StocksFragment : Fragment(), StocksContract.View, SwipeRefreshLayout.OnRefreshListener,
-    StocksRecyclerViewHolder.ItemClickListener,
-    AlertDialogFragment.NoticeDialogListener {
+    StocksRecyclerViewHolder.ItemClickListener, StocksDialogFragment.StocksDialogListener {
 
     private lateinit var refreshLayout: SwipeRefreshLayout
     private lateinit var stocksRecyclerView: RecyclerView
@@ -38,11 +37,6 @@ class StocksFragment : Fragment(), StocksContract.View, SwipeRefreshLayout.OnRef
     private var setAdapterFlg: Boolean = false
     private var nowLoadingFlg: Boolean = false
 
-    // ダイアログタップ時の保存データ
-    private var dialogStockId: String? = null
-    private var dialogStockUrl: String? = null
-    private var dialogFoldersNameList: MutableList<String>? = null
-    private var dialogFoldersSeqidList: MutableList<Int>? = null
 
     override lateinit var presenter: StocksContract.Presenter
 
@@ -154,51 +148,15 @@ class StocksFragment : Fragment(), StocksContract.View, SwipeRefreshLayout.OnRef
      * StocksRecyclerViewHolder.ItemClickListener
      */
     override fun onItemClick(stockId: String, url: String) {
-
-//        Toast.makeText(context, "position $position was tapped $title", Toast.LENGTH_SHORT).show()
-        setStocksDialogData(stockId, url)
-        showSelectStocksAlertDialog()
-        //settingPrefectureDialog(context, url, FoldersDatabase.selectFoldersData())
+        showStocksDialog(stockId, url)
     }
 
-    private fun setStocksDialogData(stockId: String, url: String) {
-        dialogStockId = stockId
-        dialogStockUrl = url
-        val folders = FoldersDatabase.selectFoldersData()
-        dialogFoldersNameList = mutableListOf()
-        dialogFoldersSeqidList = mutableListOf()
-        folders?.let {
-            for (folder in folders) {
-                dialogFoldersNameList?.add(folder.name)
-                dialogFoldersSeqidList?.add(folder.seqid)
-            }
-        }
-    }
-
-    override fun onDialogPositiveClick(dialog: DialogFragment) {
+    override fun onReadNowButtonClick(dialog: DialogFragment, url: String?) {
         val params = bundleOf(
-            ReadingFragment.URL_PARAM to dialogStockUrl,
+            ReadingFragment.URL_PARAM to url,
             ReadingFragment.IS_REFRESH_WEBVIEW_PARAM to true
         )
         findNavController().navigate(R.id.bottom_navigation_reading, params)
-    }
-
-    override fun onDialogNegativeClick(dialog: DialogFragment) {
-        TODO("Not yet implemented")
-    }
-
-    override fun onDialogNeutralClick(dialog: DialogFragment) {
-        TODO("Not yet implemented")
-    }
-
-    override fun onDialogListClick(dialog: DialogFragment, which: Int) {
-        var folderSeqid = 0
-        dialogFoldersSeqidList?.let {
-            folderSeqid = it[which]
-        } ?: return
-
-        if (isNotFileInsert(FilesData(folderSeqid, dialogStockId))) return
-        FilesDatabase.insertOneFailsDataList(FilesData(folderSeqid, dialogStockId))
     }
 
     private fun isNotFileInsert(searchFile: FilesData?): Boolean {
@@ -212,14 +170,15 @@ class StocksFragment : Fragment(), StocksContract.View, SwipeRefreshLayout.OnRef
         return false
     }
 
-    private fun showSelectStocksAlertDialog() {
+    private fun showStocksDialog(stockId: String, url: String) {
+
         childFragmentManager.beginTransaction().add(
-            AlertDialogFragment.newInstance(
-                AlertDialogParameter(
-                    title = R.string.message_input_folder_name,
-                    titleBackgroundColor = R.color.orange,
-                    positiveButtonText = R.string.reading,
-                    list = dialogFoldersNameList
+            StocksDialogFragment.newInstance(
+                StocksDialogParameter(
+                    stockId,
+                    url,
+                    FoldersDatabase.selectFoldersData(),
+                    FilesDatabase.selectFailsData()
                 )
             ),
             null

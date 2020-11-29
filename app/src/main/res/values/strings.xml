@@ -13,6 +13,7 @@
     <string name="logout">ログアウト</string>
     <string name="login_success">ログインに成功しました</string>
     <string name="login_fail">ログインに失敗しました</string>
+    <string name="message_add_folder">フォルダに追加しました</string>
 
     <string name="ok">OK</string>
     <string name="ng">NG</string>
@@ -28,4 +29,5 @@
     <string name="word_register">登録</string>
     <string name="word_yes">はい</string>
     <string name="word_no">いいえ</string>
+    <string name="word_read_now">今すぐ読む</string>
 </resources>
