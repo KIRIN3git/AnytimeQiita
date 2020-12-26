@@ -4,6 +4,7 @@ import jp.kirin3.anytimeqiita.source.TasksRepository
 import jp.kirin3.anytimeqiita.source.remote.TasksRemoteDataSource
 import jp.kirin3.anytimeqiita.ui.setting.SettingRepository
 import jp.kirin3.anytimeqiita.ui.stocks.FoldersRepository
+import jp.kirin3.anytimeqiita.ui.stocks.GraphRepository
 import jp.kirin3.anytimeqiita.ui.stocks.StocksRepository
 
 /**
@@ -37,5 +38,9 @@ object Injection {
 
     fun provideSettingRepository(): SettingRepository {
         return SettingRepository.getInstance()
+    }
+
+    fun provideGraphRepository(): GraphRepository {
+        return GraphRepository.getInstance()
     }
 }
