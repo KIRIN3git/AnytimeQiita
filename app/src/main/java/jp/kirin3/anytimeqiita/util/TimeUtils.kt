@@ -2,6 +2,7 @@ package kirin3.jp.mljanken.util
 
 import android.content.Context
 import android.text.format.DateUtils
+import kirin3.jp.mljanken.util.LogUtils.LOGE
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -35,6 +36,7 @@ object TimeUtils {
         try {
             return format.parse(timestamp)
         } catch (ex: ParseException) {
+            LOGE("ParseException")
         }
 
         return null
@@ -77,5 +79,25 @@ object TimeUtils {
         val recycle = StringBuilder()
         val formatter = Formatter(recycle)
         return DateUtils.formatDateRange(context, formatter, time, time, DAY_FLAGS).toString()
+    }
+
+    /**
+     * Date型の時分秒を0クリア
+     */
+    fun getHmsClearDate(date: Date): Date? {
+        val fmt = SimpleDateFormat("yyyy-MM-dd 00:00:00")
+        return parseTimestamp(fmt.format(date))
+    }
+
+    /**
+     * Date型を指定日数分ずらして取得
+     */
+    fun getAdditionDate(addDay: Int): Date {
+        val date = Date()
+        val calendar = Calendar.getInstance()
+        calendar.time = date
+
+        calendar.add(Calendar.DAY_OF_MONTH, addDay)
+        return calendar.time
     }
 }

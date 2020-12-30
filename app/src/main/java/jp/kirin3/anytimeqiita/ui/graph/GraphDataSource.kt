@@ -1,12 +1,10 @@
 package jp.kirin3.anytimeqiita.ui.stocks
 
-import jp.kirin3.anytimeqiita.data.FoldersData
+import jp.kirin3.anytimeqiita.data.ReadingTimeData
 
 interface GraphDataSource {
-    interface LoadTasksCallback {
-
-        fun onFoldersLoaded(stocks: List<FoldersData>)
-
+    interface LoadTaskCallback {
+        fun onGraphLoaded(readingTimeData: ReadingTimeData)
         fun onDataNotAvailable()
     }
 }

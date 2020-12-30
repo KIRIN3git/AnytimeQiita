@@ -45,6 +45,5 @@ object AuthenticatedUserDatabase {
         realm.close()
 
         return user
-
     }
 }

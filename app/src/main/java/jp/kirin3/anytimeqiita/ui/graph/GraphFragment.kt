@@ -14,6 +14,7 @@ import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import com.github.mikephil.charting.formatter.ValueFormatter
 import jp.kirin3.anytimeqiita.R
 import jp.kirin3.anytimeqiita.injection.Injection
+import jp.kirin3.anytimeqiita.ui.record.RecordFragment
 import kirin3.jp.mljanken.util.LogUtils
 
 
@@ -40,6 +41,14 @@ class GraphFragment : Fragment(), GraphContract.View {
         presenter.setGraph()
 
         return root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+
+        arguments?.takeIf { it.containsKey(RecordFragment.VIEW_PAGER_MEMBER_POSITION) }?.apply {
+            getInt(RecordFragment.VIEW_PAGER_MEMBER_POSITION).toString()
+
+        }
     }
 
     override fun showGraph(barData: BarData, xAxis: List<String>) {

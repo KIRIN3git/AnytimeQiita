@@ -14,9 +14,18 @@ import jp.kirin3.anytimeqiita.R
 import jp.kirin3.anytimeqiita.ui.graph.GraphFragment
 import kirin3.jp.mljanken.util.LogUtils.LOGD
 
-private const val NUM_PAGES = 5
+
+enum class ViewPagerMember(val position: Int) {
+    DAYLY(0),
+    WEEKLY(1),
+    MONTHLY(2)
+}
 
 class RecordFragment : Fragment() {
+
+    companion object {
+        public const val VIEW_PAGER_MEMBER_POSITION = "view_pager_member_position"
+    }
 
     private lateinit var recordViewModel: RecordViewModel
 
@@ -29,6 +38,8 @@ class RecordFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         LOGD("")
+
+
         recordViewModel =
             ViewModelProviders.of(this).get(RecordViewModel::class.java)
         val root = inflater.inflate(R.layout.fragment_record, container, false)
@@ -40,7 +51,11 @@ class RecordFragment : Fragment() {
         viewPager.adapter = pagerAdapter
 
         TabLayoutMediator(tabLayout, viewPager) { tab, position ->
-            tab.text = "OBJECT ${(position + 1)}"
+            when (position) {
+                ViewPagerMember.DAYLY.position -> tab.text = "日別"
+                ViewPagerMember.WEEKLY.position -> tab.text = "週別"
+                ViewPagerMember.MONTHLY.position -> tab.text = "月別"
+            }
         }.attach()
 
         return root
@@ -48,14 +63,14 @@ class RecordFragment : Fragment() {
 
     private class ScreenSlidePagerAdapter(fa: Fragment) : FragmentStateAdapter(fa) {
         override fun getItemCount(): Int {
-            return NUM_PAGES
+            return ViewPagerMember.values().size
         }
 
         override fun createFragment(position: Int): Fragment {
-            return when (position) {
-                0 -> GraphFragment()
-                1 -> GraphFragment()
-                else -> GraphFragment()
+            return GraphFragment().apply {
+                arguments = Bundle().apply {
+                    putInt(VIEW_PAGER_MEMBER_POSITION, position)
+                }
             }
         }
     }
