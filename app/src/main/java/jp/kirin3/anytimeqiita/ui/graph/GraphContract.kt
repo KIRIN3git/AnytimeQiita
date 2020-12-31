@@ -14,6 +14,6 @@ interface GraphContract {
     }
 
     interface Presenter : BasePresenter {
-        fun setGraph()
+        fun loadGraph()
     }
 }

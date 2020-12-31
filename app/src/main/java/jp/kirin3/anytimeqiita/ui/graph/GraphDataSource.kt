@@ -7,4 +7,9 @@ interface GraphDataSource {
         fun onGraphLoaded(readingTimeData: ReadingTimeData)
         fun onDataNotAvailable()
     }
+
+    interface LoadTaskListCallback {
+        fun onGraphListLoaded(readingTimeDataList: List<ReadingTimeData>)
+        fun onDataNotAvailable()
+    }
 }

@@ -1,6 +1,7 @@
 package jp.kirin3.anytimeqiita.database
 
 import io.realm.Realm
+import io.realm.Sort
 import io.realm.kotlin.where
 import jp.kirin3.anytimeqiita.data.ReadingTimeData
 import java.util.*
@@ -59,5 +60,20 @@ object ReadingTimeDatabase {
         realm.close()
 
         return readingTimeDataList[0]
+    }
+
+    fun selectReadingTimeDataBetweenDate(fromDate: Date, toDate: Date): List<ReadingTimeData>? {
+
+        var realm = Realm.getDefaultInstance()
+
+        val readingTimeDataResult =
+            realm.where<ReadingTimeData>().between(DATE, fromDate, toDate).findAll()
+                .sort(DATE, Sort.ASCENDING);
+        if (readingTimeDataResult.count() == 0) return null
+        val readingTimeDataList = realm.copyFromRealm(readingTimeDataResult)
+
+        realm.close()
+
+        return readingTimeDataList
     }
 }

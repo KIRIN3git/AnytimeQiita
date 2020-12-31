@@ -38,7 +38,6 @@ class GraphFragment : Fragment(), GraphContract.View {
         )
 
         barChart = root.findViewById(R.id.barChart)
-        presenter.setGraph()
 
         return root
     }
@@ -49,6 +48,8 @@ class GraphFragment : Fragment(), GraphContract.View {
             getInt(RecordFragment.VIEW_PAGER_MEMBER_POSITION).toString()
 
         }
+
+        presenter.loadGraph()
     }
 
     override fun showGraph(barData: BarData, xAxis: List<String>) {

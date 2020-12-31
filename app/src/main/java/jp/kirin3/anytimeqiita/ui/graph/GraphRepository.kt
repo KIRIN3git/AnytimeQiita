@@ -29,10 +29,33 @@ class GraphRepository() : ViewModel(), GraphDataSource {
 
     fun getTodayReadingTime(callback: GraphDataSource.LoadTaskCallback) {
 
-        val today = TimeUtils.getHmsClearDate(Date()) ?: return
+        val todayDate = TimeUtils.getHmsClearDate(Date()) ?: return
 
-        ReadingTimeDatabase.selectReadingTimeDataByDate(today)?.let {
+        ReadingTimeDatabase.selectReadingTimeDataByDate(todayDate)?.let {
             callback.onGraphLoaded(it)
+        } ?: let {
+            callback.onDataNotAvailable()
+        }
+    }
+
+    fun getReadingTimeByDate(date: Date, callback: GraphDataSource.LoadTaskCallback) {
+
+        ReadingTimeDatabase.selectReadingTimeDataByDate(date)?.let {
+            callback.onGraphLoaded(it)
+        } ?: let {
+            callback.onDataNotAvailable()
+        }
+    }
+
+    fun getBetweenReadingTime(
+        dayAgo: Int,
+        callback: GraphDataSource.LoadTaskListCallback
+    ) {
+        val todayDate = TimeUtils.getHmsClearDate(Date()) ?: return
+        val dayAgoDate = TimeUtils.getHmsClearDate(TimeUtils.getAdditionDate(dayAgo)) ?: return
+
+        ReadingTimeDatabase.selectReadingTimeDataBetweenDate(dayAgoDate, todayDate)?.let {
+            callback.onGraphListLoaded(it)
         } ?: let {
             callback.onDataNotAvailable()
         }
@@ -45,7 +68,15 @@ class GraphRepository() : ViewModel(), GraphDataSource {
 
     fun setDemoReadingTime(readingTimeDataList: List<ReadingTimeData>) {
         for (readingTimeData in readingTimeDataList) {
-            ReadingTimeDatabase.insertReadingTimeData(readingTimeData)
+            getReadingTimeByDate(readingTimeData.date, object : GraphDataSource.LoadTaskCallback {
+                override fun onGraphLoaded(readingTimeData: ReadingTimeData) {
+                    //no-op
+                }
+
+                override fun onDataNotAvailable() {
+                    ReadingTimeDatabase.insertReadingTimeData(readingTimeData)
+                }
+            })
         }
     }
 }

@@ -6,7 +6,11 @@ import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.formatter.ValueFormatter
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet
 import jp.kirin3.anytimeqiita.R
+import jp.kirin3.anytimeqiita.data.ReadingTimeData
+import jp.kirin3.anytimeqiita.ui.stocks.GraphDataSource
 import jp.kirin3.anytimeqiita.ui.stocks.GraphRepository
+import kirin3.jp.mljanken.util.LogUtils.LOGI
+import kirin3.jp.mljanken.util.TimeUtils
 
 class GraphPresenter(
     private val graphRepository: GraphRepository,
@@ -20,20 +24,33 @@ class GraphPresenter(
     companion object {
         const val BAR_FORMATTED = "%.0f"
         const val BAR_LABEL = "リーディング時間"
+        const val DAY_AGO = -7
     }
 
-    override fun setGraph() {
-        val xAxis = listOf<String>(
-            "2020/09/01",
-            "2020/09/02",
-            "2020/09/03",
-            "2020/09/05",
-            "2020/09/07",
-            "2020/09/09",
-            "2020/09/10"
-        )
+    override fun loadGraph() {
+        graphRepository.getBetweenReadingTime(
+            DAY_AGO,
+            object : GraphDataSource.LoadTaskListCallback {
+                override fun onGraphListLoaded(readingTimeDataList: List<ReadingTimeData>) {
+                    setBarData(readingTimeDataList)
+                }
 
-        val yAxis = listOf(32f, 58f, 23f, 11f, 0f, 34f, 12f)
+                override fun onDataNotAvailable() {
+                    // no-op
+                }
+            })
+    }
+
+    fun setBarData(readingTimeDataList: List<ReadingTimeData>) {
+
+        var xAxis = mutableListOf<String>()
+        var yAxis = mutableListOf<Float>()
+//
+        for (readingTimeData in readingTimeDataList) {
+            xAxis.add(TimeUtils.getStringFromDate(readingTimeData.date))
+            yAxis.add(readingTimeData.minute.toFloat())
+            LOGI("" + readingTimeData.date + " " + readingTimeData.minute.toFloat())
+        }
 
         //①Entryにデータ格納
         var entryList = mutableListOf<BarEntry>()

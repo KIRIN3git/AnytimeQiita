@@ -44,7 +44,6 @@ class ReadingPresenter(
             )
         }
         graphRepository.setDemoReadingTime(readingTimeList)
-
     }
 }
 

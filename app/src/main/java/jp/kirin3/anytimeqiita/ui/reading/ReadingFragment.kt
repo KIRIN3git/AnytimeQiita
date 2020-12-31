@@ -28,8 +28,8 @@ class ReadingFragment : Fragment(), ReadingContract.View {
 
 
     companion object {
-        val URL_PARAM = "URL"
-        val IS_REFRESH_WEBVIEW_PARAM = "IS_REFRESH"
+        const val URL_PARAM = "URL"
+        const val IS_REFRESH_WEBVIEW_PARAM = "IS_REFRESH"
     }
 
     override fun onCreateView(
@@ -66,7 +66,7 @@ class ReadingFragment : Fragment(), ReadingContract.View {
             }
             getBoolean(IS_REFRESH_WEBVIEW_PARAM)?.let {
                 refreshFlg = it
-                if (it == true) {
+                if (it) {
                     SettingsUtils.setWebViewPosition(context, 0)
                 }
             }
@@ -89,7 +89,7 @@ class ReadingFragment : Fragment(), ReadingContract.View {
 
     private fun getReadingTime(): Int {
         if (startTime == 0L || endTime == 0L) return 0
-        return ((endTime - startTime) / 60 * 1000).toInt()
+        return ((endTime - startTime) / (60 * 1000)).toInt()
     }
 
     override fun onDestroy() {

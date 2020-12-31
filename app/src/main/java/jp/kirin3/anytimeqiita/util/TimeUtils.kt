@@ -42,12 +42,13 @@ object TimeUtils {
         return null
     }
 
+
     /**
-     * Date型 → String変換(YYYY/MM/DD)
+     * Date型 → String変換(MM/DD)
      */
-    fun formatShortDate(context: Context, date: Date): String {
-        val format = android.text.format.DateFormat.getMediumDateFormat(context)
-        return format.format(date).toLowerCase(Locale.JAPAN)
+    fun getStringFromDate(date: Date): String {
+        val df = SimpleDateFormat("MM/dd")
+        return df.format(date)
     }
 
     /**

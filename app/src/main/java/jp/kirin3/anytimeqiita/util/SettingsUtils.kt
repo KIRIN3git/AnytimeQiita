@@ -7,14 +7,14 @@ import kirin3.jp.mljanken.util.LogUtils.LOGD
 
 object SettingsUtils {
 
-    val TAG = "TAG"
+    private const val TAG = "TAG"
 
-    val PREF_SETTING_CODE = "pref_setting_code"
-    val PREF_SETTING_TOKEN = "pref_setting_token"
-    val PREF_SETTING_WEBVIEW_POSITION = "pref_setting_webview_position"
-    val PREF_SETTING_WEBVIEW_URL = "pref_setting_webview_url"
-    val PREF_SETTING_CREATE_FIRST_FOLDERS_FLG = "pref_create_first_folder_flg"
-    val PREF_SETTING_FOLDERS_SEQID = "pref_create_folders_seqid"
+    private const val PREF_SETTING_CODE = "pref_setting_code"
+    private const val PREF_SETTING_TOKEN = "pref_setting_token"
+    private const val PREF_SETTING_WEBVIEW_POSITION = "pref_setting_webview_position"
+    private const val PREF_SETTING_WEBVIEW_URL = "pref_setting_webview_url"
+    private const val PREF_SETTING_CREATE_FIRST_FOLDERS_FLG = "pref_create_first_folder_flg"
+    private const val PREF_SETTING_FOLDERS_SEQID = "pref_create_folders_seqid"
 
     fun setQiitaCode(context: Context, code: String) {
         val sp = PreferenceManager.getDefaultSharedPreferences(context)
@@ -72,7 +72,12 @@ object SettingsUtils {
 
     fun getCreateFirstFoldersFlg(context: Context?): Boolean {
         val sp = PreferenceManager.getDefaultSharedPreferences(context)
-        LOGD("GetPref " + PREF_SETTING_CREATE_FIRST_FOLDERS_FLG + " = " + sp.getBoolean(PREF_SETTING_CREATE_FIRST_FOLDERS_FLG, false))
+        LOGD(
+            "GetPref " + PREF_SETTING_CREATE_FIRST_FOLDERS_FLG + " = " + sp.getBoolean(
+                PREF_SETTING_CREATE_FIRST_FOLDERS_FLG,
+                false
+            )
+        )
         return sp.getBoolean(PREF_SETTING_CREATE_FIRST_FOLDERS_FLG, false)
     }
 
@@ -84,7 +89,12 @@ object SettingsUtils {
 
     fun getFolderSeqid(context: Context?): Int {
         val sp = PreferenceManager.getDefaultSharedPreferences(context)
-        LOGD("GetPref " + PREF_SETTING_FOLDERS_SEQID + " = " + sp.getInt(PREF_SETTING_FOLDERS_SEQID, FoldersRepository.FOLDERS_FIRST_SEQID))
+        LOGD(
+            "GetPref " + PREF_SETTING_FOLDERS_SEQID + " = " + sp.getInt(
+                PREF_SETTING_FOLDERS_SEQID,
+                FoldersRepository.FOLDERS_FIRST_SEQID
+            )
+        )
         return sp.getInt(PREF_SETTING_FOLDERS_SEQID, FoldersRepository.FOLDERS_FIRST_SEQID)
     }
 
