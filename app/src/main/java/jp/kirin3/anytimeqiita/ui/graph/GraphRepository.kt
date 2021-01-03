@@ -48,11 +48,11 @@ class GraphRepository() : ViewModel(), GraphDataSource {
     }
 
     fun getBetweenReadingTime(
-        dayAgo: Int,
+        daysAgo: Int,
         callback: GraphDataSource.LoadTaskListCallback
     ) {
         val todayDate = TimeUtils.getHmsClearDate(Date()) ?: return
-        val dayAgoDate = TimeUtils.getHmsClearDate(TimeUtils.getAdditionDate(dayAgo)) ?: return
+        val dayAgoDate = TimeUtils.getHmsClearDate(TimeUtils.getAdditionDate(daysAgo)) ?: return
 
         ReadingTimeDatabase.selectReadingTimeDataBetweenDate(dayAgoDate, todayDate)?.let {
             callback.onGraphListLoaded(it)

@@ -16,7 +16,7 @@ import kirin3.jp.mljanken.util.LogUtils.LOGD
 
 
 enum class ViewPagerMember(val position: Int) {
-    DAYLY(0),
+    DAILY(0),
     WEEKLY(1),
     MONTHLY(2)
 }
@@ -52,7 +52,7 @@ class RecordFragment : Fragment() {
 
         TabLayoutMediator(tabLayout, viewPager) { tab, position ->
             when (position) {
-                ViewPagerMember.DAYLY.position -> tab.text = "日別"
+                ViewPagerMember.DAILY.position -> tab.text = "日別"
                 ViewPagerMember.WEEKLY.position -> tab.text = "週別"
                 ViewPagerMember.MONTHLY.position -> tab.text = "月別"
             }

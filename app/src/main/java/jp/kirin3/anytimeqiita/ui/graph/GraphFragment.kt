@@ -15,6 +15,7 @@ import com.github.mikephil.charting.formatter.ValueFormatter
 import jp.kirin3.anytimeqiita.R
 import jp.kirin3.anytimeqiita.injection.Injection
 import jp.kirin3.anytimeqiita.ui.record.RecordFragment
+import jp.kirin3.anytimeqiita.ui.record.ViewPagerMember
 import kirin3.jp.mljanken.util.LogUtils
 
 
@@ -22,6 +23,10 @@ class GraphFragment : Fragment(), GraphContract.View {
 
     private lateinit var barChart: BarChart
     override lateinit var presenter: GraphContract.Presenter
+
+    companion object {
+        var viewPagerMember: Int = ViewPagerMember.DAILY.position
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -45,8 +50,7 @@ class GraphFragment : Fragment(), GraphContract.View {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
         arguments?.takeIf { it.containsKey(RecordFragment.VIEW_PAGER_MEMBER_POSITION) }?.apply {
-            getInt(RecordFragment.VIEW_PAGER_MEMBER_POSITION).toString()
-
+            viewPagerMember = getInt(RecordFragment.VIEW_PAGER_MEMBER_POSITION)
         }
 
         presenter.loadGraph()

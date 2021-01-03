@@ -44,7 +44,7 @@ class StocksRecyclerAdapter(
             it.lgtmTextView.text = stocksList.get(position).likes_count.toString()
 
             it.dateTextView.text =
-                TimeUtils.getStringFromDate(stocksList.get(position).updated_at)
+                TimeUtils.getStringMmddFromDate(stocksList.get(position).updated_at)
 
             Picasso.get().load(stocksList.get(position).user!!.profile_image_url)
                 .into(it.iconImageView);
