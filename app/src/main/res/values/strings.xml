@@ -30,4 +30,6 @@
     <string name="word_yes">はい</string>
     <string name="word_no">いいえ</string>
     <string name="word_read_now">今すぐ読む</string>
+    <string name="word_bar_y_formatted">%.0f分</string>
+
 </resources>

@@ -2,6 +2,8 @@ package kirin3.jp.mljanken.util
 
 import android.content.Context
 import android.text.format.DateUtils
+import kirin3.jp.mljanken.util.LogUtils.LOGE
+import kirin3.jp.mljanken.util.LogUtils.LOGI
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -35,17 +37,27 @@ object TimeUtils {
         try {
             return format.parse(timestamp)
         } catch (ex: ParseException) {
+            LOGE("ParseException")
         }
 
         return null
     }
 
+
     /**
-     * Date型 → String変換(YYYY/MM/DD)
+     * Date型 → String変換(MM/DD)
      */
-    fun formatShortDate(context: Context, date: Date): String {
-        val format = android.text.format.DateFormat.getMediumDateFormat(context)
-        return format.format(date).toLowerCase(Locale.JAPAN)
+    fun getStringMmddFromDate(date: Date): String {
+        val df = SimpleDateFormat("MM/dd")
+        return df.format(date)
+    }
+
+    /**
+     * Date型 → String変換(MM/DD)
+     */
+    fun getStringYymmFromDate(date: Date): String {
+        val df = SimpleDateFormat("YYYY/MM")
+        return df.format(date)
     }
 
     /**
@@ -77,5 +89,74 @@ object TimeUtils {
         val recycle = StringBuilder()
         val formatter = Formatter(recycle)
         return DateUtils.formatDateRange(context, formatter, time, time, DAY_FLAGS).toString()
+    }
+
+    /**
+     * Date型の時分秒を0クリア
+     */
+    fun getHmsClearDate(date: Date): Date? {
+        val fmt = SimpleDateFormat("yyyy-MM-dd 00:00:00")
+        return parseTimestamp(fmt.format(date))
+    }
+
+    /**
+     * Date型を指定日数分ずらして取得
+     */
+    fun getAdditionDate(addDay: Int): Date {
+        val date = Date()
+        val calendar = Calendar.getInstance()
+        calendar.time = date
+
+        calendar.add(Calendar.DAY_OF_MONTH, addDay)
+        return calendar.time
+    }
+
+    /**
+     * Date型の曜日を取得
+     *
+     * Calendar.SUNDAY:1
+     * Calendar.MONDAY:2
+     * Calendar.TUESDAY:3
+     * Calendar.WEDNESDAY:4
+     * Calendar.THURSDAY:5
+     * Calendar.FRIDAY:6
+     * Calendar.SATURDAY:7
+     */
+    fun getDayOfTheWeekFromDate(date: Date): Int {
+        val calendar = Calendar.getInstance()
+        calendar.time = date
+        return calendar.get(Calendar.DAY_OF_WEEK)
+    }
+
+    /**
+     * Dateから日付を取得
+     */
+    fun getCalendarDateFromDate(date: Date): Int {
+        val calendar = Calendar.getInstance()
+        calendar.time = date
+        return calendar.get(Calendar.DATE)
+    }
+
+    /**
+     * Dateから月を取得
+     */
+    fun getCalendarMonthFromDate(date: Date): Int {
+        val calendar = Calendar.getInstance()
+        calendar.time = date
+        return calendar.get(Calendar.MONTH)
+    }
+
+    /**
+     * Dateから月の日数を取得
+     * addMonth:月をずらしたい場合に指定
+     */
+    fun getDayOfMonthFromDate(date: Date, addMonth: Int): Int {
+        val calendar = Calendar.getInstance()
+        calendar.time = date
+        calendar.add(Calendar.MONTH, addMonth)
+        val gregorianCalendar: Calendar =
+            GregorianCalendar(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH + 1), 1)
+
+        return gregorianCalendar.getActualMaximum(Calendar.DAY_OF_MONTH)
     }
 }

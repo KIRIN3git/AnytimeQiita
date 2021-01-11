@@ -44,7 +44,7 @@ class StocksRecyclerAdapter(
             it.lgtmTextView.text = stocksList.get(position).likes_count.toString()
 
             it.dateTextView.text =
-                TimeUtils.formatShortDate(context, stocksList.get(position).updated_at)
+                TimeUtils.getStringMmddFromDate(stocksList.get(position).updated_at)
 
             Picasso.get().load(stocksList.get(position).user!!.profile_image_url)
                 .into(it.iconImageView);
@@ -61,7 +61,10 @@ class StocksRecyclerAdapter(
 
         view.setOnClickListener { view ->
             recyclerView?.let {
-                itemClickListener.onItemClick(stocksList[it.getChildAdapterPosition(view)].id, stocksList[it.getChildAdapterPosition(view)].url)
+                itemClickListener.onItemClick(
+                    stocksList[it.getChildAdapterPosition(view)].id,
+                    stocksList[it.getChildAdapterPosition(view)].url
+                )
             }
         }
 
