@@ -3,9 +3,9 @@ package jp.kirin3.anytimeqiita
 import android.app.Application
 import io.realm.Realm
 import io.realm.RealmConfiguration
-import jp.kirin3.anytimeqiita.ui.sample.AppComponent
-import jp.kirin3.anytimeqiita.ui.sample.AppModule
-import jp.kirin3.anytimeqiita.ui.sample.DaggerAppComponent
+import jp.kirin3.anytimeqiita.di.AppComponent
+import jp.kirin3.anytimeqiita.di.AppModule
+import jp.kirin3.anytimeqiita.di.DaggerAppComponent
 import jp.kirin3.anytimeqiita.util.log.ExtDebugTree
 import timber.log.Timber
 

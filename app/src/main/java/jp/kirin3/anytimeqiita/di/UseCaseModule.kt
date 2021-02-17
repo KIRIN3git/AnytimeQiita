@@ -1,7 +1,8 @@
-package jp.kirin3.anytimeqiita.ui.sample
+package jp.kirin3.anytimeqiita.di
 
 import dagger.Module
 import dagger.Provides
+import jp.kirin3.anytimeqiita.usecase.SampleUseCase
 import jp.kirin3.anytimeqiita.usecase.impl.SampleUseCaseImpl
 
 @Module

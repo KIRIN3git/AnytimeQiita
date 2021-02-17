@@ -14,7 +14,7 @@ import jp.kirin3.anytimeqiita.R
 import jp.kirin3.anytimeqiita.injection.Injection
 import jp.kirin3.anytimeqiita.model.AuthenticatedUserModel
 import jp.kirin3.anytimeqiita.ui.reading.LoginModel
-import jp.kirin3.anytimeqiita.ui.sample.SampleActivity
+import jp.kirin3.anytimeqiita.ui.sample.view.SampleActivity
 import kirin3.jp.mljanken.util.LogUtils.LOGI
 
 class SettingFragment : Fragment(), SettingContract.View {

@@ -1,6 +1,5 @@
-package jp.kirin3.anytimeqiita.ui.sample
+package jp.kirin3.anytimeqiita.di
 
-import jp.kirin3.anytimeqiita.api.ApiClient
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit

@@ -1,6 +1,7 @@
-package jp.kirin3.anytimeqiita.ui.sample
+package jp.kirin3.anytimeqiita.di
 
 import dagger.Component
+import jp.kirin3.anytimeqiita.ui.sample.view.SampleFragment
 import javax.inject.Singleton
 
 @Singleton

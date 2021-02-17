@@ -1,4 +1,4 @@
-package jp.kirin3.anytimeqiita.ui.sample
+package jp.kirin3.anytimeqiita.usecase
 
 import io.reactivex.Single
 import jp.kirin3.anytimeqiita.data.entity.SampleDataResult

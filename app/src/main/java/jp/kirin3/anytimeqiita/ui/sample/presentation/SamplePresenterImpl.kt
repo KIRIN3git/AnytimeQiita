@@ -1,8 +1,10 @@
-package jp.kirin3.anytimeqiita.ui.sample
+package jp.kirin3.anytimeqiita.ui.sample.presentation
 
 import io.reactivex.Scheduler
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
+import jp.kirin3.anytimeqiita.ui.sample.view.SampleContract
+import jp.kirin3.anytimeqiita.usecase.SampleUseCase
 import kirin3.jp.mljanken.util.LogUtils.LOGE
 import javax.inject.Inject
 import javax.inject.Named

@@ -1,4 +1,4 @@
-package jp.kirin3.anytimeqiita.ui.sample
+package jp.kirin3.anytimeqiita.ui.sample.view
 
 import android.content.Context
 import android.os.Bundle
@@ -9,6 +9,8 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import jp.kirin3.anytimeqiita.MainApplication
 import jp.kirin3.anytimeqiita.R
+import jp.kirin3.anytimeqiita.ui.sample.presentation.SamplePresenter
+import jp.kirin3.anytimeqiita.ui.sample.presentation.SampleViewModel
 import kirin3.jp.mljanken.util.LogUtils.LOGD
 import kirin3.jp.mljanken.util.LogUtils.LOGI
 import kotlinx.android.synthetic.main.fragment_sample.*

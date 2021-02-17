@@ -1,4 +1,4 @@
-package jp.kirin3.anytimeqiita.ui.sample
+package jp.kirin3.anytimeqiita.di
 
 import retrofit2.Retrofit
 

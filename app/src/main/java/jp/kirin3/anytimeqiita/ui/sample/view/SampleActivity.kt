@@ -1,4 +1,4 @@
-package jp.kirin3.anytimeqiita.ui.sample
+package jp.kirin3.anytimeqiita.ui.sample.view
 
 import android.os.Bundle
 import jp.kirin3.anytimeqiita.BaseActivity

@@ -3,8 +3,8 @@ package jp.kirin3.anytimeqiita.usecase.impl
 import android.content.Context
 import io.reactivex.Single
 import jp.kirin3.anytimeqiita.data.entity.SampleDataResult
-import jp.kirin3.anytimeqiita.ui.sample.SampleRepository
-import jp.kirin3.anytimeqiita.ui.sample.SampleUseCase
+import jp.kirin3.anytimeqiita.infra.repository.SampleRepository
+import jp.kirin3.anytimeqiita.usecase.SampleUseCase
 import kirin3.jp.mljanken.util.LogUtils.LOGI
 import kirin3.jp.mljanken.util.SettingsUtils
 import javax.inject.Inject
