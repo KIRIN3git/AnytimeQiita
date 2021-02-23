@@ -3,6 +3,9 @@ package jp.kirin3.anytimeqiita
 import android.app.Application
 import io.realm.Realm
 import io.realm.RealmConfiguration
+import jp.kirin3.anytimeqiita.di.AppComponent
+import jp.kirin3.anytimeqiita.di.AppModule
+import jp.kirin3.anytimeqiita.di.DaggerAppComponent
 import jp.kirin3.anytimeqiita.util.log.ExtDebugTree
 import timber.log.Timber
 
@@ -14,6 +17,7 @@ class MainApplication : Application() {
         const val QIITA_CLIENT_ID = "2d2713c9fb8be9972a134670392dc4df46388034"
         const val QIITA_CLIENT_SEACRET = "972fe1788f23c93aa8546d1b99ab1c0677596f53"
 
+        lateinit var component: AppComponent private set
     }
 
     override fun onCreate() {
@@ -22,6 +26,7 @@ class MainApplication : Application() {
             Timber.plant(ExtDebugTree(LOG_TAG))
         }
 
+        // Realmセットアップ
         Realm.init(this)
         val config = RealmConfiguration
             .Builder()
@@ -30,5 +35,11 @@ class MainApplication : Application() {
             .name("myrealm.realm").build()
         // インスタンスの生成
         Realm.setDefaultConfiguration(config)
+
+
+        // Dagger2セットアップ
+        component = DaggerAppComponent.builder()
+            .appModule(AppModule(this))
+            .build()
     }
 }

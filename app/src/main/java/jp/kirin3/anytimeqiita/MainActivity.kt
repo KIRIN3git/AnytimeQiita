@@ -1,7 +1,6 @@
 package jp.kirin3.anytimeqiita
 
 import android.os.Bundle
-import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -9,7 +8,6 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import io.realm.Realm
-import jp.kirin3.anytimeqiita.model.AuthenticatedUserModel
 import jp.kirin3.anytimeqiita.ui.reading.LoginModel
 import jp.kirin3.anytimeqiita.ui.setting.SettingFragment
 import kirin3.jp.mljanken.util.LogUtils.LOGI
@@ -38,6 +36,10 @@ class MainActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         LOGI("")
+
+
+
+
 
         setContentView(R.layout.activity_main)
         val bottomNavigationView: BottomNavigationView =
