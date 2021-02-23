@@ -28,7 +28,6 @@ class SampleFragment : Fragment(), SampleContract {
         }
     }
 
-
 //    lateinit var application: Application
 
     @Inject
@@ -46,7 +45,6 @@ class SampleFragment : Fragment(), SampleContract {
         val viewModel = ViewModelProviders.of(nonNullActivity).get(SampleViewModel::class.java)
 
         MainApplication.component.inject(this)
-
 
 //        this.component.inject(this)  // <-- これ
 

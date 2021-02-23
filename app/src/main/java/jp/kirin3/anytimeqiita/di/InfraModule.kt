@@ -7,7 +7,6 @@ import javax.inject.Singleton
 
 @Module
 class InfraModule {
-
     @Singleton
     @Provides
     fun provideSampleRepository(): SampleRepository {
