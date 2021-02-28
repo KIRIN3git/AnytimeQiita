@@ -14,6 +14,6 @@ interface ReadingContract {
     interface Presenter : BasePresenter {
         fun addReadingTimeToDb(readingTime: Int)
 
-        fun setRandamDemoReadingTime()
+        fun setRandomDemoReadingTime()
     }
 }

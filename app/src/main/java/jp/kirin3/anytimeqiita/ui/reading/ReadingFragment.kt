@@ -42,6 +42,9 @@ class ReadingFragment : Fragment(), ReadingContract.View {
             ViewModelProviders.of(this).get(LoginModel::class.java)
         val root = inflater.inflate(R.layout.fragment_reading, container, false)
 
+        readingWebView = root.findViewById(R.id.fragment_reading_webview)
+        fragmentReadingProgress = root.findViewById(R.id.fragment_reading_progress)
+
         presenter = ReadingPresenter(
             Injection.provideGraphRepository(),
             this
@@ -49,12 +52,10 @@ class ReadingFragment : Fragment(), ReadingContract.View {
 
         getParam()
 
-        readingWebView = root.findViewById(R.id.fragment_reading_webview)
-        fragmentReadingProgress = root.findViewById(R.id.fragment_reading_progress)
         setWebView()
 
         // DEMO DATA
-        presenter.setRandamDemoReadingTime()
+        //presenter.setRandomDemoReadingTime()
 
         return root
     }
@@ -66,7 +67,7 @@ class ReadingFragment : Fragment(), ReadingContract.View {
             }
             getBoolean(IS_REFRESH_WEBVIEW_PARAM)?.let {
                 refreshFlg = it
-                if (it) {
+                if (refreshFlg) {
                     SettingsUtils.setWebViewPosition(context, 0)
                 }
             }
@@ -85,6 +86,9 @@ class ReadingFragment : Fragment(), ReadingContract.View {
         endTime = System.currentTimeMillis()
         val readingTime = getReadingTime()
         presenter.addReadingTimeToDb(readingTime)
+
+        SettingsUtils.setWebViewPosition(context, readingWebView.scrollY)
+
     }
 
     private fun getReadingTime(): Int {
@@ -95,7 +99,6 @@ class ReadingFragment : Fragment(), ReadingContract.View {
     override fun onDestroy() {
         super.onDestroy()
         //ReadingViewModel.webViewPosition = readingWebView.getScrollY()
-        SettingsUtils.setWebViewPosition(context, readingWebView.getScrollY())
     }
 
     fun setWebView() {
@@ -117,6 +120,6 @@ class ReadingFragment : Fragment(), ReadingContract.View {
         }
 
         readingWebView.loadUrl(SettingsUtils.getWebViewUrl(context))
-        readingWebView.setScrollY(SettingsUtils.getWebViewPosition(context))
+        readingWebView.scrollY = SettingsUtils.getWebViewPosition(context)
     }
 }

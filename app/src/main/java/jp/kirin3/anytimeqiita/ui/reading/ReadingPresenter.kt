@@ -33,7 +33,7 @@ class ReadingPresenter(
         })
     }
 
-    override fun setRandamDemoReadingTime() {
+    override fun setRandomDemoReadingTime() {
         val randomDataNum = 400
         val randomMinute = 300
         val readingTimeList = mutableListOf<ReadingTimeData>()
