@@ -2,6 +2,7 @@ package jp.kirin3.anytimeqiita.ui.reading
 
 import android.graphics.Bitmap
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,8 +18,8 @@ import kirin3.jp.mljanken.util.SettingsUtils
 
 class ReadingFragment : Fragment(), ReadingContract.View {
 
-    private lateinit var loginModel: LoginModel
-    private lateinit var readingWebView: WebView
+    private lateinit var viewModel: ReadingViewModel
+    private lateinit var webView: WebView
     private lateinit var fragmentReadingProgress: ProgressBar
     private var refreshFlg: Boolean = false
     private var startTime: Long = 0
@@ -38,11 +39,11 @@ class ReadingFragment : Fragment(), ReadingContract.View {
         savedInstanceState: Bundle?
     ): View? {
         LOGI("")
-        loginModel =
-            ViewModelProviders.of(this).get(LoginModel::class.java)
+        viewModel =
+            ViewModelProviders.of(this).get(ReadingViewModel::class.java)
         val root = inflater.inflate(R.layout.fragment_reading, container, false)
 
-        readingWebView = root.findViewById(R.id.fragment_reading_webview)
+        webView = root.findViewById(R.id.fragment_reading_webview)
         fragmentReadingProgress = root.findViewById(R.id.fragment_reading_progress)
 
         presenter = ReadingPresenter(
@@ -87,7 +88,7 @@ class ReadingFragment : Fragment(), ReadingContract.View {
         val readingTime = getReadingTime()
         presenter.addReadingTimeToDb(readingTime)
 
-        SettingsUtils.setWebViewPosition(context, readingWebView.scrollY)
+        SettingsUtils.setWebViewPosition(context, webView.scrollY)
 
     }
 
@@ -102,7 +103,7 @@ class ReadingFragment : Fragment(), ReadingContract.View {
     }
 
     fun setWebView() {
-        readingWebView.webViewClient = object : WebViewClient() {
+        webView.webViewClient = object : WebViewClient() {
 
             // ローディング開始時に呼ばれる
             override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
@@ -119,7 +120,10 @@ class ReadingFragment : Fragment(), ReadingContract.View {
             }
         }
 
-        readingWebView.loadUrl(SettingsUtils.getWebViewUrl(context))
-        readingWebView.scrollY = SettingsUtils.getWebViewPosition(context)
+        webView.loadUrl(SettingsUtils.getWebViewUrl(context))
+        webView.scrollY = SettingsUtils.getWebViewPosition(context)
+
+//        val pathFilename = context?.filesDir?.path.toString() + "savedWebPage.mht"
+//        webView.saveWebArchive(pathFilename)
     }
 }
