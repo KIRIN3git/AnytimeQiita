@@ -12,24 +12,25 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import jp.kirin3.anytimeqiita.R
 import jp.kirin3.anytimeqiita.injection.Injection
+import jp.kirin3.anytimeqiita.util.ReadingFileHelper
 import kirin3.jp.mljanken.util.LogUtils.LOGI
 import kirin3.jp.mljanken.util.SettingsUtils
 
 class ReadingFragment : Fragment(), ReadingContract.View {
 
-    private lateinit var loginModel: LoginModel
-    private lateinit var readingWebView: WebView
+    private lateinit var viewModel: ReadingViewModel
+    private lateinit var webView: WebView
     private lateinit var fragmentReadingProgress: ProgressBar
-    private var refreshFlg: Boolean = false
-    private var startTime: Long = 0
-    private var endTime: Long = 0
+    private var isRefresh: Boolean = false
 
     override lateinit var presenter: ReadingContract.Presenter
 
+    var isLoadNewWebView = false
 
     companion object {
         const val URL_PARAM = "URL"
         const val IS_REFRESH_WEBVIEW_PARAM = "IS_REFRESH"
+        const val READER_FILE_PREFIX = "file://"
     }
 
     override fun onCreateView(
@@ -38,9 +39,13 @@ class ReadingFragment : Fragment(), ReadingContract.View {
         savedInstanceState: Bundle?
     ): View? {
         LOGI("")
-        loginModel =
-            ViewModelProviders.of(this).get(LoginModel::class.java)
+
+        viewModel =
+            ViewModelProviders.of(this).get(ReadingViewModel::class.java)
         val root = inflater.inflate(R.layout.fragment_reading, container, false)
+
+        webView = root.findViewById(R.id.fragment_reading_webview)
+        fragmentReadingProgress = root.findViewById(R.id.fragment_reading_progress)
 
         presenter = ReadingPresenter(
             Injection.provideGraphRepository(),
@@ -48,13 +53,12 @@ class ReadingFragment : Fragment(), ReadingContract.View {
         )
 
         getParam()
-
-        readingWebView = root.findViewById(R.id.fragment_reading_webview)
-        fragmentReadingProgress = root.findViewById(R.id.fragment_reading_progress)
         setWebView()
 
+        presenter.setup(viewModel)
+
         // DEMO DATA
-        presenter.setRandamDemoReadingTime()
+        //presenter.setRandomDemoReadingTime()
 
         return root
     }
@@ -63,10 +67,11 @@ class ReadingFragment : Fragment(), ReadingContract.View {
         arguments?.run {
             getString(URL_PARAM)?.let {
                 SettingsUtils.setWebViewUrl(context, it)
+                isLoadNewWebView = true
             }
             getBoolean(IS_REFRESH_WEBVIEW_PARAM)?.let {
-                refreshFlg = it
-                if (it) {
+                isRefresh = it
+                if (isRefresh) {
                     SettingsUtils.setWebViewPosition(context, 0)
                 }
             }
@@ -76,31 +81,19 @@ class ReadingFragment : Fragment(), ReadingContract.View {
     override fun onResume() {
         super.onResume()
         LOGI("")
-        startTime = System.currentTimeMillis()
+        presenter.setStartTime()
     }
 
     override fun onPause() {
         super.onPause()
         LOGI("")
-        endTime = System.currentTimeMillis()
-        val readingTime = getReadingTime()
-        presenter.addReadingTimeToDb(readingTime)
-    }
-
-    private fun getReadingTime(): Int {
-        if (startTime == 0L || endTime == 0L) return 0
-        return ((endTime - startTime) / (60 * 1000)).toInt()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        //ReadingViewModel.webViewPosition = readingWebView.getScrollY()
-        SettingsUtils.setWebViewPosition(context, readingWebView.getScrollY())
+        presenter.setEndTime()
+        presenter.setReadingTime()
+        SettingsUtils.setWebViewPosition(context, webView.scrollY)
     }
 
     fun setWebView() {
-        readingWebView.webViewClient = object : WebViewClient() {
-
+        webView.webViewClient = object : WebViewClient() {
             // ローディング開始時に呼ばれる
             override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
                 super.onPageStarted(view, url, favicon)
@@ -113,10 +106,19 @@ class ReadingFragment : Fragment(), ReadingContract.View {
                 super.onPageFinished(view, url)
                 // ProgressBarの非表示
                 fragmentReadingProgress.visibility = View.GONE
+                webView.saveWebArchive(ReadingFileHelper.getReadingFileFullPath(context))
             }
         }
 
-        readingWebView.loadUrl(SettingsUtils.getWebViewUrl(context))
-        readingWebView.setScrollY(SettingsUtils.getWebViewPosition(context))
+        val hasFile = ReadingFileHelper.hasReadingFile(context)
+        if (!hasFile && !isLoadNewWebView) return
+
+        if (isLoadNewWebView) {
+            webView.loadUrl(SettingsUtils.getWebViewUrl(context))
+        } else {
+            webView.loadUrl(READER_FILE_PREFIX + ReadingFileHelper.getReadingFileFullPath(context))
+        }
+        webView.scrollY = SettingsUtils.getWebViewPosition(context)
+
     }
 }

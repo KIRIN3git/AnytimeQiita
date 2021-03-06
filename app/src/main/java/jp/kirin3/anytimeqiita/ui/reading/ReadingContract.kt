@@ -12,8 +12,17 @@ interface ReadingContract {
     }
 
     interface Presenter : BasePresenter {
-        fun addReadingTimeToDb(readingTime: Int)
 
-        fun setRandamDemoReadingTime()
+        fun setup(viewModel: ReadingViewModel)
+
+        fun setRandomDemoReadingTime()
+
+//        fun hasReadingFile(dir: String, file: String): Boolean
+
+        fun setStartTime()
+
+        fun setEndTime()
+
+        fun setReadingTime()
     }
 }

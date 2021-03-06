@@ -10,6 +10,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import io.realm.Realm
 import jp.kirin3.anytimeqiita.ui.reading.LoginModel
 import jp.kirin3.anytimeqiita.ui.setting.SettingFragment
+import jp.kirin3.anytimeqiita.util.ReadingFileHelper
 import kirin3.jp.mljanken.util.LogUtils.LOGI
 
 class MainActivity : BaseActivity() {
@@ -37,10 +38,6 @@ class MainActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         LOGI("")
 
-
-
-
-
         setContentView(R.layout.activity_main)
         val bottomNavigationView: BottomNavigationView =
             findViewById(R.id.activity_main_bottom_navigation_view)
@@ -56,12 +53,16 @@ class MainActivity : BaseActivity() {
             isLoginMode = true
         }
 
-        // セッティング画面に遷移
-        // 標準がセッティング画面だが、パラメータを渡すので明示的にしている
-        val params = bundleOf(
-            SettingFragment.IS_LOGIN_MODE to isLoginMode
-        )
-        navController.navigate(R.id.bottom_navigation_setting, params)
+        if (isLoginMode) {
+            // セッティング画面に遷移
+            // 標準がセッティング画面だが、パラメータを渡すので明示的にしている
+            val params = bundleOf(
+                SettingFragment.IS_LOGIN_MODE to isLoginMode
+            )
+            navController.navigate(R.id.bottom_navigation_setting, params)
+        } else if (ReadingFileHelper.hasReadingFile(this)) {
+//            navController.navigate(R.id.bottom_navigation_reading)
+        }
     }
 
 
