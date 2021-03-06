@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/bottom_navigation_setting">
+    app:startDestination="@+id/bottom_navigation_reading">
 
     <fragment
         android:id="@+id/bottom_navigation_record"
