@@ -10,6 +10,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import jp.kirin3.anytimeqiita.BaseFragment
 import jp.kirin3.anytimeqiita.R
 import jp.kirin3.anytimeqiita.injection.Injection
 import jp.kirin3.anytimeqiita.model.AuthenticatedUserModel
@@ -17,7 +18,7 @@ import jp.kirin3.anytimeqiita.ui.reading.LoginModel
 import jp.kirin3.anytimeqiita.ui.sample.view.SampleActivity
 import kirin3.jp.mljanken.util.LogUtils.LOGI
 
-class SettingFragment : Fragment(), SettingContract.View {
+class SettingFragment : BaseFragment(), SettingContract.View {
 
     private lateinit var loginButton: Button
     private lateinit var sampleButton: Button
@@ -41,6 +42,8 @@ class SettingFragment : Fragment(), SettingContract.View {
         savedInstanceState: Bundle?
     ): View? {
         val root = inflater.inflate(R.layout.fragment_setting, container, false)
+
+        setTitle(getString(R.string.title_setting))
 
         presenter = SettingPresenter(
             Injection.provideSettingRepository(),

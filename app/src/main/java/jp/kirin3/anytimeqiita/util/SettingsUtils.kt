@@ -12,6 +12,7 @@ object SettingsUtils {
     private const val PREF_SETTING_CODE = "pref_setting_code"
     private const val PREF_SETTING_TOKEN = "pref_setting_token"
     private const val PREF_SETTING_WEBVIEW_POSITION = "pref_setting_webview_position"
+    private const val PREF_SETTING_WEBVIEW_TITLE = "pref_setting_webview_title"
     private const val PREF_SETTING_WEBVIEW_URL = "pref_setting_webview_url"
     private const val PREF_SETTING_CREATE_FIRST_FOLDERS_FLG = "pref_create_first_folder_flg"
     private const val PREF_SETTING_FOLDERS_SEQID = "pref_create_folders_seqid"
@@ -50,6 +51,18 @@ object SettingsUtils {
         val sp = PreferenceManager.getDefaultSharedPreferences(context)
         LOGD("GetPref position = " + sp.getInt(PREF_SETTING_WEBVIEW_POSITION, 0))
         return sp.getInt(PREF_SETTING_WEBVIEW_POSITION, 0)
+    }
+
+    fun setWebViewTitle(context: Context?, title: String) {
+        val sp = PreferenceManager.getDefaultSharedPreferences(context)
+        sp.edit().putString(PREF_SETTING_WEBVIEW_TITLE, title).apply()
+        LOGD("SetPref title = " + title)
+    }
+
+    fun getWebViewTitle(context: Context?): String? {
+        val sp = PreferenceManager.getDefaultSharedPreferences(context)
+        LOGD("GetPref url = " + sp.getString(PREF_SETTING_WEBVIEW_TITLE, null))
+        return sp.getString(PREF_SETTING_WEBVIEW_TITLE, null)
     }
 
     fun setWebViewUrl(context: Context?, url: String) {

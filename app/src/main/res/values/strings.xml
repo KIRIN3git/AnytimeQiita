@@ -31,5 +31,7 @@
     <string name="word_no">いいえ</string>
     <string name="word_read_now">今すぐ読む</string>
     <string name="word_bar_y_formatted">%.0f分</string>
+    <string name="word_reload">reload</string>
+    <string name="word_go_to_top">go_to_top</string>
 
 </resources>

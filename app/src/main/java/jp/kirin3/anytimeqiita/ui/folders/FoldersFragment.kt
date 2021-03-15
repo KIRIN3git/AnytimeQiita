@@ -10,9 +10,9 @@ import android.widget.EditText
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
-import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import jp.kirin3.anytimeqiita.BaseFragment
 import jp.kirin3.anytimeqiita.R
 import jp.kirin3.anytimeqiita.data.FoldersData
 import jp.kirin3.anytimeqiita.data.StocksResponseData
@@ -29,7 +29,7 @@ import jp.kirin3.anytimeqiita.util.DialogUtils
 import kirin3.jp.mljanken.util.LogUtils.LOGI
 import kirin3.jp.mljanken.util.SettingsUtils
 
-class FoldersFragment : Fragment(), FoldersContract.View,
+class FoldersFragment : BaseFragment(), FoldersContract.View,
     FoldersRecyclerViewHolder.ItemClickListener, FoldersDialogFragment.FolderDialogListener {
 
     private lateinit var foldersRecyclerView: RecyclerView
@@ -53,6 +53,8 @@ class FoldersFragment : Fragment(), FoldersContract.View,
     ): View? {
 
         if (context == null) return null
+
+        setTitle(getString(R.string.title_folder))
 
         val root = inflater.inflate(R.layout.fragment_folders, container, false)
 

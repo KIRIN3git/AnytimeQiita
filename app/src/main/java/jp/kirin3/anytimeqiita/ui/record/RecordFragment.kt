@@ -10,6 +10,7 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
+import jp.kirin3.anytimeqiita.BaseFragment
 import jp.kirin3.anytimeqiita.R
 import jp.kirin3.anytimeqiita.ui.graph.GraphFragment
 import kirin3.jp.mljanken.util.LogUtils.LOGD
@@ -21,7 +22,7 @@ enum class ViewPagerMember(val position: Int) {
     MONTHLY(2)
 }
 
-class RecordFragment : Fragment() {
+class RecordFragment : BaseFragment() {
 
     companion object {
         public const val VIEW_PAGER_MEMBER_POSITION = "view_pager_member_position"
@@ -39,6 +40,7 @@ class RecordFragment : Fragment() {
     ): View? {
         LOGD("")
 
+        setTitle(getString(R.string.title_record))
 
         recordViewModel =
             ViewModelProviders.of(this).get(RecordViewModel::class.java)
