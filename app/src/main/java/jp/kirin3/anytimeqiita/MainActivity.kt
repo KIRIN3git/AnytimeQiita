@@ -10,6 +10,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import io.realm.Realm
 import jp.kirin3.anytimeqiita.ui.reading.LoginModel
 import jp.kirin3.anytimeqiita.ui.setting.SettingFragment
+import jp.kirin3.anytimeqiita.util.ReadingFileHelper
 import kirin3.jp.mljanken.util.LogUtils.LOGI
 import kirin3.jp.mljanken.util.SettingsUtils
 
@@ -37,6 +38,10 @@ class MainActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         LOGI("")
+
+
+
+
 
         setContentView(R.layout.activity_main)
         val bottomNavigationView: BottomNavigationView =
