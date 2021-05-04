@@ -6,13 +6,11 @@ import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.os.bundleOf
 import androidx.fragment.app.DialogFragment
-import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import jp.kirin3.anytimeqiita.BaseFragment
 import jp.kirin3.anytimeqiita.R
 import jp.kirin3.anytimeqiita.data.FilesData
 import jp.kirin3.anytimeqiita.data.StocksResponseData
@@ -20,14 +18,15 @@ import jp.kirin3.anytimeqiita.database.FilesDatabase
 import jp.kirin3.anytimeqiita.database.FoldersDatabase
 import jp.kirin3.anytimeqiita.database.StocksDatabase
 import jp.kirin3.anytimeqiita.injection.Injection
+import jp.kirin3.anytimeqiita.manager.TransitionManager
 import jp.kirin3.anytimeqiita.model.StocksModel
 import jp.kirin3.anytimeqiita.source.dialog.StocksDialogFragment
 import jp.kirin3.anytimeqiita.source.dialog.StocksDialogParameter
 import jp.kirin3.anytimeqiita.ui.reading.LoginModel
-import jp.kirin3.anytimeqiita.ui.reading.ReadingFragment
 import kirin3.jp.mljanken.util.LogUtils.LOGI
+import kirin3.jp.mljanken.util.SettingsUtils
 
-class StocksFragment : Fragment(), StocksContract.View, SwipeRefreshLayout.OnRefreshListener,
+class StocksFragment : BaseFragment(), StocksContract.View, SwipeRefreshLayout.OnRefreshListener,
     StocksRecyclerViewHolder.ItemClickListener, StocksDialogFragment.StocksDialogListener {
 
     private lateinit var refreshLayout: SwipeRefreshLayout
@@ -36,7 +35,6 @@ class StocksFragment : Fragment(), StocksContract.View, SwipeRefreshLayout.OnRef
     private lateinit var viewManager: RecyclerView.LayoutManager
     private var setAdapterFlg: Boolean = false
     private var nowLoadingFlg: Boolean = false
-
 
     override lateinit var presenter: StocksContract.Presenter
 
@@ -47,6 +45,8 @@ class StocksFragment : Fragment(), StocksContract.View, SwipeRefreshLayout.OnRef
     ): View? {
 
         if (context == null) return null
+
+        setTitle(getString(R.string.title_stock))
 
         val root = inflater.inflate(R.layout.fragment_stocks, container, false)
 
@@ -136,7 +136,7 @@ class StocksFragment : Fragment(), StocksContract.View, SwipeRefreshLayout.OnRef
             super.onScrollStateChanged(recyclerView, newState)
 
             if (!recyclerView.canScrollVertically(1)) {
-                if (nowLoadingFlg == false) {
+                if (!nowLoadingFlg) {
                     nowLoadingFlg = true
                     presenter.readNextStocks(stocksRecyclerView)
                 }
@@ -147,16 +147,24 @@ class StocksFragment : Fragment(), StocksContract.View, SwipeRefreshLayout.OnRef
     /**
      * StocksRecyclerViewHolder.ItemClickListener
      */
-    override fun onItemClick(stockId: String, url: String) {
-        showStocksDialog(stockId, url)
+    override fun onItemClick(stockId: String, title: String, url: String) {
+        showStocksDialog(stockId, title, url)
     }
 
-    override fun onReadNowButtonClick(dialog: DialogFragment, url: String?) {
-        val params = bundleOf(
-            ReadingFragment.URL_PARAM to url,
-            ReadingFragment.IS_REFRESH_WEBVIEW_PARAM to true
-        )
-        findNavController().navigate(R.id.bottom_navigation_reading, params)
+    override fun onReadNowButtonClick(dialog: DialogFragment, title: String?, url: String?) {
+        if (title == null || url == null) return
+
+        if (SettingsUtils.getUseExternalBrowser(context)) {
+            TransitionManager.transitionExternalBrowser(this, activity?.packageManager, url)
+        } else {
+            TransitionManager.transitionReadingFragment(
+                this,
+                activity?.packageManager,
+                title,
+                url,
+                true
+            )
+        }
     }
 
     private fun isNotFileInsert(searchFile: FilesData?): Boolean {
@@ -170,12 +178,13 @@ class StocksFragment : Fragment(), StocksContract.View, SwipeRefreshLayout.OnRef
         return false
     }
 
-    private fun showStocksDialog(stockId: String, url: String) {
+    private fun showStocksDialog(stockId: String, title: String, url: String) {
 
         childFragmentManager.beginTransaction().add(
             StocksDialogFragment.newInstance(
                 StocksDialogParameter(
                     stockId,
+                    title,
                     url,
                     FoldersDatabase.selectFoldersData(),
                     FilesDatabase.selectFailsData()

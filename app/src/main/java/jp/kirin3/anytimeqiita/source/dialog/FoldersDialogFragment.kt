@@ -58,7 +58,7 @@ class FoldersDialogFragment : DialogFragment(), StocksRecyclerViewHolder.ItemCli
         )
     }
 
-    internal var listener: FolderDialogListener? = null
+    private var listener: FolderDialogListener? = null
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -122,19 +122,15 @@ class FoldersDialogFragment : DialogFragment(), StocksRecyclerViewHolder.ItemCli
     /**
      * 本来はここにリストのクリック処理を追記するが今回はロングタップ使用のためインターセプトのリスナーを使用
      */
-    override fun onItemClick(stockId: String, url: String) {
-//        val params = bundleOf(
-//            ReadingFragment.URL_PARAM to url,
-//            ReadingFragment.IS_REFRESH_WEBVIEW_PARAM to true
-//        )
-//        findNavController().navigate(R.id.bottom_navigation_reading, params)
-//        dismissAllowingStateLoss()
+    override fun onItemClick(stockId: String, title: String, url: String) {
+        // no-op
     }
 
     override fun onItemClick(view: View, position: Int) {
         paramStocksList?.let {
 
             val params = bundleOf(
+                ReadingFragment.TITLE_PARAM to it[position].title,
                 ReadingFragment.URL_PARAM to it[position].url,
                 ReadingFragment.IS_REFRESH_WEBVIEW_PARAM to true
             )

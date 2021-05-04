@@ -1,23 +1,19 @@
 package jp.kirin3.anytimeqiita.ui.setting
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.LinearLayout
-import android.widget.TextView
-import android.widget.Toast
-import androidx.fragment.app.Fragment
+import android.widget.*
+import jp.kirin3.anytimeqiita.BaseFragment
 import jp.kirin3.anytimeqiita.R
 import jp.kirin3.anytimeqiita.injection.Injection
 import jp.kirin3.anytimeqiita.model.AuthenticatedUserModel
 import jp.kirin3.anytimeqiita.ui.reading.LoginModel
-import jp.kirin3.anytimeqiita.ui.sample.view.SampleActivity
 import kirin3.jp.mljanken.util.LogUtils.LOGI
+import kirin3.jp.mljanken.util.SettingsUtils
 
-class SettingFragment : Fragment(), SettingContract.View {
+class SettingFragment : BaseFragment(), SettingContract.View {
 
     private lateinit var loginButton: Button
     private lateinit var sampleButton: Button
@@ -25,6 +21,7 @@ class SettingFragment : Fragment(), SettingContract.View {
     private lateinit var notLoggedLayout: LinearLayout
     private lateinit var loggingLayout: LinearLayout
     private lateinit var userIdTextView: TextView
+    private lateinit var useExternalToggleButton: ToggleButton
     private var isLoginMode: Boolean = false
     override lateinit var presenter: SettingContract.Presenter
 
@@ -42,6 +39,8 @@ class SettingFragment : Fragment(), SettingContract.View {
     ): View? {
         val root = inflater.inflate(R.layout.fragment_setting, container, false)
 
+        setTitle(getString(R.string.title_setting))
+
         presenter = SettingPresenter(
             Injection.provideSettingRepository(),
             this
@@ -58,17 +57,26 @@ class SettingFragment : Fragment(), SettingContract.View {
             LoginModel.accessQiitaLoginPage(context)
         }
 
-        sampleButton = root.findViewById(R.id.sample_button)
-        sampleButton.setOnClickListener {
-            val intent = Intent(context, SampleActivity::class.java)
-            startActivity(intent)
-
-        }
+//        sampleButton = root.findViewById(R.id.sample_button)
+//        sampleButton.setOnClickListener {
+//            val intent = Intent(context, SampleActivity::class.java)
+//            startActivity(intent)
+//        }
 
         logoutButton = root.findViewById(R.id.fragment_setting_logout_button)
         logoutButton.setOnClickListener {
             LoginModel.clearAllLoginInfo(context)
             setLoggingModeInterface(false)
+        }
+
+        useExternalToggleButton = root.findViewById(R.id.use_external_browser_toggle_button)
+        useExternalToggleButton.isChecked = SettingsUtils.getUseExternalBrowser(context)
+        useExternalToggleButton.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                SettingsUtils.setUseExternalBrowser(context, true)
+            } else {
+                SettingsUtils.setUseExternalBrowser(context, false)
+            }
         }
 
         if (isLoginMode) {

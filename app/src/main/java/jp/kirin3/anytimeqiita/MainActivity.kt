@@ -10,8 +10,9 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import io.realm.Realm
 import jp.kirin3.anytimeqiita.ui.reading.LoginModel
 import jp.kirin3.anytimeqiita.ui.setting.SettingFragment
-import jp.kirin3.anytimeqiita.util.ReadingFileHelper
 import kirin3.jp.mljanken.util.LogUtils.LOGI
+import kirin3.jp.mljanken.util.SettingsUtils
+import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : BaseActivity() {
 
@@ -38,10 +39,27 @@ class MainActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         LOGI("")
 
+
+
+
+
         setContentView(R.layout.activity_main)
         val bottomNavigationView: BottomNavigationView =
             findViewById(R.id.activity_main_bottom_navigation_view)
         val navController = findNavController(R.id.activity_main_navigation_host_fragment)
+
+        activity_main_navigation_host_fragment
+//        val appBarConfiguration = AppBarConfiguration(
+//            setOf(
+//                R.id.bottom_navigation_setting,
+//                R.id.bottom_navigation_reading,
+//                R.id.bottom_navigation_folder,
+//                R.id.bottom_navigation_record,
+//                R.id.bottom_navigation_stocks
+//            )
+//        )
+//        setupActionBarWithNavController(navController, appBarConfiguration)
+
         //BottomNavigatinにNavigationを設定
         bottomNavigationView.setupWithNavController(navController)
 
@@ -51,17 +69,15 @@ class MainActivity : BaseActivity() {
         if (LoginModel.hasLoginParamInPreference(intent)) {
             LoginModel.setQiitaLoginCode(intent, this)
             isLoginMode = true
-        }
 
-        if (isLoginMode) {
-            // セッティング画面に遷移
-            // 標準がセッティング画面だが、パラメータを渡すので明示的にしている
             val params = bundleOf(
                 SettingFragment.IS_LOGIN_MODE to isLoginMode
             )
             navController.navigate(R.id.bottom_navigation_setting, params)
-        } else if (ReadingFileHelper.hasReadingFile(this)) {
-//            navController.navigate(R.id.bottom_navigation_reading)
+        } else if (SettingsUtils.getWebViewUrl(this).isNullOrEmpty()) {
+            navController.navigate(R.id.bottom_navigation_setting, null)
+        } else if (SettingsUtils.getUseExternalBrowser(this)) {
+            navController.navigate(R.id.bottom_navigation_folder, null)
         }
     }
 

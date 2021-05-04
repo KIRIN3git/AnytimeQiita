@@ -20,6 +20,7 @@
     <string name="reading">読む</string>
     <string name="message_input_folder_name">フォルダ名を入力</string>
     <string name="message_can_i_delete_the_folder">フォルダを削除しても良いですか？</string>
+    <string name="message_use_external_browser">外部ブラウザを使う</string>
     <string name="main_text">詳細はこちらから閲覧できます。</string>
     <string name="link_text">こちら</string>
     <string name="change_name">名前変更</string>
@@ -31,5 +32,7 @@
     <string name="word_no">いいえ</string>
     <string name="word_read_now">今すぐ読む</string>
     <string name="word_bar_y_formatted">%.0f分</string>
+    <string name="word_reload">reload</string>
+    <string name="word_go_to_top">go_to_top</string>
 
 </resources>

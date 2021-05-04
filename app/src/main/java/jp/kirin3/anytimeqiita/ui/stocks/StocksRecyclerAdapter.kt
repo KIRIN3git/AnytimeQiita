@@ -63,6 +63,7 @@ class StocksRecyclerAdapter(
             recyclerView?.let {
                 itemClickListener.onItemClick(
                     stocksList[it.getChildAdapterPosition(view)].id,
+                    stocksList[it.getChildAdapterPosition(view)].title,
                     stocksList[it.getChildAdapterPosition(view)].url
                 )
             }
