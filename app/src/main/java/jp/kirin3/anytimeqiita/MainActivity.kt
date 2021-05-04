@@ -10,9 +10,9 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import io.realm.Realm
 import jp.kirin3.anytimeqiita.ui.reading.LoginModel
 import jp.kirin3.anytimeqiita.ui.setting.SettingFragment
-import jp.kirin3.anytimeqiita.util.ReadingFileHelper
 import kirin3.jp.mljanken.util.LogUtils.LOGI
 import kirin3.jp.mljanken.util.SettingsUtils
+import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : BaseActivity() {
 
@@ -48,6 +48,7 @@ class MainActivity : BaseActivity() {
             findViewById(R.id.activity_main_bottom_navigation_view)
         val navController = findNavController(R.id.activity_main_navigation_host_fragment)
 
+        activity_main_navigation_host_fragment
 //        val appBarConfiguration = AppBarConfiguration(
 //            setOf(
 //                R.id.bottom_navigation_setting,
@@ -75,6 +76,8 @@ class MainActivity : BaseActivity() {
             navController.navigate(R.id.bottom_navigation_setting, params)
         } else if (SettingsUtils.getWebViewUrl(this).isNullOrEmpty()) {
             navController.navigate(R.id.bottom_navigation_setting, null)
+        } else if (SettingsUtils.getUseExternalBrowser(this)) {
+            navController.navigate(R.id.bottom_navigation_folder, null)
         }
     }
 
