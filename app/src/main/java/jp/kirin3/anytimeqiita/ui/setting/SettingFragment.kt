@@ -1,6 +1,5 @@
 package jp.kirin3.anytimeqiita.ui.setting
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -14,7 +13,6 @@ import jp.kirin3.anytimeqiita.R
 import jp.kirin3.anytimeqiita.injection.Injection
 import jp.kirin3.anytimeqiita.model.AuthenticatedUserModel
 import jp.kirin3.anytimeqiita.ui.reading.LoginModel
-import jp.kirin3.anytimeqiita.ui.sample.view.SampleActivity
 import kirin3.jp.mljanken.util.LogUtils.LOGI
 
 class SettingFragment : Fragment(), SettingContract.View {
@@ -58,12 +56,12 @@ class SettingFragment : Fragment(), SettingContract.View {
             LoginModel.accessQiitaLoginPage(context)
         }
 
-        sampleButton = root.findViewById(R.id.sample_button)
-        sampleButton.setOnClickListener {
-            val intent = Intent(context, SampleActivity::class.java)
-            startActivity(intent)
-
-        }
+//        sampleButton = root.findViewById(R.id.sample_button)
+//        sampleButton.setOnClickListener {
+//            val intent = Intent(context, SampleActivity::class.java)
+//            startActivity(intent)
+//
+//        }
 
         logoutButton = root.findViewById(R.id.fragment_setting_logout_button)
         logoutButton.setOnClickListener {

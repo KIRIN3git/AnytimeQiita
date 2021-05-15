@@ -13,8 +13,9 @@ object SettingsUtils {
     private const val PREF_SETTING_TOKEN = "pref_setting_token"
     private const val PREF_SETTING_WEBVIEW_POSITION = "pref_setting_webview_position"
     private const val PREF_SETTING_WEBVIEW_URL = "pref_setting_webview_url"
-    private const val PREF_SETTING_CREATE_FIRST_FOLDERS_FLG = "pref_create_first_folder_flg"
-    private const val PREF_SETTING_FOLDERS_SEQID = "pref_create_folders_seqid"
+    private const val PREF_CREATE_FIRST_FOLDERS_FLG = "pref_create_first_folder_flg"
+    private const val PREF_CREATE_FOLDERS_SEQID = "pref_create_folders_seqid"
+    private const val PREF_STOCK_PAGE_COUNT = "pref_stock_page_count"
 
     fun setQiitaCode(context: Context, code: String) {
         val sp = PreferenceManager.getDefaultSharedPreferences(context)
@@ -66,38 +67,54 @@ object SettingsUtils {
 
     fun setCreateFirstFoldersFlg(context: Context?, flg: Boolean) {
         val sp = PreferenceManager.getDefaultSharedPreferences(context)
-        sp.edit().putBoolean(PREF_SETTING_CREATE_FIRST_FOLDERS_FLG, flg).apply()
-        LOGD("SetPref " + PREF_SETTING_CREATE_FIRST_FOLDERS_FLG + " = " + flg)
+        sp.edit().putBoolean(PREF_CREATE_FIRST_FOLDERS_FLG, flg).apply()
+        LOGD("SetPref " + PREF_CREATE_FIRST_FOLDERS_FLG + " = " + flg)
     }
 
     fun getCreateFirstFoldersFlg(context: Context?): Boolean {
         val sp = PreferenceManager.getDefaultSharedPreferences(context)
         LOGD(
-            "GetPref " + PREF_SETTING_CREATE_FIRST_FOLDERS_FLG + " = " + sp.getBoolean(
-                PREF_SETTING_CREATE_FIRST_FOLDERS_FLG,
+            "GetPref " + PREF_CREATE_FIRST_FOLDERS_FLG + " = " + sp.getBoolean(
+                PREF_CREATE_FIRST_FOLDERS_FLG,
                 false
             )
         )
-        return sp.getBoolean(PREF_SETTING_CREATE_FIRST_FOLDERS_FLG, false)
+        return sp.getBoolean(PREF_CREATE_FIRST_FOLDERS_FLG, false)
     }
 
     fun setFolderSeqid(context: Context?, seqid: Int) {
         val sp = PreferenceManager.getDefaultSharedPreferences(context)
-        sp.edit().putInt(PREF_SETTING_FOLDERS_SEQID, seqid).apply()
-        LOGD("SetPref " + PREF_SETTING_FOLDERS_SEQID + " = " + seqid)
+        sp.edit().putInt(PREF_CREATE_FOLDERS_SEQID, seqid).apply()
+        LOGD("SetPref $PREF_CREATE_FOLDERS_SEQID = $seqid")
     }
 
     fun getFolderSeqid(context: Context?): Int {
         val sp = PreferenceManager.getDefaultSharedPreferences(context)
         LOGD(
-            "GetPref " + PREF_SETTING_FOLDERS_SEQID + " = " + sp.getInt(
-                PREF_SETTING_FOLDERS_SEQID,
+            "GetPref $PREF_CREATE_FOLDERS_SEQID = " + sp.getInt(
+                PREF_CREATE_FOLDERS_SEQID,
                 FoldersRepository.FOLDERS_FIRST_SEQID
             )
         )
-        return sp.getInt(PREF_SETTING_FOLDERS_SEQID, FoldersRepository.FOLDERS_FIRST_SEQID)
+        return sp.getInt(PREF_CREATE_FOLDERS_SEQID, FoldersRepository.FOLDERS_FIRST_SEQID)
     }
 
+    fun setStockPageCount(context: Context?, pageCount: Int) {
+        val sp = PreferenceManager.getDefaultSharedPreferences(context)
+        sp.edit().putInt(PREF_STOCK_PAGE_COUNT, pageCount).apply()
+        LOGD("SetPref $PREF_CREATE_FOLDERS_SEQID = $pageCount")
+    }
+
+    fun getStockPageCount(context: Context?): Int {
+        val sp = PreferenceManager.getDefaultSharedPreferences(context)
+        LOGD(
+            "GetPref $PREF_STOCK_PAGE_COUNT = " + sp.getInt(
+                PREF_STOCK_PAGE_COUNT,
+                1
+            )
+        )
+        return sp.getInt(PREF_STOCK_PAGE_COUNT, 1)
+    }
 
 }
 

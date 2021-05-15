@@ -70,7 +70,6 @@ class FoldersRepository() : ViewModel(), FoldersDataSource {
     }
 
 
-
     fun getStocksFromAny(callback: FoldersDataSource.LoadTasksCallback) {
 
 //        getStocksFromDB()?.let {
@@ -112,7 +111,7 @@ class FoldersRepository() : ViewModel(), FoldersDataSource {
             pageCount.toString(),
             READ_COUNT.toString(),
             object : ApiClient.StocksApiCallback {
-                override fun onTasksLoaded(responseData: List<StocksResponseData>) {
+                override fun onFetchSuccess(responseData: List<StocksResponseData>) {
 
                     // データをデータベース保存
                     StocksDatabase.insertStocksDataList(responseData)
@@ -131,7 +130,12 @@ class FoldersRepository() : ViewModel(), FoldersDataSource {
 //                        latch.apply { countDown() }
                 }
 
-                override fun onDataNotAvailable() {
+
+                override fun onFetchNoData() {
+                    TODO("Not yet implemented")
+                }
+
+                override fun onFetchFailure() {
                     LogUtils.LOGI("Fail fetchAuthenticatedUser")
 
                     StocksDatabase.deleteStocksDataList()

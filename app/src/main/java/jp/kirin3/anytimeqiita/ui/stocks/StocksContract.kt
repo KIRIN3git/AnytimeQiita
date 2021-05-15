@@ -1,5 +1,6 @@
 package jp.kirin3.anytimeqiita.ui.stocks
 
+import android.content.Context
 import androidx.recyclerview.widget.RecyclerView
 import jp.kirin3.anytimeqiita.data.StocksResponseData
 import jp.kirin3.anytimeqiita.presenter.BasePresenter
@@ -21,8 +22,11 @@ interface StocksContract {
 
     interface Presenter : BasePresenter {
 
-        fun startLoggedIn(stocksRecyclerView: RecyclerView)
-        fun readNextStocks(stocksRecyclerView: RecyclerView)
+        fun getFirstStocks(stocksRecyclerView: RecyclerView)
+        fun getNextStocks(stocksRecyclerView: RecyclerView)
+        fun getAllStocks(context: Context, isFirst: Boolean)
+
+        fun handleGettingStockList(context: Context?)
 
         fun startNotLoggedIn()
 

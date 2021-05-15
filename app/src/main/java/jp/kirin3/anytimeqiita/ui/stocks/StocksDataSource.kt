@@ -5,8 +5,8 @@ import jp.kirin3.anytimeqiita.data.StocksResponseData
 interface StocksDataSource {
     interface LoadTasksCallback {
 
-        fun onStocksLoaded(stocks: List<StocksResponseData>)
-
-        fun onDataNotAvailable()
+        fun onLoadSuccess(stocks: List<StocksResponseData>)
+        fun onLoadNoData()
+        fun onLoadFailure()
     }
 }

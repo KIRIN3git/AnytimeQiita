@@ -1,5 +1,6 @@
 package jp.kirin3.anytimeqiita.ui.stocks
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import jp.kirin3.anytimeqiita.api.ApiClient
 import jp.kirin3.anytimeqiita.data.StocksResponseData
@@ -7,19 +8,17 @@ import jp.kirin3.anytimeqiita.database.StocksDatabase
 import jp.kirin3.anytimeqiita.model.AuthenticatedUserModel
 import kirin3.jp.mljanken.util.LogUtils
 import kirin3.jp.mljanken.util.LogUtils.LOGD
+import kirin3.jp.mljanken.util.SettingsUtils
 
 class StocksRepository() : ViewModel(), StocksDataSource {
 
     private var cacheStocksList: MutableList<StocksResponseData>? = null
     private var pageCount = 1
-    private val READ_COUNT = 30
 
     companion object {
-
+        // 一度で取得するstock数
+        private const val ONE_TIME_STOCKS_NUM = 100
         private var INSTANCE: StocksRepository? = null
-
-
-
 
         /**
          * Returns the single instance of this class, creating it if necessary.
@@ -44,26 +43,27 @@ class StocksRepository() : ViewModel(), StocksDataSource {
         }
     }
 
-
-    fun getStocksFromAny(callback: StocksDataSource.LoadTasksCallback) {
-
+    fun getStocksFromDbOrApi(callback: StocksDataSource.LoadTasksCallback) {
         getStocksFromDB()?.let {
-            callback.onStocksLoaded(it)
-        } ?: let {
-            loadStocks(
-                AuthenticatedUserModel.getAuthenticatedUserIdFromCache(),
-                false,
-                object : StocksDataSource.LoadTasksCallback {
-                    override fun onStocksLoaded(stocks: List<StocksResponseData>) {
-                        callback.onStocksLoaded(stocks)
-                    }
-
-                    override fun onDataNotAvailable() {
-                        callback.onDataNotAvailable()
-                    }
+            // DBから取得可能
+            callback.onLoadSuccess(it)
+        } ?: loadStockList(
+            AuthenticatedUserModel.getAuthenticatedUserIdFromCache(),
+            false,
+            object : StocksDataSource.LoadTasksCallback {
+                override fun onLoadSuccess(stocks: List<StocksResponseData>) {
+                    callback.onLoadSuccess(stocks)
                 }
-            )
-        }
+
+                override fun onLoadNoData() {
+                    callback.onLoadNoData()
+                }
+
+                override fun onLoadFailure() {
+                    callback.onLoadFailure()
+                }
+            }
+        )
     }
 
 
@@ -83,49 +83,55 @@ class StocksRepository() : ViewModel(), StocksDataSource {
     fun getStocksFromDB(): List<StocksResponseData>? {
         StocksDatabase.selectStocksData()?.let {
             //            setStocksToCache(it)
-            setPageCount(it)
+//            setPageCount(it)
             return it
         }
         return null
     }
 
-    fun setPageCount(stocks: List<StocksResponseData>) {
-        pageCount = stocks.size + 1
+    fun setPageCount(context: Context, pageCount: Int) {
+        SettingsUtils.setStockPageCount(context, pageCount)
     }
 
-    fun loadStocks(
+    fun getPageCount(context: Context) {
+        SettingsUtils.getStockPageCount(context)
+    }
+
+    /**
+     * QiitaAPIからストック情報を取得
+     * 取得後はDBに保存を行う
+     */
+    fun loadStockList(
         userId: String?,
-        loadFirst:Boolean,
+        loadFirst: Boolean,
         callback: StocksDataSource.LoadTasksCallback
     ) {
 
-        LOGD("pageCount " + pageCount + " READ_COUNT " + READ_COUNT)
+        LOGD("pageCount $pageCount READ_COUNT $ONE_TIME_STOCKS_NUM")
 
-        if(loadFirst == true){
+        if (loadFirst) {
             pageCount = 1
         }
         ApiClient.fetchStocks(
             userId,
             pageCount.toString(),
-            READ_COUNT.toString(),
+            ONE_TIME_STOCKS_NUM.toString(),
             object : ApiClient.StocksApiCallback {
-                override fun onTasksLoaded(responseData: List<StocksResponseData>) {
-
+                override fun onFetchSuccess(responseData: List<StocksResponseData>) {
                     // データをデータベース保存
                     StocksDatabase.insertStocksDataList(responseData)
-
                     pageCount++
-
-                    callback.onStocksLoaded(responseData)
+                    callback.onLoadSuccess(responseData)
                 }
 
-                override fun onDataNotAvailable() {
+                override fun onFetchNoData() {
+                    callback.onLoadNoData()
+                }
+
+                override fun onFetchFailure() {
                     LogUtils.LOGI("Fail fetchAuthenticatedUser")
-
                     StocksDatabase.deleteStocksDataList()
-
-                    callback.onDataNotAvailable()
-//                        latch.apply { countDown() }
+                    callback.onLoadFailure()
                 }
             })
     }
