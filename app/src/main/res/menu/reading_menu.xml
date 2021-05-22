@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/menu_reload"
+        android:icon="@drawable/ic_reload_white"
+        android:title="@string/word_reload"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/menu_go_to_top"
+        android:icon="@drawable/ic_go_to_top_white"
+        android:title="@string/word_go_to_top"
+        app:showAsAction="ifRoom" />
+</menu>

@@ -24,6 +24,7 @@ class StocksDialogFragment : DialogFragment(), FoldersRecyclerViewHolder.ItemCli
     private lateinit var viewManager: RecyclerView.LayoutManager
     private var paramFoldersList: List<FoldersData>? = null
     private var paramStocksId: String? = null
+    private var paramStocksTitle: String? = null
     private var paramStocksUrl: String? = null
 
     companion object {
@@ -41,6 +42,7 @@ class StocksDialogFragment : DialogFragment(), FoldersRecyclerViewHolder.ItemCli
     interface StocksDialogListener {
         fun onReadNowButtonClick(
             dialog: DialogFragment,
+            title: String?,
             url: String?
         )
     }
@@ -66,6 +68,7 @@ class StocksDialogFragment : DialogFragment(), FoldersRecyclerViewHolder.ItemCli
 
             paramFoldersList = parameter.foldersList
             paramStocksId = parameter.stockId
+            paramStocksTitle = parameter.stockTitle
             paramStocksUrl = parameter.stockUrl
 
             dialog.setContentView(R.layout.fragment_stocks_dialog)
@@ -95,6 +98,7 @@ class StocksDialogFragment : DialogFragment(), FoldersRecyclerViewHolder.ItemCli
 
                 listener?.onReadNowButtonClick(
                     this,
+                    paramStocksTitle,
                     paramStocksUrl
                 )
                 dismissAllowingStateLoss()
@@ -148,6 +152,7 @@ class StocksDialogFragment : DialogFragment(), FoldersRecyclerViewHolder.ItemCli
 @Parcelize
 data class StocksDialogParameter(
     val stockId: String? = null,
+    val stockTitle: String? = null,
     val stockUrl: String? = null,
     val foldersList: List<FoldersData>? = null,
     val filesList: List<FilesData>? = null

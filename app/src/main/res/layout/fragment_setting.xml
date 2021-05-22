@@ -1,22 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <Button
-        android:id="@+id/sample_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:background="@color/lightRed"
-        android:text="テスト"
-        android:textAlignment="center"
-        android:textColor="@color/lightPink"
-        android:textSize="20sp"
-        android:textStyle="bold" />
+    <!--    <Button-->
+    <!--        android:id="@+id/sample_button"-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:layout_marginStart="8dp"-->
+    <!--        android:layout_marginTop="8dp"-->
+    <!--        android:layout_marginEnd="8dp"-->
+    <!--        android:background="@color/lightRed"-->
+    <!--        android:text="テスト"-->
+    <!--        android:textAlignment="center"-->
+    <!--        android:textColor="@color/lightPink"-->
+    <!--        android:textSize="20sp"-->
+    <!--        android:textStyle="bold" />-->
 
     <LinearLayout
         android:id="@+id/fragment_setting_not_logged_in_layout"
@@ -40,24 +41,24 @@
             android:textStyle="bold" />
 
 
-
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/fragment_setting_logged_in_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:orientation="vertical"
-        android:visibility="gone">
+        android:visibility="gone"
+        tools:visibility="visible">
 
         <Button
             android:id="@+id/fragment_setting_logout_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/lightBlue2"
+            android:background="@color/lightYellow3"
             android:text="@string/logout"
             android:textAlignment="center"
             android:textColor="@color/lightPink"
@@ -82,6 +83,26 @@
                 android:text="USER_ID"
                 android:textSize="24dp" />
         </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginEnd="8dp"
+            android:text="@string/message_use_external_browser"
+            android:textSize="24sp" />
+
+        <ToggleButton
+            android:id="@+id/use_external_browser_toggle_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
 
     </LinearLayout>
 
