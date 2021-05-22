@@ -1,110 +1,60 @@
 package jp.kirin3.anytimeqiita.ui.stocks
 
-import android.content.Context
-import androidx.recyclerview.widget.RecyclerView
+import io.reactivex.Scheduler
 import jp.kirin3.anytimeqiita.data.StocksResponseData
 import jp.kirin3.anytimeqiita.model.AuthenticatedUserModel
+import jp.kirin3.anytimeqiita.model.StocksModel
+import jp.kirin3.anytimeqiita.usecase.StocksUseCase
+import kirin3.jp.mljanken.util.LogUtils.LOGE
+import javax.inject.Inject
+import javax.inject.Named
 
-class StocksPresenter(
-    private val stocksRepository: StocksRepository,
-    private val stocksView: StocksContract.View
+class StocksPresenter @Inject constructor(
+    private val stocksUseCase: StocksUseCase,
+    @Named("ui") private val uiScheduler: Scheduler
 ) : StocksContract.Presenter {
 
-    // FragmentのpresenterにViewを設定
-    init {
-        stocksView.presenter = this
+    private lateinit var view: StocksContract.View
+    private lateinit var viewModel: StocksModel
+
+    override fun setup(view: StocksContract.View, viewModel: StocksModel) {
+        this.view = view
+        this.viewModel = viewModel
     }
 
-    override fun getFirstStocks(stocksRecyclerView: RecyclerView) {
-        stocksView.setRefreshingIntarface(true)
-        stocksRepository.getStocksFromDbOrApi(object : StocksDataSource.LoadTasksCallback {
-            override fun onLoadSuccess(stocks: List<StocksResponseData>) {
-                stocksView.setRefreshingIntarface(false)
-                stocksView.showStocksRecyclerView(stocks)
-            }
-
-            override fun onLoadNoData() {
-                stocksView.setRefreshingIntarface(false)
-            }
-
-            override fun onLoadFailure() {
-                stocksView.setRefreshingIntarface(false)
-            }
-        })
+    override fun handleGettingFirstStockList() {
+        if (stocksUseCase.isLoadCompleted()) {
+            view.showStocksRecyclerView(stocksUseCase.getStockListFromDb())
+        } else {
+            resetStocks()
+            getStockList()
+        }
     }
 
-    override fun getNextStocks(stocksRecyclerView: RecyclerView) {
-        stocksView.setRefreshingIntarface(true)
+    private fun resetStocks() {
+        stocksUseCase.resetStockListFromDb()
+        stocksUseCase.resetPageCount()
+    }
 
-        stocksRepository.loadStockList(
-            AuthenticatedUserModel.getAuthenticatedUserIdFromCache(),
-            false,
+    private fun getStockList() {
+        view.setRefreshingInterface(true)
+        stocksUseCase.loadStockList(AuthenticatedUserModel.getAuthenticatedUserIdFromCache(),
             object : StocksDataSource.LoadTasksCallback {
-                override fun onLoadSuccess(stocks: List<StocksResponseData>) {
-                    stocksView.setRefreshingIntarface(false)
-                    stocksView.showStocksRecyclerView(stocks)
-                }
-
-                override fun onLoadNoData() {
-                    stocksView.setRefreshingIntarface(false)
-                }
-
-                override fun onLoadFailure() {
-                    stocksView.setRefreshingIntarface(false)
-                }
-            })
-    }
-
-    override fun handleGettingStockList(context: Context?) {
-        if (context == null) return
-        stocksView.setRefreshingIntarface(true)
-        getAllStocks(context, true)
-    }
-
-    override fun getAllStocks(context: Context, isFirst: Boolean) {
-        stocksRepository.loadStockList(
-            AuthenticatedUserModel.getAuthenticatedUserIdFromCache(),
-            isFirst,
-            object : StocksDataSource.LoadTasksCallback {
-                override fun onLoadSuccess(stocks: List<StocksResponseData>) {
-                    getAllStocks(context, false)
+                override fun onLoadSuccess(stockList: List<StocksResponseData>) {
+                    view.showStocksRecyclerView(stockList)
+                    getStockList()
                 }
 
                 // 取得データがない = 全データ取得完了
                 override fun onLoadNoData() {
-                    stocksRepository.getStocksFromDB().let {
-                        stocksView.setRefreshingIntarface(false)
-                        stocksView.showStocksRecyclerView(it)
-                    }
+                    view.setRefreshingInterface(false)
                 }
 
                 override fun onLoadFailure() {
-                    stocksView.setRefreshingIntarface(false)
+                    LOGE("onLoadFailure")
+                    view.setRefreshingInterface(false)
                 }
             })
-    }
-
-
-    override fun refreshLayout(
-    ) {
-//        stocksRepository.loadStockList(
-//            AuthenticatedUserModel.getAuthenticatedUserIdFromCache(),
-//            true,
-//            object : StocksDataSource.LoadTasksCallback {
-//                override fun onLoadSuccess(stocks: List<StocksResponseData>) {
-//                    stocksView.showStocksRecyclerView(stocks)
-//                    stocksView.setRefreshingIntarface(false)
-//                }
-//
-//                override fun onLoadNoData() {
-//                    TODO("Not yet implemented")
-//                }
-//
-//                override fun onLoadFailure() {
-//                    stocksView.setRefreshingIntarface(false)
-//                }
-//            })
-
     }
 
     override fun startNotLoggedIn() {

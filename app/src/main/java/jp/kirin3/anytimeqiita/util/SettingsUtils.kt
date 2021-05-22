@@ -16,6 +16,7 @@ object SettingsUtils {
     private const val PREF_CREATE_FIRST_FOLDERS_FLG = "pref_create_first_folder_flg"
     private const val PREF_CREATE_FOLDERS_SEQID = "pref_create_folders_seqid"
     private const val PREF_STOCK_PAGE_COUNT = "pref_stock_page_count"
+    private const val PREF_STOCK_LOADING_COMPLETED = "pref_stock_loading_completed"
 
     fun setQiitaCode(context: Context, code: String) {
         val sp = PreferenceManager.getDefaultSharedPreferences(context)
@@ -102,7 +103,7 @@ object SettingsUtils {
     fun setStockPageCount(context: Context?, pageCount: Int) {
         val sp = PreferenceManager.getDefaultSharedPreferences(context)
         sp.edit().putInt(PREF_STOCK_PAGE_COUNT, pageCount).apply()
-        LOGD("SetPref $PREF_CREATE_FOLDERS_SEQID = $pageCount")
+        LOGD("SetPref $PREF_STOCK_PAGE_COUNT = $pageCount")
     }
 
     fun getStockPageCount(context: Context?): Int {
@@ -114,6 +115,23 @@ object SettingsUtils {
             )
         )
         return sp.getInt(PREF_STOCK_PAGE_COUNT, 1)
+    }
+
+    fun setStockLoadingCompleted(context: Context?, isCompleted: Boolean) {
+        val sp = PreferenceManager.getDefaultSharedPreferences(context)
+        sp.edit().putBoolean(PREF_STOCK_LOADING_COMPLETED, isCompleted).apply()
+        LOGD("SetPref $PREF_STOCK_LOADING_COMPLETED = $isCompleted")
+    }
+
+    fun getStockLoadingCompleted(context: Context?): Boolean {
+        val sp = PreferenceManager.getDefaultSharedPreferences(context)
+        LOGD(
+            "GetPref $PREF_STOCK_LOADING_COMPLETED = " + sp.getBoolean(
+                PREF_STOCK_LOADING_COMPLETED,
+                false
+            )
+        )
+        return sp.getBoolean(PREF_STOCK_LOADING_COMPLETED, false)
     }
 
 }

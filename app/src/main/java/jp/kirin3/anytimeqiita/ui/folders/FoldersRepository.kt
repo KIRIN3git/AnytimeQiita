@@ -32,7 +32,6 @@ class FoldersRepository() : ViewModel(), FoldersDataSource {
 
         private var INSTANCE: FoldersRepository? = null
 
-
         fun getInstance(): FoldersRepository {
             return INSTANCE ?: FoldersRepository()
                 .apply { INSTANCE = this }
