@@ -16,12 +16,14 @@ interface StocksContract {
             stocks: List<StocksResponseData>?
         )
 
+        fun clearStocksRecyclerView()
         fun setRefreshingInterface(flg: Boolean)
     }
 
     interface Presenter : BasePresenter {
         fun setup(view: View, viewModel: StocksModel)
-        fun handleGettingFirstStockList()
+        fun handleGettingStockListFromAny()
+        fun handleGettingStockListFromApi()
         fun startNotLoggedIn()
         fun getMessage()
         fun processAccessToken(code: String)

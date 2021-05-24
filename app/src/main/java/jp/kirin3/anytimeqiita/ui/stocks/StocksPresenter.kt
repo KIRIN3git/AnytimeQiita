@@ -22,13 +22,18 @@ class StocksPresenter @Inject constructor(
         this.viewModel = viewModel
     }
 
-    override fun handleGettingFirstStockList() {
+    override fun handleGettingStockListFromAny() {
         if (stocksUseCase.isLoadCompleted()) {
             view.showStocksRecyclerView(stocksUseCase.getStockListFromDb())
         } else {
-            resetStocks()
-            getStockList()
+            handleGettingStockListFromApi()
         }
+    }
+
+    override fun handleGettingStockListFromApi() {
+        view.clearStocksRecyclerView()
+        resetStocks()
+        getStockList()
     }
 
     private fun resetStocks() {

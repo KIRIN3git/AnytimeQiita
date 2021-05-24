@@ -164,11 +164,11 @@ object ApiClient {
                         callback.onFetchNoData()
                     } else {
 
-                        for (data in responseData) {
-                            LOGI("data.title" + data.title)
-                            LOGI("data.url" + data.url)
-                            LOGI("data.coediting" + data.coediting)
-                        }
+//                        for (data in responseData) {
+//                            LOGI("data.title" + data.title)
+//                            LOGI("data.url" + data.url)
+//                            LOGI("data.coediting" + data.coediting)
+//                        }
                         callback.onFetchSuccess(responseData)
                     }
                 }

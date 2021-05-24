@@ -2,9 +2,7 @@ package jp.kirin3.anytimeqiita.ui.stocks
 
 import android.content.Context
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -72,13 +70,34 @@ class StocksFragment : BaseFragment(), StocksContract.View, SwipeRefreshLayout.O
         return root
     }
 
+    // メニュー設定関数 ここから
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        setHasOptionsMenu(true)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.stocks_menu, menu)
+        menu.findItem(R.id.menu_reload).isVisible = true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.menu_reload -> {
+                presenter.handleGettingStockListFromApi()
+            }
+        }
+        return true
+    }
+
     override fun onResume() {
         super.onResume()
         LOGI("")
 
         if (LoginModel.isLoginCompleted(context)) {
             refreshLayout.isRefreshing = true
-            presenter.handleGettingFirstStockList()
+            presenter.handleGettingStockListFromAny()
         }
     }
 
@@ -128,7 +147,7 @@ class StocksFragment : BaseFragment(), StocksContract.View, SwipeRefreshLayout.O
         refreshLayout.isRefreshing = false
     }
 
-    private fun clearStocksRecyclerView() {
+    override fun clearStocksRecyclerView() {
         viewAdapter?.let {
             it.clearItem()
         }
