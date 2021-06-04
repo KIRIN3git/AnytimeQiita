@@ -1,6 +1,10 @@
 package jp.kirin3.anytimeqiita.ui.stocks
 
 import android.view.View
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.TextView
+import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.stocks_low.view.*
 
@@ -13,8 +17,9 @@ class StocksRecyclerViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         fun onItemClick(id: String, title: String, url: String)
     }
 
-    var titleTextView = view.titleTextView
-    var iconImageView = view.iconImageView
-    var dateTextView = view.dateTextView
-    var lgtmTextView = view.lgtmTextView
+    var titleTextView: TextView = view.titleTextView
+    var iconCardView: CardView = view.iconCardView
+    var iconImageView: ImageView = view.iconImageView
+    var dateTextView: TextView = view.dateTextView
+    var lgtmTextView: TextView = view.lgtmTextView
 }
