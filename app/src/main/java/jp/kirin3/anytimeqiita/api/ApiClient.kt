@@ -132,9 +132,6 @@ object ApiClient {
 
         val service = restClient().create(StocksService::class.java)
 
-//        val requestData = StocksRequestData(
-//            page,perPage
-//        )
         val requestData: Map<String, String> = mapOf("page" to page, "per_page" to perPage)
 
         val repos = service.fetchRepos(userId, HOST, requestData)

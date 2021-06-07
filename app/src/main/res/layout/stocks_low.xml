@@ -58,6 +58,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_marginTop="4dp"
                 android:orientation="horizontal">
 
                 <TextView
@@ -77,6 +78,7 @@
                     android:drawableStart="@drawable/ic_update_black_24dp"
                     android:textColor="@color/lightGreen"
                     android:textSize="18sp"
+                    android:layout_marginStart="4dp"
                     android:textStyle="bold"
                     tools:text="DATE" />
             </LinearLayout>

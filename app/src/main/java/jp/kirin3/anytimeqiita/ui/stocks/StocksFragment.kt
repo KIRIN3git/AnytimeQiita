@@ -34,7 +34,6 @@ class StocksFragment : BaseFragment(), StocksContract.View, SwipeRefreshLayout.O
     private var hasAdapter: Boolean = false
     private var nowLoadingFlg: Boolean = false
 
-
     //override lateinit var presenter: StocksContract.Presenter
 
     @Inject
@@ -96,7 +95,6 @@ class StocksFragment : BaseFragment(), StocksContract.View, SwipeRefreshLayout.O
         LOGI("")
 
         if (LoginModel.isLoginCompleted(context)) {
-            refreshLayout.isRefreshing = true
             presenter.handleGettingStockListFromAny()
         }
     }
@@ -144,7 +142,6 @@ class StocksFragment : BaseFragment(), StocksContract.View, SwipeRefreshLayout.O
             stocksRecyclerView.layoutManager?.onRestoreInstanceState(StocksModel.parcelable)
         }
         nowLoadingFlg = false
-        refreshLayout.isRefreshing = false
     }
 
     override fun clearStocksRecyclerView() {
@@ -202,7 +199,6 @@ class StocksFragment : BaseFragment(), StocksContract.View, SwipeRefreshLayout.O
     }
 
     private fun showStocksDialog(stockId: String, title: String, url: String) {
-
         childFragmentManager.beginTransaction().add(
             StocksDialogFragment.newInstance(
                 StocksDialogParameter(
@@ -226,6 +222,8 @@ class StocksFragment : BaseFragment(), StocksContract.View, SwipeRefreshLayout.O
      * SwipeRefreshLayout.OnRefreshListener
      */
     override fun onRefresh() {
+        LOGI("")
+        setRefreshingInterface(false)
 //        if (LoginModel.isLoginCompleted(context) && !nowLoadingFlg) {
 //            nowLoadingFlg = true
 //            clearStocksRecyclerView()

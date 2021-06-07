@@ -72,7 +72,7 @@ class FoldersFragment : BaseFragment(), FoldersContract.View,
         super.onResume()
         LOGI("")
 
-        if (SettingsUtils.getCreateFirstFoldersFlg(context) == false) {
+        if (!SettingsUtils.getCreateFirstFoldersFlg(context)) {
             presenter.createFirstFolders()
             SettingsUtils.setCreateFirstFoldersFlg(context, true)
         }
