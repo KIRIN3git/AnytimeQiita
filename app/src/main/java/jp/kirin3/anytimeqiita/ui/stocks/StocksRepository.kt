@@ -2,21 +2,27 @@ package jp.kirin3.anytimeqiita.ui.stocks
 
 import android.content.Context
 import androidx.lifecycle.ViewModel
+import io.reactivex.Single
+import io.reactivex.schedulers.Schedulers
 import jp.kirin3.anytimeqiita.api.ApiClient
+import jp.kirin3.anytimeqiita.api.StocksClient
 import jp.kirin3.anytimeqiita.data.StocksResponseData
 import jp.kirin3.anytimeqiita.database.StocksDatabase
+import jp.kirin3.anytimeqiita.di.RetrofitFactory
 import kirin3.jp.mljanken.util.LogUtils
 import kirin3.jp.mljanken.util.LogUtils.LOGD
 import kirin3.jp.mljanken.util.SettingsUtils
 
-class StocksRepository() : ViewModel(), StocksDataSource {
+class StocksRepository(
+    private val retrofitFactory: RetrofitFactory
+) : ViewModel(), StocksDataSource {
 
     private var cacheStocksList: MutableList<StocksResponseData>? = null
     private var pageCount = 1
 
     companion object {
         // 一度で取得するstock数
-        private const val ONE_TIME_STOCKS_NUM = 100
+        private const val ONE_TIME_STOCKS_NUM = 10
         private var INSTANCE: StocksRepository? = null
 
         /**
@@ -28,10 +34,10 @@ class StocksRepository() : ViewModel(), StocksDataSource {
          * *
          * @return the [TasksRepository] instance
          */
-        fun getInstance(): StocksRepository {
-            return INSTANCE ?: StocksRepository()
-                .apply { INSTANCE = this }
-        }
+//        fun getInstance(): StocksRepository {
+//            return INSTANCE ?: StocksRepository()
+//                .apply { INSTANCE = this }
+//        }
 
         /**
          * Used to force [getInstance] to create a new instance
@@ -103,6 +109,26 @@ class StocksRepository() : ViewModel(), StocksDataSource {
      * 取得後はDBに保存を行う
      */
     fun loadStockList(
+        userId: String,
+        pageCount: Int
+    ): Single<List<StocksResponseData>> {
+        val api = StocksClient()
+        return api.fetchStocks(
+            retrofitFactory,
+            userId,
+            pageCount.toString(),
+            ONE_TIME_STOCKS_NUM.toString()
+        )
+            .subscribeOn(Schedulers.io())
+//            .observeOn(Schedulers.single())
+            .doAfterSuccess {
+//                it.updateChache(context) //WWW
+                LOGD("pageCount $pageCount READ_COUNT $ONE_TIME_STOCKS_NUM")
+            }
+        LOGD("pageCount $pageCount READ_COUNT $ONE_TIME_STOCKS_NUM")
+    }
+
+    fun loadStockListOld(
         userId: String?,
         pageCount: Int,
         callback: StocksDataSource.LoadTasksCallback
@@ -110,7 +136,7 @@ class StocksRepository() : ViewModel(), StocksDataSource {
 
         LOGD("pageCount $pageCount READ_COUNT $ONE_TIME_STOCKS_NUM")
 
-        ApiClient.fetchStocks(
+        ApiClient.fetchStocksOld(
             userId,
             pageCount.toString(),
             ONE_TIME_STOCKS_NUM.toString(),

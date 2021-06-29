@@ -124,13 +124,13 @@ object ApiClient {
         fun onFetchFailure()
     }
 
-    fun fetchStocks(userId: String?, page: String, perPage: String, callback: StocksApiCallback) {
+    fun fetchStocksOld(userId: String?, page: String, perPage: String, callback: StocksApiCallback) {
         if (userId == null) {
             callback.onFetchFailure()
             return
         }
 
-        val service = restClient().create(StocksService::class.java)
+        val service = restClient().create(StocksServiceOld::class.java)
 
         val requestData: Map<String, String> = mapOf("page" to page, "per_page" to perPage)
 

@@ -103,6 +103,7 @@ class StocksFragment : BaseFragment(), StocksContract.View, SwipeRefreshLayout.O
         super.onDestroy()
         // 位置の保存
         StocksModel.parcelable = stocksRecyclerView.layoutManager?.onSaveInstanceState()
+        presenter.stop()
     }
 
     override fun showMessage(msg: String) {

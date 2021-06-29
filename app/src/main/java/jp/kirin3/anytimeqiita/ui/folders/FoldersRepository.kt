@@ -105,7 +105,7 @@ class FoldersRepository() : ViewModel(), FoldersDataSource {
         if (loadFirst == true) {
             pageCount = 1
         }
-        ApiClient.fetchStocks(
+        ApiClient.fetchStocksOld(
             userId,
             pageCount.toString(),
             READ_COUNT.toString(),

@@ -9,10 +9,11 @@ import retrofit2.converter.gson.GsonConverterFactory
 class RetrofitFactoryImpl : RetrofitFactory {
 
     companion object {
-        private val BASE_URL = "https://qiita.com/"
+        private const val BASE_URL = "https://qiita.com/"
+        private const val HOST = "qiita.com"
     }
 
-    override fun create(): Retrofit {
+    override fun buildRetrofit(): Retrofit {
         val interceptor = HttpLoggingInterceptor()
         interceptor.level = HttpLoggingInterceptor.Level.BODY
         val client = OkHttpClient.Builder().addInterceptor(interceptor).build()
@@ -23,5 +24,9 @@ class RetrofitFactoryImpl : RetrofitFactory {
             .addConverterFactory(GsonConverterFactory.create())
             .client(client)
             .build()
+    }
+
+    override fun getHostName(): String {
+        return HOST
     }
 }

@@ -1,6 +1,7 @@
 package jp.kirin3.anytimeqiita.usecase.impl
 
 import android.content.Context
+import io.reactivex.Single
 import jp.kirin3.anytimeqiita.data.StocksResponseData
 import jp.kirin3.anytimeqiita.database.StocksDatabase
 import jp.kirin3.anytimeqiita.ui.stocks.StocksDataSource
@@ -31,12 +32,22 @@ class StocksUseCaseImpl @Inject constructor(
     }
 
     override fun loadStockList(
+        userId: String
+    ): Single<List<StocksResponseData>> {
+        val pageCount = getPageCount()
+        return repository.loadStockList(userId, pageCount)
+            .doAfterSuccess {
+
+            }
+    }
+
+    override fun loadStockListOld(
         userId: String?,
         callback: StocksDataSource.LoadTasksCallback
     ) {
         val pageCount = SettingsUtils.getStockPageCount(context)
 
-        repository.loadStockList(
+        repository.loadStockListOld(
             userId,
             pageCount,
             object : StocksDataSource.LoadTasksCallback {
@@ -61,11 +72,19 @@ class StocksUseCaseImpl @Inject constructor(
             })
     }
 
-    private fun addOnePageCount() {
+    override fun getPageCount(): Int {
+        return SettingsUtils.getStockPageCount(context)
+    }
+
+    override fun addOnePageCount() {
         SettingsUtils.setStockPageCount(context, SettingsUtils.getStockPageCount(context) + 1)
     }
 
     override fun resetPageCount() {
         SettingsUtils.setStockPageCount(context, RESET_PAGE_COUNT)
+    }
+
+    override fun setStockLoadCompleted(isCompleted: Boolean) {
+        SettingsUtils.setStockLoadingCompleted(context, isCompleted)
     }
 }

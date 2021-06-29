@@ -22,6 +22,7 @@ interface StocksContract {
 
     interface Presenter : BasePresenter {
         fun setup(view: View, viewModel: StocksModel)
+        fun stop()
         fun handleGettingStockListFromAny()
         fun handleGettingStockListFromApi()
         fun startNotLoggedIn()
