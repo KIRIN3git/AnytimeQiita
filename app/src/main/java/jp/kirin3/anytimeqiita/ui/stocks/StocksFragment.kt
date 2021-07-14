@@ -84,7 +84,7 @@ class StocksFragment : BaseFragment(), StocksContract.View, SwipeRefreshLayout.O
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.menu_reload -> {
-                presenter.handleGettingStockListFromApi()
+                presenter.initGettingStockListFromApi()
             }
         }
         return true

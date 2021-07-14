@@ -22,7 +22,7 @@ class StocksRepository(
 
     companion object {
         // 一度で取得するstock数
-        private const val ONE_TIME_STOCKS_NUM = 10
+        private const val ONE_TIME_STOCKS_NUM = 100
         private var INSTANCE: StocksRepository? = null
 
         /**
@@ -47,30 +47,6 @@ class StocksRepository(
             INSTANCE = null
         }
     }
-
-//    fun getStocksFromDbOrApi(callback: StocksDataSource.LoadTasksCallback) {
-//        getStocksFromDB()?.let {
-//            // DBから取得可能
-//            callback.onLoadSuccess(it)
-//        } ?: loadStockList(
-//            AuthenticatedUserModel.getAuthenticatedUserIdFromCache(),
-//            false,
-//            object : StocksDataSource.LoadTasksCallback {
-//                override fun onLoadSuccess(stocks: List<StocksResponseData>) {
-//                    callback.onLoadSuccess(stocks)
-//                }
-//
-//                override fun onLoadNoData() {
-//                    callback.onLoadNoData()
-//                }
-//
-//                override fun onLoadFailure() {
-//                    callback.onLoadFailure()
-//                }
-//            }
-//        )
-//    }
-
 
     fun setStocksToCache(stocksList: List<StocksResponseData>?, nextFlg: Boolean) {
         if (stocksList == null) return
@@ -120,12 +96,9 @@ class StocksRepository(
             ONE_TIME_STOCKS_NUM.toString()
         )
             .subscribeOn(Schedulers.io())
-//            .observeOn(Schedulers.single())
             .doAfterSuccess {
-//                it.updateChache(context) //WWW
                 LOGD("pageCount $pageCount READ_COUNT $ONE_TIME_STOCKS_NUM")
             }
-        LOGD("pageCount $pageCount READ_COUNT $ONE_TIME_STOCKS_NUM")
     }
 
     fun loadStockListOld(

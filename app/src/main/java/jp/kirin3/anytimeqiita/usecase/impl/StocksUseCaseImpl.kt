@@ -37,7 +37,6 @@ class StocksUseCaseImpl @Inject constructor(
         val pageCount = getPageCount()
         return repository.loadStockList(userId, pageCount)
             .doAfterSuccess {
-
             }
     }
 

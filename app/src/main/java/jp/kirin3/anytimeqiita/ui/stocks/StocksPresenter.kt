@@ -9,7 +9,6 @@ import jp.kirin3.anytimeqiita.model.AuthenticatedUserModel
 import jp.kirin3.anytimeqiita.model.StocksModel
 import jp.kirin3.anytimeqiita.usecase.StocksUseCase
 import kirin3.jp.mljanken.util.LogUtils.LOGE
-import kirin3.jp.mljanken.util.LogUtils.LOGI
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -19,6 +18,7 @@ class StocksPresenter @Inject constructor(
 ) : StocksContract.Presenter {
 
     companion object {
+        // 無限ロードを防ぐストッパー
         private const val MAX_STOCKS_PAGE = 10
     }
 
@@ -40,56 +40,49 @@ class StocksPresenter @Inject constructor(
         if (stocksUseCase.isLoadCompleted()) {
             view.showStocksRecyclerView(stocksUseCase.getStockListFromDb())
         } else {
-            handleGettingStockListFromApi()
+            initGettingStockListFromApi()
         }
     }
 
-    override fun handleGettingStockListFromApi() {
-        view.clearStocksRecyclerView()
-        resetStocks()
-        view.setRefreshingInterface(true)
+    override fun continueGettingStockListFromApi() {
         getStockList()
     }
 
-    private fun resetStocks() {
+    override fun initGettingStockListFromApi() {
+        initStocks()
+        getStockList()
+    }
+
+    private fun initStocks() {
+        stocksUseCase.setStockLoadCompleted(false)
+        view.clearStocksRecyclerView()
         stocksUseCase.resetStockListFromDb()
         stocksUseCase.resetPageCount()
     }
 
     private fun getStockList() {
         val userId = AuthenticatedUserModel.getAuthenticatedUserIdFromCache() ?: return
-
         view.setRefreshingInterface(true)
+
         stocksUseCase.loadStockList(userId)
             .observeOn(uiScheduler)
             .doOnSubscribe {
-
             }
             .doFinally {
-//                stocksUseCase.addOnePageCount()
-
-//                getStockList()
             }
             .doAfterSuccess {
-                LOGI("")
             }
             .subscribe({ result ->
                 if (result.isEmpty() || stocksUseCase.getPageCount() > MAX_STOCKS_PAGE) {
-//                    view.showStocksRecyclerView(stocksUseCase.getStockListFromDb())
-//                    view.showStocksRecyclerView(result)
                     stocksUseCase.setStockLoadCompleted(true)
                     view.setRefreshingInterface(false)
                 } else {
-//                    if (stocksUseCase.getPageCount() == 1) {
                     // 取得データはDBに保存
                     StocksDatabase.insertStocksDataList(result)
                     stocksUseCase.addOnePageCount()
                     view.showStocksRecyclerView(result)
-//                    }
-
-
+                    // 再起呼び出し
                     getStockList()
-
                 }
             }, { e ->
                 view.setRefreshingInterface(false)
