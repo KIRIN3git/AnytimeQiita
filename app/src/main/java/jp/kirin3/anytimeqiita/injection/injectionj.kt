@@ -28,9 +28,9 @@ object Injection {
         return TasksRepository.getInstance(TasksRemoteDataSource.getInstance())
     }
 
-    fun provideStocksRepository(): StocksRepository {
-        return StocksRepository.getInstance()
-    }
+//    fun provideStocksRepository(): StocksRepository {
+//        return StocksRepository.getInstance()
+//    }
 
     fun provideFoldersRepository(): FoldersRepository {
         return FoldersRepository.getInstance()

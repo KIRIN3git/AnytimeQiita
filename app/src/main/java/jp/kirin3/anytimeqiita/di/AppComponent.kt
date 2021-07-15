@@ -2,6 +2,7 @@ package jp.kirin3.anytimeqiita.di
 
 import dagger.Component
 import jp.kirin3.anytimeqiita.ui.sample.view.SampleFragment
+import jp.kirin3.anytimeqiita.ui.stocks.StocksFragment
 import javax.inject.Singleton
 
 @Singleton
@@ -11,4 +12,5 @@ import javax.inject.Singleton
 interface AppComponent {
     // インジェクトされるクラスを記載していく
     fun inject(fragment: SampleFragment)
+    fun inject(fragment: StocksFragment)
 }

@@ -30,13 +30,13 @@ class SampleFragment : Fragment(), SampleContract {
 
 //    lateinit var application: Application
 
-    @Inject
-    lateinit var presenter: SamplePresenter
 
-//    private val component = DaggerAppComponent.builder()
+    //    private val component = DaggerAppComponent.builder()
 //        .appModule(AppModule())
 //        .build()
 
+    @Inject
+    lateinit var presenter: SamplePresenter
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -52,7 +52,7 @@ class SampleFragment : Fragment(), SampleContract {
 //        // Inject
 //        (application as? MainApplication)?.getComponent()?.inject(this)
 //
-//        presenter.setup(this, viewModel)
+        presenter.setup(this, viewModel)
     }
 
 

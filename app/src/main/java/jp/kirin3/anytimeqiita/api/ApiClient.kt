@@ -119,21 +119,19 @@ object ApiClient {
     }
 
     interface StocksApiCallback {
-        fun onTasksLoaded(responseData: List<StocksResponseData>)
-        fun onDataNotAvailable()
+        fun onFetchSuccess(responseData: List<StocksResponseData>)
+        fun onFetchNoData()
+        fun onFetchFailure()
     }
 
-    fun fetchStocks(userId: String?, page: String, perPage: String, callback: StocksApiCallback) {
+    fun fetchStocksOld(userId: String?, page: String, perPage: String, callback: StocksApiCallback) {
         if (userId == null) {
-            callback.onDataNotAvailable()
+            callback.onFetchFailure()
             return
         }
 
-        val service = restClient().create(StocksService::class.java)
+        val service = restClient().create(StocksServiceOld::class.java)
 
-//        val requestData = StocksRequestData(
-//            page,perPage
-//        )
         val requestData: Map<String, String> = mapOf("page" to page, "per_page" to perPage)
 
         val repos = service.fetchRepos(userId, HOST, requestData)
@@ -152,18 +150,24 @@ object ApiClient {
 
                 override fun onError(e: Throwable) {
                     LOGD("通信 -> 失敗:$e")
-                    callback.onDataNotAvailable()
+                    callback.onFetchFailure()
                 }
 
                 override fun onNext(responseData: List<StocksResponseData>) {
                     LOGI("")
 //                    LOGI("RESPONSE_DATA[" + responseData.toString() + "]")
-                    for (data in responseData) {
-                        LOGI("data.title" + data.title)
-                        LOGI("data.url" + data.url)
-                        LOGI("data.coediting" + data.coediting)
+
+                    if (responseData.isEmpty()) {
+                        callback.onFetchNoData()
+                    } else {
+
+//                        for (data in responseData) {
+//                            LOGI("data.title" + data.title)
+//                            LOGI("data.url" + data.url)
+//                            LOGI("data.coediting" + data.coediting)
+//                        }
+                        callback.onFetchSuccess(responseData)
                     }
-                    callback.onTasksLoaded(responseData)
                 }
             })
     }
