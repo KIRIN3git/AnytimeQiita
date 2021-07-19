@@ -63,15 +63,12 @@ class MainActivity : BaseActivity() {
         //BottomNavigatinにNavigationを設定
         bottomNavigationView.setupWithNavController(navController)
 
-        var isLoginMode = false
-
         // Qiitaログインページからの戻ってきた時の処理
         if (LoginModel.hasLoginParamInPreference(intent)) {
             LoginModel.setQiitaLoginCode(intent, this)
-            isLoginMode = true
-
+            // Qiitaログインページからの戻りとして設定画面を開く
             val params = bundleOf(
-                SettingFragment.IS_LOGIN_MODE to isLoginMode
+                SettingFragment.COME_BACK_FROM_QIITA_LOGIN to true
             )
             navController.navigate(R.id.bottom_navigation_setting, params)
         } else if (SettingsUtils.getWebViewUrl(this).isNullOrEmpty()) {

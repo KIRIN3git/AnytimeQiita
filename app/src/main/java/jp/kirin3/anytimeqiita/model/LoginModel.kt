@@ -16,6 +16,7 @@ import kirin3.jp.mljanken.util.SettingsUtils
 /**
  * ログインモデル
  *
+ * State：セキュリティのためQiitaログイン画面に送信し、同一値が返却されることを確認するのに使用
  * QiitaCode：Qiitaログイン後パラメータとしてアプリに通知される。その後、Preferenceに保存。
  * AccessToken：QiitaCodeを使用してQiitaAPIにて取得。その後、Preferenceに保存。
  * AuthenticatedUser：AccessTokenを使用してQiitaAPIにて取得されるログインユーザーのIDが保存されているデータ。
@@ -121,7 +122,9 @@ class LoginModel : ViewModel() {
 
             intent.data?.also {
                 it.getQueryParameter("state")?.also { paramState ->
+                    // 送信したStateが返却されたStateと不一致の場合はログインできない
                     if (isStateNotSame(paramState)) {
+                        LOGE("Sate not same!!")
                         return
                     }
                 }

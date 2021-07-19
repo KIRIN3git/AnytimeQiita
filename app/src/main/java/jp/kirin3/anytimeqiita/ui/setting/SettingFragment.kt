@@ -10,28 +10,29 @@ import jp.kirin3.anytimeqiita.R
 import jp.kirin3.anytimeqiita.injection.Injection
 import jp.kirin3.anytimeqiita.model.AuthenticatedUserModel
 import jp.kirin3.anytimeqiita.ui.reading.LoginModel
-import kirin3.jp.mljanken.util.LogUtils.LOGI
 import kirin3.jp.mljanken.util.SettingsUtils
 
 class SettingFragment : BaseFragment(), SettingContract.View {
 
     private lateinit var loginButton: Button
-    private lateinit var sampleButton: Button
     private lateinit var logoutButton: Button
     private lateinit var notLoggedLayout: LinearLayout
     private lateinit var loggingLayout: LinearLayout
     private lateinit var userIdTextView: TextView
     private lateinit var useExternalToggleButton: ToggleButton
-    private var isLoginMode: Boolean = false
     override lateinit var presenter: SettingContract.Presenter
 
+    /**
+     *  ログインモード判定
+     *  Qiitaログイン画面からの戻ってきた場合、SettingFragmentでログイン処理を行う
+     */
+    private var isLoginMode: Boolean = false
+
     companion object {
-        val IS_LOGIN_MODE = "IS_REFRESH"
+        // Qiita画面から戻ってきたパラメータ
+        const val COME_BACK_FROM_QIITA_LOGIN = "COME_BACK_FROM_QIITA_LOGIN"
     }
 
-    /*
-        private val loginButton: Button by lazy { fragment_setting_login_button }
-     */
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -47,7 +48,6 @@ class SettingFragment : BaseFragment(), SettingContract.View {
         )
 
         getParam()
-        LOGI(" isLoginMode3   " + isLoginMode)
         notLoggedLayout = root.findViewById(R.id.fragment_setting_not_logged_in_layout)
         loggingLayout = root.findViewById(R.id.fragment_setting_logged_in_layout)
         userIdTextView = root.findViewById(R.id.fragment_setting_user_id)
@@ -56,12 +56,6 @@ class SettingFragment : BaseFragment(), SettingContract.View {
         loginButton.setOnClickListener {
             LoginModel.accessQiitaLoginPage(context)
         }
-
-//        sampleButton = root.findViewById(R.id.sample_button)
-//        sampleButton.setOnClickListener {
-//            val intent = Intent(context, SampleActivity::class.java)
-//            startActivity(intent)
-//        }
 
         logoutButton = root.findViewById(R.id.fragment_setting_logout_button)
         logoutButton.setOnClickListener {
@@ -93,7 +87,7 @@ class SettingFragment : BaseFragment(), SettingContract.View {
 
     fun getParam() {
         arguments?.run {
-            if (getBoolean(IS_LOGIN_MODE)) {
+            if (getBoolean(COME_BACK_FROM_QIITA_LOGIN)) {
                 isLoginMode = true
             }
         }
