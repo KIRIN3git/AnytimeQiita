@@ -16,7 +16,7 @@ class SampleDataStore(
         context: Context,
         code: String
     ): Single<SampleDataResult> {
-        val api = SampleAPIClient(retrofitFactory.create())
+        val api = SampleAPIClient(retrofitFactory.buildRetrofit())
         return api.sampleValidate(code)
             .subscribeOn(Schedulers.io())
             .doAfterSuccess {

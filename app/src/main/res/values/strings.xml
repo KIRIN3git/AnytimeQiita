@@ -9,6 +9,9 @@
     <string name="title_reading">リーディング</string>
     <string name="title_setting">セッティング</string>
 
+    <string name="reading_setting">■読む設定</string>
+    <string name="stocks_setting">■ストック設定</string>
+
     <string name="login">ログイン</string>
     <string name="logout">ログアウト</string>
     <string name="login_success">ログインに成功しました</string>
@@ -21,6 +24,9 @@
     <string name="message_input_folder_name">フォルダ名を入力</string>
     <string name="message_can_i_delete_the_folder">フォルダを削除しても良いですか？</string>
     <string name="message_use_external_browser">外部ブラウザを使う</string>
+    <string name="message_show_icon">アイコンを表示する</string>
+    <string name="message_show_lgtm">LGTMを表示する</string>
+    <string name="message_show_update_time">更新日時を表示する</string>
     <string name="main_text">詳細はこちらから閲覧できます。</string>
     <string name="link_text">こちら</string>
     <string name="change_name">名前変更</string>
