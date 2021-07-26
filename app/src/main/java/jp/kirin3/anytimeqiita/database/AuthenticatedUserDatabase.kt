@@ -20,6 +20,24 @@ object AuthenticatedUserDatabase {
         realm.close()
     }
 
+
+    fun selectAuthenticatedUserData(): AuthenticatedUserData? {
+
+        var realm = Realm.getDefaultInstance()
+
+        val users = realm.where<AuthenticatedUserData>().findAll()
+        if (users.count() == 0){
+            realm.close()
+            return null
+        }
+        val user = realm.copyFromRealm(users[0])
+
+        realm.close()
+
+        return user
+    }
+
+
     fun deleteAuthenticatedUserData() {
 
         var realm = Realm.getDefaultInstance()
@@ -32,18 +50,5 @@ object AuthenticatedUserDatabase {
 
         realm.close()
 
-    }
-
-    fun selectAuthenticatedUserData(): AuthenticatedUserData? {
-
-        var realm = Realm.getDefaultInstance()
-
-        val users = realm.where<AuthenticatedUserData>().findAll()
-        if(users.count() == 0) return null
-        val user = realm.copyFromRealm(users[0])
-
-        realm.close()
-
-        return user
     }
 }

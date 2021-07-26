@@ -4,27 +4,18 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.LinearLayout
-import android.widget.TextView
 import android.widget.Toast
 import com.google.gson.Gson
 import jp.kirin3.anytimeqiita.BaseFragment
 import jp.kirin3.anytimeqiita.R
 import jp.kirin3.anytimeqiita.data.SettingCheckBoxData
 import jp.kirin3.anytimeqiita.injection.Injection
-import jp.kirin3.anytimeqiita.model.AuthenticatedUserModel
-import jp.kirin3.anytimeqiita.ui.reading.LoginModel
+import jp.kirin3.anytimeqiita.model.LoginModel
 import kirin3.jp.mljanken.util.SettingsUtils
 import kotlinx.android.synthetic.main.fragment_setting.*
 
 class SettingFragment : BaseFragment(), SettingContract.View {
 
-    private lateinit var loginButton: Button
-    private lateinit var logoutButton: Button
-    private lateinit var notLoggedLayout: LinearLayout
-    private lateinit var loggingLayout: LinearLayout
-    private lateinit var userIdTextView: TextView
     override lateinit var presenter: SettingContract.Presenter
 
     /**
@@ -53,41 +44,32 @@ class SettingFragment : BaseFragment(), SettingContract.View {
         )
 
         getParam()
-        notLoggedLayout = root.findViewById(R.id.fragment_setting_not_logged_in_layout)
-        loggingLayout = root.findViewById(R.id.fragment_setting_logged_in_layout)
-        userIdTextView = root.findViewById(R.id.fragment_setting_user_id)
 
-        loginButton = root.findViewById(R.id.login_button)
-        loginButton.setOnClickListener {
+        return root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        login_button.setOnClickListener {
             LoginModel.accessQiitaLoginPage(context)
         }
 
-        logoutButton = root.findViewById(R.id.fragment_setting_logout_button)
-        logoutButton.setOnClickListener {
+        fragment_setting_logout_button.setOnClickListener {
             LoginModel.clearAllLoginInfo(context)
+            LoginModel.clearAllUserSetting(context)
             setLoggingModeInterface(false)
         }
-
-//        useExternalToggleButton = root.findViewById(R.id.use_external_browser_toggle_button)
-//        useExternalToggleButton.isChecked = SettingsUtils.getUseExternalBrowser(context)
-//        useExternalToggleButton.setOnCheckedChangeListener { _, isChecked ->
-//            if (isChecked) {
-//                SettingsUtils.setUseExternalBrowser(context, true)
-//            } else {
-//                SettingsUtils.setUseExternalBrowser(context, false)
-//            }
-//        }
 
         if (isLoginMode) {
             presenter.loadQiitaLoginInfo(context)
         } else {
-            AuthenticatedUserModel.setAuthnticatedUserFromDbToCache()
             if (LoginModel.isLoginCompleted(context)) {
                 setLoggingModeInterface(true)
             }
         }
 
-        return root
+        settingCheckBox()
     }
 
     private fun settingCheckBox() {
@@ -137,12 +119,8 @@ class SettingFragment : BaseFragment(), SettingContract.View {
         SettingsUtils.setSettingCheckBoxData(context, json)
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        settingCheckBox()
-    }
 
-    fun getParam() {
+    private fun getParam() {
         arguments?.run {
             if (getBoolean(COME_BACK_FROM_QIITA_LOGIN)) {
                 isLoginMode = true
@@ -152,18 +130,18 @@ class SettingFragment : BaseFragment(), SettingContract.View {
 
     override fun setLoggingModeInterface(login: Boolean) {
         if (login) {
-            notLoggedLayout.visibility = View.GONE
-            loggingLayout.visibility = View.VISIBLE
-            displayAuthentiatedUserId()
+            fragment_setting_not_logged_in_layout.visibility = View.GONE
+            fragment_setting_logged_in_layout.visibility = View.VISIBLE
+            displayAuthenticatedUserId()
         } else {
-            notLoggedLayout.visibility = View.VISIBLE
-            loggingLayout.visibility = View.GONE
+            fragment_setting_not_logged_in_layout.visibility = View.VISIBLE
+            fragment_setting_logged_in_layout.visibility = View.GONE
         }
     }
 
-    fun displayAuthentiatedUserId() {
-        val userId = AuthenticatedUserModel.getAuthenticatedUserIdFromCacheOrDb()
-        userIdTextView.setText(userId)
+    private fun displayAuthenticatedUserId() {
+        val userId = LoginModel.getAuthenticatedUserId()
+        fragment_setting_user_id.setText(userId)
     }
 
     override fun showLoginSuccessToast() {

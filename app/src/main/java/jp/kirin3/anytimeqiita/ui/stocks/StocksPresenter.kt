@@ -5,8 +5,8 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import jp.kirin3.anytimeqiita.data.StocksResponseData
 import jp.kirin3.anytimeqiita.database.StocksDatabase
-import jp.kirin3.anytimeqiita.model.AuthenticatedUserModel
 import jp.kirin3.anytimeqiita.model.StocksModel
+import jp.kirin3.anytimeqiita.model.LoginModel
 import jp.kirin3.anytimeqiita.usecase.StocksUseCase
 import kirin3.jp.mljanken.util.LogUtils.LOGE
 import javax.inject.Inject
@@ -61,7 +61,7 @@ class StocksPresenter @Inject constructor(
     }
 
     private fun getStockList() {
-        val userId = AuthenticatedUserModel.getAuthenticatedUserIdFromCache() ?: return
+        val userId = LoginModel.getAuthenticatedUserId() ?: return
         view.setRefreshingInterface(true)
 
         stocksUseCase.loadStockList(userId)
@@ -93,7 +93,8 @@ class StocksPresenter @Inject constructor(
 
     private fun getStockListOld() {
         view.setRefreshingInterface(true)
-        stocksUseCase.loadStockListOld(AuthenticatedUserModel.getAuthenticatedUserIdFromCache(),
+        stocksUseCase.loadStockListOld(
+            LoginModel.getAuthenticatedUserId(),
             object : StocksDataSource.LoadTasksCallback {
                 override fun onLoadSuccess(stockList: List<StocksResponseData>) {
                     view.showStocksRecyclerView(stockList)

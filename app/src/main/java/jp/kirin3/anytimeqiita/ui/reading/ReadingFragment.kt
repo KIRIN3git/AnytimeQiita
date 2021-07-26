@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModelProviders
 import jp.kirin3.anytimeqiita.BaseFragment
 import jp.kirin3.anytimeqiita.R
 import jp.kirin3.anytimeqiita.injection.Injection
+import jp.kirin3.anytimeqiita.model.LoginModel
 import jp.kirin3.anytimeqiita.util.ReadingFileHelper
 import kirin3.jp.mljanken.util.LogUtils.LOGI
 import kirin3.jp.mljanken.util.SettingsUtils
@@ -110,6 +111,8 @@ class ReadingFragment : BaseFragment(), ReadingContract.View {
         super.onResume()
         LOGI("")
         presenter.setStartTime()
+
+        LoginModel.clearAllUserSetting(context)
     }
 
     override fun onPause() {

@@ -78,7 +78,10 @@ object FilesDatabase {
         var realm = Realm.getDefaultInstance()
 
         val relation = realm.where<FilesData>().findAll()
-        if (relation.count() == 0) return null
+        if (relation.count() == 0) {
+            realm.close()
+            return null
+        }
         val relationList = realm.copyFromRealm(relation)
 
         realm.close()
@@ -92,7 +95,10 @@ object FilesDatabase {
         val relation = realm.where<FilesData>()
             .equalTo(FOLDERS_SEQID, seqid)
             .findAll()
-        if (relation.count() == 0) return null
+        if (relation.count() == 0){
+            realm.close()
+            return null
+        }
         val relationList = realm.copyFromRealm(relation)
 
         realm.close()

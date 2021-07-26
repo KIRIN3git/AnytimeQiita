@@ -41,7 +41,10 @@ object ReadingTimeDatabase {
         var realm = Realm.getDefaultInstance()
 
         val readingTimeDataResult = realm.where<ReadingTimeData>().findAll()
-        if (readingTimeDataResult.count() == 0) return null
+        if (readingTimeDataResult.count() == 0){
+            realm.close()
+            return null
+        }
         val readingTimeDataList = realm.copyFromRealm(readingTimeDataResult)
 
         realm.close()
@@ -54,7 +57,10 @@ object ReadingTimeDatabase {
         var realm = Realm.getDefaultInstance()
 
         val readingTimeDataResult = realm.where<ReadingTimeData>().equalTo(DATE, date).findAll()
-        if (readingTimeDataResult.count() == 0) return null
+        if (readingTimeDataResult.count() == 0){
+            realm.close()
+            return null
+        }
         val readingTimeDataList = realm.copyFromRealm(readingTimeDataResult)
 
         realm.close()
@@ -69,7 +75,10 @@ object ReadingTimeDatabase {
         val readingTimeDataResult =
             realm.where<ReadingTimeData>().between(DATE, fromDate, toDate).findAll()
                 .sort(DATE, Sort.ASCENDING);
-        if (readingTimeDataResult.count() == 0) return null
+        if (readingTimeDataResult.count() == 0){
+            realm.close()
+            return null
+        }
         val readingTimeDataList = realm.copyFromRealm(readingTimeDataResult)
 
         realm.close()

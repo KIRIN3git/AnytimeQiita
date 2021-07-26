@@ -54,7 +54,10 @@ object FoldersDatabase {
         var realm = Realm.getDefaultInstance()
 
         val folders = realm.where<FoldersData>().findAll()
-        if (folders.count() == 0) return null
+        if (folders.count() == 0){
+            realm.close()
+            return null
+        }
         val foldersList = realm.copyFromRealm(folders)
 
         realm.close()
