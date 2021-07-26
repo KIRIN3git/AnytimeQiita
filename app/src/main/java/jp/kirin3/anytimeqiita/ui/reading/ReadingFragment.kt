@@ -111,8 +111,6 @@ class ReadingFragment : BaseFragment(), ReadingContract.View {
         super.onResume()
         LOGI("")
         presenter.setStartTime()
-
-        LoginModel.clearAllUserSetting(context)
     }
 
     override fun onPause() {
