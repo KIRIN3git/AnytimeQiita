@@ -4,11 +4,12 @@ import android.os.Bundle
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import io.realm.Realm
-import jp.kirin3.anytimeqiita.ui.reading.LoginModel
+import jp.kirin3.anytimeqiita.model.LoginModel
 import jp.kirin3.anytimeqiita.ui.setting.SettingFragment
 import kirin3.jp.mljanken.util.LogUtils.LOGI
 import kirin3.jp.mljanken.util.SettingsUtils
@@ -40,45 +41,35 @@ class MainActivity : BaseActivity() {
         LOGI("")
 
 
-
-
-
         setContentView(R.layout.activity_main)
         val bottomNavigationView: BottomNavigationView =
             findViewById(R.id.activity_main_bottom_navigation_view)
         val navController = findNavController(R.id.activity_main_navigation_host_fragment)
 
         activity_main_navigation_host_fragment
-//        val appBarConfiguration = AppBarConfiguration(
-//            setOf(
-//                R.id.bottom_navigation_setting,
-//                R.id.bottom_navigation_reading,
-//                R.id.bottom_navigation_folder,
-//                R.id.bottom_navigation_record,
-//                R.id.bottom_navigation_stocks
-//            )
-//        )
-//        setupActionBarWithNavController(navController, appBarConfiguration)
 
         //BottomNavigatinにNavigationを設定
         bottomNavigationView.setupWithNavController(navController)
 
-        var isLoginMode = false
-
         // Qiitaログインページからの戻ってきた時の処理
-        if (LoginModel.hasLoginParamInPreference(intent)) {
-            LoginModel.setQiitaLoginCode(intent, this)
-            isLoginMode = true
-
-            val params = bundleOf(
-                SettingFragment.IS_LOGIN_MODE to isLoginMode
-            )
-            navController.navigate(R.id.bottom_navigation_setting, params)
-        } else if (SettingsUtils.getWebViewUrl(this).isNullOrEmpty()) {
+        if (LoginModel.hasLoginParamInIntent(intent)) {
+            LoginModel.handleQiitaLoginParam(intent, this)
+            // Qiitaログインページからの戻りとして設定画面を開く
+            transitSettingWithComeBackFromQiitaLogin(navController)
+        } else if (!SettingsUtils.getWebViewUrl(this).isNullOrEmpty()) {
+            // リーディングページがある場合のトップページ
+            navController.navigate(R.id.bottom_navigation_reading, null)
+        } else  {
+            // 標準トップページ
             navController.navigate(R.id.bottom_navigation_setting, null)
-        } else if (SettingsUtils.getUseExternalBrowser(this)) {
-            navController.navigate(R.id.bottom_navigation_folder, null)
         }
+    }
+
+    private fun transitSettingWithComeBackFromQiitaLogin(navController: NavController) {
+        val params = bundleOf(
+            SettingFragment.COME_BACK_FROM_QIITA_LOGIN to true
+        )
+        navController.navigate(R.id.bottom_navigation_setting, params)
     }
 
 

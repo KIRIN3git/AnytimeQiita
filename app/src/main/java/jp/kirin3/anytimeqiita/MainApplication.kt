@@ -1,11 +1,10 @@
 package jp.kirin3.anytimeqiita
 
 import android.app.Application
-import io.realm.Realm
-import io.realm.RealmConfiguration
 import jp.kirin3.anytimeqiita.di.AppComponent
 import jp.kirin3.anytimeqiita.di.AppModule
 import jp.kirin3.anytimeqiita.di.DaggerAppComponent
+import jp.kirin3.anytimeqiita.model.MyRealmModel
 import jp.kirin3.anytimeqiita.util.log.ExtDebugTree
 import timber.log.Timber
 
@@ -26,16 +25,7 @@ class MainApplication : Application() {
             Timber.plant(ExtDebugTree(LOG_TAG))
         }
 
-        // Realmセットアップ
-        Realm.init(this)
-        val config = RealmConfiguration
-            .Builder()
-//            .schemaVersion(2)
-//            .migration(MyMigration())
-            .name("myrealm.realm").build()
-        // インスタンスの生成
-        Realm.setDefaultConfiguration(config)
-
+        MyRealmModel.initRealm(this)
 
         // Dagger2セットアップ
         component = DaggerAppComponent.builder()

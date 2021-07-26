@@ -6,7 +6,6 @@ import jp.kirin3.anytimeqiita.data.entity.SampleDataResult
 import jp.kirin3.anytimeqiita.infra.repository.SampleRepository
 import jp.kirin3.anytimeqiita.usecase.SampleUseCase
 import kirin3.jp.mljanken.util.LogUtils.LOGI
-import kirin3.jp.mljanken.util.SettingsUtils
 import javax.inject.Inject
 
 class SampleUseCaseImpl @Inject constructor(
@@ -16,7 +15,7 @@ class SampleUseCaseImpl @Inject constructor(
 
     override fun outLog() {
 
-        LOGI("LOGGGGGGGGGGGG " + SettingsUtils.getQiitaCode(context))
+        LOGI("LOGGGGGGGGGGGG ")
     }
 
     override fun loadSampleDataResult(code: String):

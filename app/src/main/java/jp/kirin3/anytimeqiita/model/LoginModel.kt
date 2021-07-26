@@ -1,14 +1,11 @@
-package jp.kirin3.anytimeqiita.ui.reading
+package jp.kirin3.anytimeqiita.model
 
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import jp.kirin3.anytimeqiita.model.AccessTokenModel
-import jp.kirin3.anytimeqiita.model.AuthenticatedUserModel
-import jp.kirin3.anytimeqiita.util.StringUtils
+import jp.kirin3.anytimeqiita.data.AuthenticatedUserData
+import jp.kirin3.anytimeqiita.database.AuthenticatedUserDatabase
 import kirin3.jp.mljanken.util.LogUtils.LOGE
 import kirin3.jp.mljanken.util.LogUtils.LOGI
 import kirin3.jp.mljanken.util.SettingsUtils
@@ -16,10 +13,14 @@ import kirin3.jp.mljanken.util.SettingsUtils
 /**
  * ログインモデル
  *
- * QiitaCode：Qiitaログイン後パラメータとしてアプリに通知される。その後、Preferenceに保存。
- * AccessToken：QiitaCodeを使用してQiitaAPIにて取得。その後、Preferenceに保存。
- * AuthenticatedUser：AccessTokenを使用してQiitaAPIにて取得されるログインユーザーのIDが保存されているデータ。
- * 　　　　　　　　　　 その後、キャッシュとDBに保存。
+ * State：Qiitaログイン画面アクセス時に送信される
+ * 　利用シーン：同一値が返却されることを確認してセキュリティを高めるのに使用される
+ * QiitaCode：Qiitaログイン後パラメータとしてアプリに通知され、Preferenceに保存される
+ * 　利用シーン：AccessTokenを取得するのに使用される
+ * AccessToken：QiitaCodeを使用してQiitaAPIにて取得されPreferenceに保存。
+ * 　利用シーン：各APIを叩くのに使用される。
+ * AuthenticatedUser：AccessTokenを使用してQiitaAPIにて取得されるログインユーザーデータ、DBに保存。
+ * 　利用シーン：IDの表示やIDを利用して各APIを叩くのに使用される
  */
 class LoginModel : ViewModel() {
 
@@ -39,21 +40,43 @@ class LoginModel : ViewModel() {
 
         private var state: String = ""
 
-        fun getLoginStatus(context: Context?): LoginStatus {
+
+        fun isLoginCompleted(context: Context?): Boolean {
+            getLoginStatus(context).let {
+                if (it == LoginStatus.COMPLETE) return true
+            }
+            return false
+        }
+
+        private fun getLoginStatus(context: Context?): LoginStatus {
             if (context == null) return LoginStatus.NOT_LOGIN
 
-            if (StringUtils.isEmpty(SettingsUtils.getQiitaCode(context))) {
+            if (getQiitaCode(context) == null) {
                 return LoginStatus.NOT_CODE
-            }
-            if (StringUtils.isEmpty(SettingsUtils.getQiitaAccessToken(context))) {
+            } else if (getAccessToken(context) == null) {
                 return LoginStatus.NOT_ACCESS_TOKEN
-            }
-            if (AuthenticatedUserModel.getAuthenticatedUserIdFromCacheOrDb() == null) {
+            } else if (getAuthenticatedUserId() == null) {
                 return LoginStatus.NOT_AUTHENTICATED_USER
             }
             return LoginStatus.COMPLETE
         }
 
+        fun clearAllLoginInfo(context: Context?) {
+            clearQiitaCode(context)
+            clearAccessToken(context)
+            clearAuthenticatedUser()
+        }
+
+        fun clearAllUserSetting(context: Context?) {
+            context ?: return
+
+            SettingsUtils.clearAllPreference(context)
+            MyRealmModel.resetRealm(context)
+        }
+
+        /**
+         * 以下、Qiitaログイン関係
+         */
         fun accessQiitaLoginPage(context: Context?) {
             if (context == null) {
                 LOGE("NOT CONTEXT")
@@ -63,26 +86,42 @@ class LoginModel : ViewModel() {
             context.startActivity(intent)
         }
 
-        fun clearLoginCode(context: Context?) {
-            if (context == null) return
-            SettingsUtils.setQiitaCode(context, "")
-        }
-
-        fun clearAllLoginInfo(context: Context?) {
-            clearLoginCode(context)
-            AccessTokenModel.clearQiitaAccessToken(context)
-            AuthenticatedUserModel.clearAuthenticatedUserFromDbAndCache()
-        }
-
         private fun createUrl(): String {
             val url = QIITA_URL + "?client_id=" + QIITA_CLIENT_ID +
                     "&scope=" + QIITA_SCOPE +
                     "&state=" + createState()
-            LOGI("LOGIN URL = " + url)
+            LOGI("LOGIN URL = $url")
 
             return url
         }
 
+        // Qiitaログイン後か（ACTION_VIEWのデータがあるか？）判定
+        fun hasLoginParamInIntent(intent: Intent): Boolean {
+            return intent.action == Intent.ACTION_VIEW
+        }
+
+        // Qiitaログインで取得するパラメータをハンドリング
+        fun handleQiitaLoginParam(intent: Intent, context: Context) {
+            LOGI("analyzeLoginIntent")
+
+            intent.data?.also {
+                it.getQueryParameter("state")?.also { paramState ->
+                    // 送信したStateが返却されたStateと不一致の場合はログインできない
+                    if (isStateNotSame(paramState)) {
+                        LOGE("Sate not same!!")
+                        return
+                    }
+                }
+                it.getQueryParameter("code")?.also { paramCode ->
+                    SettingsUtils.setQiitaCode(context, paramCode)
+                }
+            }
+        }
+        // Qiitaログイン関係ここまで
+
+        /**
+         * 以下、Stateデータ関係
+         */
         private fun createState(): String {
             val charPool: List<Char> = ('a'..'z') + ('A'..'Z') + ('0'..'9')
 
@@ -94,47 +133,70 @@ class LoginModel : ViewModel() {
             return state
         }
 
-        fun isStateNotSame(paramState: String): Boolean {
-            if (state.equals(paramState)) return false
+        private fun isStateNotSame(paramState: String): Boolean {
+            if (state == paramState) return false
             return true
         }
+        // Stateデータ関係ここまで
 
-        fun isLoginCompleted(context: Context?): Boolean {
-            getLoginStatus(context).let {
-                if (it == LoginStatus.COMPLETE) return true
+
+        /**
+         * 以下、QiitaCodeデータ関係
+         */
+        fun getQiitaCode(context: Context?): String? {
+            if (context == null) return null
+            return SettingsUtils.getQiitaCode(context)
+        }
+
+        private fun clearQiitaCode(context: Context?) {
+            if (context == null) return
+            SettingsUtils.setQiitaCode(context, "")
+        }
+        // QiitaCodeデータ関係ここまで
+
+        /**
+         * 以下、AccessTokenデータ関係
+         */
+        fun setAccessToken(context: Context?, token: String) {
+            if (context == null) return
+            SettingsUtils.setAccessToken(context, token)
+        }
+
+        fun getAccessToken(context: Context?): String? {
+            if (context == null) return null
+            return SettingsUtils.getAccessToken(context)
+        }
+
+        fun clearAccessToken(context: Context?) {
+            if (context == null) return
+            SettingsUtils.setAccessToken(context, "")
+        }
+        // AccessTokenデータ関係ここまで
+
+
+        /**
+         * 以下、AuthenticatedUserデータ関係
+         */
+        fun hasAuthenticatedUser(): Boolean {
+            val user = AuthenticatedUserDatabase.selectAuthenticatedUserData()
+            if (user != null) {
+                return true
             }
+
             return false
         }
 
-        /**
-         * QiitaLogin後か判定
-         */
-        fun hasLoginParamInPreference(intent: Intent): Boolean {
-            return intent.action == Intent.ACTION_VIEW
+        fun getAuthenticatedUserId(): String? {
+            return AuthenticatedUserDatabase.selectAuthenticatedUserData()?.id
         }
 
-        /**
-         * QiitaLoginで取得するパラメータをセット
-         */
-        fun setQiitaLoginCode(intent: Intent, context: Context) {
-            LOGI("analyzeLoginIntent")
-
-            intent.data?.also {
-                it.getQueryParameter("state")?.also { paramState ->
-                    if (isStateNotSame(paramState)) {
-                        return
-                    }
-                }
-                it.getQueryParameter("code")?.also { paramCode ->
-                    SettingsUtils.setQiitaCode(context, paramCode)
-                }
-            }
+        fun insertAuthenticatedUserData(data: AuthenticatedUserData) {
+            AuthenticatedUserDatabase.insertAuthenticatedUserData(data)
         }
 
-        // LIVE DATA
-        private val _text = MutableLiveData<String>().apply {
-            value = "This is setting Fragment"
+        fun clearAuthenticatedUser() {
+            AuthenticatedUserDatabase.deleteAuthenticatedUserData()
         }
-        val text: LiveData<String> = _text
+        // AuthenticatedUserデータ関係ここまで
     }
 }

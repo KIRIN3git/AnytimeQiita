@@ -6,9 +6,8 @@ import jp.kirin3.anytimeqiita.api.ApiClient
 import jp.kirin3.anytimeqiita.data.AccessTokenResponseData
 import jp.kirin3.anytimeqiita.data.AuthenticatedUserData
 import jp.kirin3.anytimeqiita.database.AuthenticatedUserDatabase
-import jp.kirin3.anytimeqiita.model.AuthenticatedUserModel
+import jp.kirin3.anytimeqiita.model.LoginModel
 import kirin3.jp.mljanken.util.LogUtils
-import kirin3.jp.mljanken.util.SettingsUtils
 
 class SettingRepository() : ViewModel(), SettingDataSource {
 
@@ -53,12 +52,12 @@ class SettingRepository() : ViewModel(), SettingDataSource {
         }
 
         // アクセストークンの初期化
-        SettingsUtils.setQiitaAccessToken(context, "")
+        LoginModel.clearAccessToken(context)
 
         ApiClient.fetchAccessToken(code, object : ApiClient.AccessTokenApiCallback {
             override fun onTasksLoaded(responseData: AccessTokenResponseData) {
                 LogUtils.LOGI("")
-                SettingsUtils.setQiitaAccessToken(context, responseData.token)
+                LoginModel.setAccessToken(context, responseData.token)
                 callback.onAccessTokenLoaded()
             }
 
@@ -81,23 +80,16 @@ class SettingRepository() : ViewModel(), SettingDataSource {
             object : ApiClient.AuthenticatedUserApiCallback {
                 override fun onTasksLoaded(responseData: AuthenticatedUserData) {
                     LogUtils.LOGI("GET AuthenticatedUser responseData.id = " + responseData.id)
-                    // データをキャッシュ保存
-                    AuthenticatedUserModel.setAuthenticatedUserToCache(
-                        responseData
-                    )
 
                     // データをデータベース保存
-                    AuthenticatedUserDatabase.insertAuthenticatedUserData(responseData)
+                    LoginModel.insertAuthenticatedUserData(responseData)
                     callback.onAuthenticatedUserLoaded()
                 }
 
                 override fun onDataNotAvailable() {
                     LogUtils.LOGI("Fail fetchAuthenticatedUser")
 
-                    AuthenticatedUserModel.setAuthenticatedUserToCache(
-                        null
-                    )
-                    AuthenticatedUserDatabase.deleteAuthenticatedUserData()
+                    LoginModel.clearAuthenticatedUser()
                     callback.onAuthenticatedUserNotAvailable()
                 }
             })

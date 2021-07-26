@@ -33,7 +33,6 @@ object StocksDatabase {
         realm.commitTransaction()
 
         realm.close()
-
     }
 
     fun selectStocksData(): List<StocksResponseData>? {
@@ -41,7 +40,10 @@ object StocksDatabase {
         var realm = Realm.getDefaultInstance()
 
         val stocks = realm.where<StocksResponseData>().findAll()
-        if (stocks.count() == 0) return null
+        if (stocks.count() == 0){
+            realm.close()
+            return null
+        }
         val stocksList = realm.copyFromRealm(stocks)
 
         realm.close()
@@ -56,7 +58,10 @@ object StocksDatabase {
         val stocks = realm.where<StocksResponseData>()
             .equalTo(ID, id)
             .findAll()
-        if (stocks.count() != 1) return null
+        if (stocks.count() != 1){
+            realm.close()
+            return null
+        }
         val stocksList = realm.copyFromRealm(stocks)
 
         realm.close()

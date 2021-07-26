@@ -6,6 +6,7 @@ import com.google.gson.Gson
 import jp.kirin3.anytimeqiita.data.SettingCheckBoxData
 import jp.kirin3.anytimeqiita.ui.stocks.FoldersRepository
 import kirin3.jp.mljanken.util.LogUtils.LOGD
+import kirin3.jp.mljanken.util.LogUtils.LOGI
 
 object SettingsUtils {
 
@@ -20,7 +21,6 @@ object SettingsUtils {
     private const val PREF_CREATE_FOLDERS_SEQID = "pref_create_folders_seqid"
     private const val PREF_STOCK_PAGE_COUNT = "pref_stock_page_count"
     private const val PREF_STOCK_LOADING_COMPLETED = "pref_stock_loading_completed"
-    private const val PREF_SETTING_CREATE_FIRST_FOLDERS_FLG = "pref_setting_create_first_folder_flg"
     private const val PREF_SETTING_FOLDERS_SEQID = "pref_setting_folders_seqid"
     private const val PREF_SETTING_USE_EXTERNAL_BROWSER = "pref_setting_use_external_browser"
     private const val PREF_SETTING_CHECK_BOX = "pref_setting_check_box"
@@ -37,16 +37,16 @@ object SettingsUtils {
         return sp.getString(PREF_SETTING_CODE, null)
     }
 
-    fun setQiitaAccessToken(context: Context, token: String) {
+    fun setAccessToken(context: Context, token: String) {
         val sp = PreferenceManager.getDefaultSharedPreferences(context)
         sp.edit().putString(PREF_SETTING_TOKEN, token).apply()
         LOGD("SetPref token = $token")
     }
 
-    fun getQiitaAccessToken(context: Context): String? {
+    fun getAccessToken(context: Context): String? {
         val sp = PreferenceManager.getDefaultSharedPreferences(context)
         LOGD("GetPref token = " + sp.getString(PREF_SETTING_TOKEN, ""))
-        return sp.getString(PREF_SETTING_TOKEN, "")
+        return sp.getString(PREF_SETTING_TOKEN, null)
     }
 
     fun setWebViewPosition(context: Context?, position: Int) {
@@ -171,7 +171,6 @@ object SettingsUtils {
         return sp.getBoolean(PREF_STOCK_LOADING_COMPLETED, false)
     }
 
-
     fun hasSettingCheckBoxData(context: Context?): Boolean {
         val sp = PreferenceManager.getDefaultSharedPreferences(context)
         val data = sp.getString(PREF_SETTING_CHECK_BOX, null)
@@ -192,6 +191,18 @@ object SettingsUtils {
             "GetPref $PREF_STOCK_LOADING_COMPLETED = $data"
         )
         return Gson().fromJson(data, SettingCheckBoxData::class.java)
+    }
+
+    fun clearSettingCheckBoxData(context: Context?) {
+        LOGI("")
+        val sp = PreferenceManager.getDefaultSharedPreferences(context)
+        sp.edit().remove(PREF_SETTING_CHECK_BOX)
+    }
+
+    fun clearAllPreference(context: Context?) {
+        LOGI("")
+        val sp = PreferenceManager.getDefaultSharedPreferences(context)
+        sp.edit().clear().commit()
     }
 
 }

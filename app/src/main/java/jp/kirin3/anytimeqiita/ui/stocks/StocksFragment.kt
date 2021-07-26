@@ -19,7 +19,7 @@ import jp.kirin3.anytimeqiita.manager.TransitionManager
 import jp.kirin3.anytimeqiita.model.StocksModel
 import jp.kirin3.anytimeqiita.source.dialog.StocksDialogFragment
 import jp.kirin3.anytimeqiita.source.dialog.StocksDialogParameter
-import jp.kirin3.anytimeqiita.ui.reading.LoginModel
+import jp.kirin3.anytimeqiita.model.LoginModel
 import kirin3.jp.mljanken.util.LogUtils.LOGI
 import kirin3.jp.mljanken.util.SettingsUtils
 import javax.inject.Inject
