@@ -14,7 +14,7 @@ class MainApplication : Application() {
     companion object {
         const val LOG_TAG = "KIRIN3_LOG"
         const val QIITA_CLIENT_ID = "2d2713c9fb8be9972a134670392dc4df46388034"
-        const val QIITA_CLIENT_SEACRET = "972fe1788f23c93aa8546d1b99ab1c0677596f53"
+        const val QIITA_CLIENT_SECRET = "972fe1788f23c93aa8546d1b99ab1c0677596f53"
 
         lateinit var component: AppComponent private set
     }

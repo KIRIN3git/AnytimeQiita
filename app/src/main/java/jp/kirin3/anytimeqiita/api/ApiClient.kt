@@ -5,7 +5,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import jp.kirin3.anytimeqiita.MainApplication.Companion.QIITA_CLIENT_ID
-import jp.kirin3.anytimeqiita.MainApplication.Companion.QIITA_CLIENT_SEACRET
+import jp.kirin3.anytimeqiita.MainApplication.Companion.QIITA_CLIENT_SECRET
 import jp.kirin3.anytimeqiita.data.AccessTokenRequestData
 import jp.kirin3.anytimeqiita.data.AccessTokenResponseData
 import jp.kirin3.anytimeqiita.data.AuthenticatedUserData
@@ -46,7 +46,7 @@ object ApiClient {
         val service = restClient().create(AccessTokenService::class.java)
         val requestData = AccessTokenRequestData(
             QIITA_CLIENT_ID,
-            QIITA_CLIENT_SEACRET,
+            QIITA_CLIENT_SECRET,
             code
         )
         val repos = service.fetchRepos(requestData)
