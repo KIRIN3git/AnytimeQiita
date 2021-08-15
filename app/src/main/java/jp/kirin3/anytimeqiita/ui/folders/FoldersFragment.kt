@@ -23,6 +23,7 @@ import jp.kirin3.anytimeqiita.injection.Injection
 import jp.kirin3.anytimeqiita.model.FoldersModel
 import jp.kirin3.anytimeqiita.source.dialog.FoldersDialogFragment
 import jp.kirin3.anytimeqiita.source.dialog.FoldersDialogParameter
+import jp.kirin3.anytimeqiita.ui.reading.ReadingFragment
 import jp.kirin3.anytimeqiita.ui.solders.FoldersRecyclerAdapter
 import jp.kirin3.anytimeqiita.ui.stocks.FoldersRecyclerViewHolder
 import jp.kirin3.anytimeqiita.util.DialogUtils
@@ -45,6 +46,13 @@ class FoldersFragment : BaseFragment(), FoldersContract.View,
     private var dialogPosition: Int? = null
 
     override lateinit var presenter: FoldersContract.Presenter
+
+    companion object {
+
+        fun newInstance(): FoldersFragment {
+            return FoldersFragment()
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,

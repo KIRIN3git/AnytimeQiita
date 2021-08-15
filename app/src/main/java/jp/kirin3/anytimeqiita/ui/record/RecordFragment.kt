@@ -13,6 +13,7 @@ import com.google.android.material.tabs.TabLayoutMediator
 import jp.kirin3.anytimeqiita.BaseFragment
 import jp.kirin3.anytimeqiita.R
 import jp.kirin3.anytimeqiita.ui.graph.GraphFragment
+import jp.kirin3.anytimeqiita.ui.reading.ReadingFragment
 import kirin3.jp.mljanken.util.LogUtils.LOGD
 
 
@@ -26,6 +27,10 @@ class RecordFragment : BaseFragment() {
 
     companion object {
         public const val VIEW_PAGER_MEMBER_POSITION = "view_pager_member_position"
+
+        fun newInstance(): RecordFragment {
+            return RecordFragment()
+        }
     }
 
     private lateinit var recordViewModel: RecordViewModel

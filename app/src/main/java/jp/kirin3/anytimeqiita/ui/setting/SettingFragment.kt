@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import com.google.gson.Gson
 import jp.kirin3.anytimeqiita.BaseFragment
+import jp.kirin3.anytimeqiita.MainActivity
 import jp.kirin3.anytimeqiita.R
 import jp.kirin3.anytimeqiita.data.SettingCheckBoxData
 import jp.kirin3.anytimeqiita.injection.Injection
@@ -27,7 +28,12 @@ class SettingFragment : BaseFragment(), SettingContract.View {
     companion object {
         // Qiita画面から戻ってきたパラメータ
         const val COME_BACK_FROM_QIITA_LOGIN = "COME_BACK_FROM_QIITA_LOGIN"
+
+        fun newInstance(): SettingFragment {
+            return SettingFragment()
+        }
     }
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -44,6 +50,9 @@ class SettingFragment : BaseFragment(), SettingContract.View {
         )
 
         getParam()
+
+        val acti = (activity as MainActivity)
+        acti.addFragment()
 
         return root
     }

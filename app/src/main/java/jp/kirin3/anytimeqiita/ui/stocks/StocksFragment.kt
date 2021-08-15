@@ -16,10 +16,11 @@ import jp.kirin3.anytimeqiita.data.StocksResponseData
 import jp.kirin3.anytimeqiita.database.FilesDatabase
 import jp.kirin3.anytimeqiita.database.FoldersDatabase
 import jp.kirin3.anytimeqiita.manager.TransitionManager
+import jp.kirin3.anytimeqiita.model.LoginModel
 import jp.kirin3.anytimeqiita.model.StocksModel
 import jp.kirin3.anytimeqiita.source.dialog.StocksDialogFragment
 import jp.kirin3.anytimeqiita.source.dialog.StocksDialogParameter
-import jp.kirin3.anytimeqiita.model.LoginModel
+import jp.kirin3.anytimeqiita.ui.reading.ReadingFragment
 import kirin3.jp.mljanken.util.LogUtils.LOGI
 import kirin3.jp.mljanken.util.SettingsUtils
 import javax.inject.Inject
@@ -38,6 +39,13 @@ class StocksFragment : BaseFragment(), StocksContract.View, SwipeRefreshLayout.O
 
     @Inject
     override lateinit var presenter: StocksContract.Presenter
+
+    companion object {
+
+        fun newInstance(): StocksFragment {
+            return StocksFragment()
+        }
+    }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)

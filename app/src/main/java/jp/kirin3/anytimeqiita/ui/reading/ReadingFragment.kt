@@ -10,7 +10,6 @@ import androidx.lifecycle.ViewModelProviders
 import jp.kirin3.anytimeqiita.BaseFragment
 import jp.kirin3.anytimeqiita.R
 import jp.kirin3.anytimeqiita.injection.Injection
-import jp.kirin3.anytimeqiita.model.LoginModel
 import jp.kirin3.anytimeqiita.util.ReadingFileHelper
 import kirin3.jp.mljanken.util.LogUtils.LOGI
 import kirin3.jp.mljanken.util.SettingsUtils
@@ -31,6 +30,10 @@ class ReadingFragment : BaseFragment(), ReadingContract.View {
         const val URL_PARAM = "URL"
         const val IS_REFRESH_WEBVIEW_PARAM = "IS_REFRESH"
         const val READER_FILE_PREFIX = "file://"
+
+        fun newInstance(): ReadingFragment {
+            return ReadingFragment()
+        }
     }
 
     override fun onCreateView(
