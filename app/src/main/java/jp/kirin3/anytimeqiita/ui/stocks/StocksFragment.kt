@@ -16,12 +16,13 @@ import jp.kirin3.anytimeqiita.data.StocksResponseData
 import jp.kirin3.anytimeqiita.database.FilesDatabase
 import jp.kirin3.anytimeqiita.database.FoldersDatabase
 import jp.kirin3.anytimeqiita.manager.TransitionManager
+import jp.kirin3.anytimeqiita.model.LoginModel
 import jp.kirin3.anytimeqiita.model.StocksModel
 import jp.kirin3.anytimeqiita.source.dialog.StocksDialogFragment
 import jp.kirin3.anytimeqiita.source.dialog.StocksDialogParameter
-import jp.kirin3.anytimeqiita.model.LoginModel
 import kirin3.jp.mljanken.util.LogUtils.LOGI
 import kirin3.jp.mljanken.util.SettingsUtils
+import kotlinx.android.synthetic.main.fragment_stocks.*
 import javax.inject.Inject
 
 class StocksFragment : BaseFragment(), StocksContract.View, SwipeRefreshLayout.OnRefreshListener,
@@ -32,7 +33,6 @@ class StocksFragment : BaseFragment(), StocksContract.View, SwipeRefreshLayout.O
     private var viewAdapter: StocksRecyclerAdapter? = null
     private lateinit var viewManager: RecyclerView.LayoutManager
     private var hasAdapter: Boolean = false
-    private var nowLoadingFlg: Boolean = false
 
     //override lateinit var presenter: StocksContract.Presenter
 
@@ -84,6 +84,7 @@ class StocksFragment : BaseFragment(), StocksContract.View, SwipeRefreshLayout.O
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.menu_reload -> {
+                showLoadingDialog()
                 presenter.initGettingStockListFromApi()
             }
         }
@@ -95,6 +96,7 @@ class StocksFragment : BaseFragment(), StocksContract.View, SwipeRefreshLayout.O
         LOGI("")
 
         if (LoginModel.isLoginCompleted(context)) {
+            showLoadingDialog()
             presenter.handleGettingStockListFromAny()
         }
     }
@@ -102,13 +104,13 @@ class StocksFragment : BaseFragment(), StocksContract.View, SwipeRefreshLayout.O
     override fun onDestroy() {
         super.onDestroy()
         // 位置の保存
-        StocksModel.parcelable = stocksRecyclerView.layoutManager?.onSaveInstanceState()
+        StocksModel.recyclerViewParcelable = stocksRecyclerView.layoutManager?.onSaveInstanceState()
+//        if (stocks_recycler_view != null) {
+//            StocksModel.parcelable = stocks_recycler_view.layoutManager?.onSaveInstanceState()
+//        }
         presenter.stop()
     }
 
-    override fun showMessage(msg: String) {
-        LOGI("")
-    }
 
     private fun setRefreshLayout(root: View) {
         refreshLayout = root.findViewById(R.id.refresh_layout)
@@ -138,11 +140,37 @@ class StocksFragment : BaseFragment(), StocksContract.View, SwipeRefreshLayout.O
                 // ラストスクロールリスナー
                 addOnScrollListener(ScrollListener())
             }
-
             // 位置の復元
-            stocksRecyclerView.layoutManager?.onRestoreInstanceState(StocksModel.parcelable)
+            stocksRecyclerView.layoutManager?.onRestoreInstanceState(StocksModel.recyclerViewParcelable)
         }
-        nowLoadingFlg = false
+
+        handleLoadingDialog()
+    }
+
+    override fun showLoadingDialog() {
+        loaded_stocks_count_text_view.visibility = View.GONE
+        loading_lottie_animation_view.resumeAnimation()
+        loading_card_view.visibility = View.VISIBLE
+    }
+
+    override fun handleLoadingDialog() {
+        // ロードダイアログを非表示
+        if (presenter.isStockLoadCompleted()) {
+            loading_lottie_animation_view.pauseAnimation()
+            loading_card_view.visibility = View.GONE
+        }
+        // ロードダイアログのストック数カウント表示
+        presenter.getLoadedStocksCount().let {
+            loaded_stocks_count_text_view.visibility = View.VISIBLE
+            loaded_stocks_count_text_view.text =
+                getString(R.string.message_loaded_stocks_count, it.toString())
+            if (presenter.getLoadedStocksCount() > 200) {
+                loading_lottie_animation_view.cancelAnimation()
+                loading_lottie_animation_view.pauseAnimation()
+                loading_lottie_animation_view.clearAnimation()
+                loading_lottie_animation_view.resumeAnimation()
+            }
+        }
     }
 
     override fun clearStocksRecyclerView() {
@@ -169,7 +197,9 @@ class StocksFragment : BaseFragment(), StocksContract.View, SwipeRefreshLayout.O
      * StocksRecyclerViewHolder.ItemClickListener
      */
     override fun onItemClick(stockId: String, title: String, url: String) {
-        showStocksDialog(stockId, title, url)
+        if (presenter.isStockLoadCompleted()) {
+            showStocksDialog(stockId, title, url)
+        }
     }
 
     override fun onReadNowButtonClick(dialog: DialogFragment, title: String?, url: String?) {
@@ -213,7 +243,6 @@ class StocksFragment : BaseFragment(), StocksContract.View, SwipeRefreshLayout.O
             null
         ).commitNowAllowingStateLoss()
     }
-
 
     override fun setRefreshingInterface(refreshFlg: Boolean) {
         refreshLayout.isRefreshing = refreshFlg

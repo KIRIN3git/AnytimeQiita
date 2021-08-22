@@ -43,7 +43,7 @@ object SettingsUtils {
         LOGD("SetPref token = $token")
     }
 
-    fun getAccessToken(context: Context): String? {
+    fun getAccessToken(context: Context?): String? {
         val sp = PreferenceManager.getDefaultSharedPreferences(context)
         LOGD("GetPref token = " + sp.getString(PREF_SETTING_TOKEN, ""))
         return sp.getString(PREF_SETTING_TOKEN, null)
@@ -88,13 +88,13 @@ object SettingsUtils {
     fun setCreateFirstFoldersFlg(context: Context?, flg: Boolean) {
         val sp = PreferenceManager.getDefaultSharedPreferences(context)
         sp.edit().putBoolean(PREF_CREATE_FIRST_FOLDERS_FLG, flg).apply()
-        LOGD("SetPref " + PREF_CREATE_FIRST_FOLDERS_FLG + " = " + flg)
+        LOGD("SetPref $PREF_CREATE_FIRST_FOLDERS_FLG = $flg")
     }
 
     fun getCreateFirstFoldersFlg(context: Context?): Boolean {
         val sp = PreferenceManager.getDefaultSharedPreferences(context)
         LOGD(
-            "GetPref " + PREF_CREATE_FIRST_FOLDERS_FLG + " = " + sp.getBoolean(
+            "GetPref $PREF_CREATE_FIRST_FOLDERS_FLG = " + sp.getBoolean(
                 PREF_CREATE_FIRST_FOLDERS_FLG,
                 false
             )

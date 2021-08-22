@@ -11,13 +11,14 @@ import jp.kirin3.anytimeqiita.view.BaseView
 interface StocksContract {
 
     interface View : BaseView<Presenter> {
-        fun showMessage(msg: String)
         fun showStocksRecyclerView(
             stocks: List<StocksResponseData>?
         )
 
         fun clearStocksRecyclerView()
         fun setRefreshingInterface(flg: Boolean)
+        fun showLoadingDialog()
+        fun handleLoadingDialog()
     }
 
     interface Presenter : BasePresenter {
@@ -29,5 +30,7 @@ interface StocksContract {
         fun startNotLoggedIn()
         fun getMessage()
         fun processAccessToken(code: String)
+        fun isStockLoadCompleted():Boolean
+        fun getLoadedStocksCount():Int
     }
 }

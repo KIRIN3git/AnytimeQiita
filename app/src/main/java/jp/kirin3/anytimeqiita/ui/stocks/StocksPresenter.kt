@@ -3,10 +3,9 @@ package jp.kirin3.anytimeqiita.ui.stocks
 import io.reactivex.Scheduler
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
-import jp.kirin3.anytimeqiita.data.StocksResponseData
 import jp.kirin3.anytimeqiita.database.StocksDatabase
-import jp.kirin3.anytimeqiita.model.StocksModel
 import jp.kirin3.anytimeqiita.model.LoginModel
+import jp.kirin3.anytimeqiita.model.StocksModel
 import jp.kirin3.anytimeqiita.usecase.StocksUseCase
 import kirin3.jp.mljanken.util.LogUtils.LOGE
 import javax.inject.Inject
@@ -37,7 +36,7 @@ class StocksPresenter @Inject constructor(
     }
 
     override fun handleGettingStockListFromAny() {
-        if (stocksUseCase.isLoadCompleted()) {
+        if (isStockLoadCompleted()) {
             view.showStocksRecyclerView(stocksUseCase.getStockListFromDb())
         } else {
             initGettingStockListFromApi()
@@ -58,6 +57,7 @@ class StocksPresenter @Inject constructor(
         view.clearStocksRecyclerView()
         stocksUseCase.resetStockListFromDb()
         stocksUseCase.resetPageCount()
+        viewModel.resetRecyclerViewParcelable()
     }
 
     private fun getStockList() {
@@ -84,6 +84,7 @@ class StocksPresenter @Inject constructor(
                     // 再起呼び出し
                     getStockList()
                 }
+                view.handleLoadingDialog()
             }, { e ->
                 view.setRefreshingInterface(false)
                 LOGE("Failed to load StockList ${e.message}")
@@ -91,26 +92,34 @@ class StocksPresenter @Inject constructor(
             .addTo(disposables)
     }
 
-    private fun getStockListOld() {
-        view.setRefreshingInterface(true)
-        stocksUseCase.loadStockListOld(
-            LoginModel.getAuthenticatedUserId(),
-            object : StocksDataSource.LoadTasksCallback {
-                override fun onLoadSuccess(stockList: List<StocksResponseData>) {
-                    view.showStocksRecyclerView(stockList)
-                    getStockListOld()
-                }
+//    private fun getStockListOld() {
+//        view.setRefreshingInterface(true)
+//        stocksUseCase.loadStockListOld(
+//            LoginModel.getAuthenticatedUserId(),
+//            object : StocksDataSource.LoadTasksCallback {
+//                override fun onLoadSuccess(stockList: List<StocksResponseData>) {
+//                    view.showStocksRecyclerView(stockList)
+//                    getStockListOld()
+//                }
+//
+//                // 取得データがない = 全データ取得完了
+//                override fun onLoadNoData() {
+//                    view.setRefreshingInterface(false)
+//                }
+//
+//                override fun onLoadFailure() {
+//                    LOGE("onLoadFailure")
+//                    view.setRefreshingInterface(false)
+//                }
+//            })
+//    }
 
-                // 取得データがない = 全データ取得完了
-                override fun onLoadNoData() {
-                    view.setRefreshingInterface(false)
-                }
+    override fun isStockLoadCompleted(): Boolean {
+        return stocksUseCase.isLoadCompleted()
+    }
 
-                override fun onLoadFailure() {
-                    LOGE("onLoadFailure")
-                    view.setRefreshingInterface(false)
-                }
-            })
+    override fun getLoadedStocksCount(): Int {
+        return stocksUseCase.getLoadedStocksCount()
     }
 
     override fun startNotLoggedIn() {

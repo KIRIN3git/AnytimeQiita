@@ -31,7 +31,7 @@ class AlertDialogFragment : DialogFragment() {
         fun onDialogListClick(dialog: DialogFragment, id: Int)
     }
 
-    internal var listener: NoticeDialogListener? = null
+    private var listener: NoticeDialogListener? = null
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
