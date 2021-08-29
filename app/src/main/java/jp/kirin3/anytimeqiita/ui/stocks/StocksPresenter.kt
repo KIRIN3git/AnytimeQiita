@@ -62,7 +62,6 @@ class StocksPresenter @Inject constructor(
 
     private fun getStockList() {
         val userId = LoginModel.getAuthenticatedUserId() ?: return
-        view.setRefreshingInterface(true)
 
         stocksUseCase.loadStockList(userId)
             .observeOn(uiScheduler)
@@ -75,7 +74,6 @@ class StocksPresenter @Inject constructor(
             .subscribe({ result ->
                 if (result.isEmpty() || stocksUseCase.getPageCount() > MAX_STOCKS_PAGE) {
                     stocksUseCase.setStockLoadCompleted(true)
-                    view.setRefreshingInterface(false)
                 } else {
                     // 取得データはDBに保存
                     StocksDatabase.insertStocksDataList(result)
@@ -86,7 +84,6 @@ class StocksPresenter @Inject constructor(
                 }
                 view.handleLoadingDialog()
             }, { e ->
-                view.setRefreshingInterface(false)
                 LOGE("Failed to load StockList ${e.message}")
             })
             .addTo(disposables)

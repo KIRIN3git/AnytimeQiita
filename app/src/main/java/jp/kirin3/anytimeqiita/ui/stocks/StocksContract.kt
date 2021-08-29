@@ -16,7 +16,6 @@ interface StocksContract {
         )
 
         fun clearStocksRecyclerView()
-        fun setRefreshingInterface(flg: Boolean)
         fun showLoadingDialog()
         fun handleLoadingDialog()
     }

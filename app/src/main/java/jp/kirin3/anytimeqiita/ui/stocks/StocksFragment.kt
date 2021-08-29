@@ -7,7 +7,6 @@ import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import jp.kirin3.anytimeqiita.BaseFragment
 import jp.kirin3.anytimeqiita.MainApplication
 import jp.kirin3.anytimeqiita.R
@@ -25,10 +24,9 @@ import kirin3.jp.mljanken.util.SettingsUtils
 import kotlinx.android.synthetic.main.fragment_stocks.*
 import javax.inject.Inject
 
-class StocksFragment : BaseFragment(), StocksContract.View, SwipeRefreshLayout.OnRefreshListener,
+class StocksFragment : BaseFragment(), StocksContract.View,
     StocksRecyclerViewHolder.ItemClickListener, StocksDialogFragment.StocksDialogListener {
 
-    private lateinit var refreshLayout: SwipeRefreshLayout
     private lateinit var stocksRecyclerView: RecyclerView
     private var viewAdapter: StocksRecyclerAdapter? = null
     private lateinit var viewManager: RecyclerView.LayoutManager
@@ -63,8 +61,6 @@ class StocksFragment : BaseFragment(), StocksContract.View, SwipeRefreshLayout.O
         val root = inflater.inflate(R.layout.fragment_stocks, container, false)
 
         stocksRecyclerView = root.findViewById(R.id.stocks_recycler_view)
-
-        setRefreshLayout(root)
 
         return root
     }
@@ -109,15 +105,6 @@ class StocksFragment : BaseFragment(), StocksContract.View, SwipeRefreshLayout.O
 //            StocksModel.parcelable = stocks_recycler_view.layoutManager?.onSaveInstanceState()
 //        }
         presenter.stop()
-    }
-
-
-    private fun setRefreshLayout(root: View) {
-        refreshLayout = root.findViewById(R.id.refresh_layout)
-        refreshLayout.setOnRefreshListener(this)
-        refreshLayout.setColorSchemeResources(
-            R.color.orange2
-        )
     }
 
     override fun showStocksRecyclerView(
@@ -242,23 +229,5 @@ class StocksFragment : BaseFragment(), StocksContract.View, SwipeRefreshLayout.O
             ),
             null
         ).commitNowAllowingStateLoss()
-    }
-
-    override fun setRefreshingInterface(refreshFlg: Boolean) {
-        refreshLayout.isRefreshing = refreshFlg
-    }
-
-    /**
-     * SwipeRefreshLayout.OnRefreshListener
-     */
-    override fun onRefresh() {
-        LOGI("")
-        setRefreshingInterface(false)
-//        if (LoginModel.isLoginCompleted(context) && !nowLoadingFlg) {
-//            nowLoadingFlg = true
-//            clearStocksRecyclerView()
-//            StocksDatabase.deleteStocksDataList()
-//            presenter.refreshLayout()
-//        }
     }
 }
