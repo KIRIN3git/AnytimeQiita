@@ -81,7 +81,7 @@ class StocksFragment : BaseFragment(), StocksContract.View,
         when (item.itemId) {
             R.id.menu_reload -> {
                 showLoadingDialog()
-                presenter.initGettingStockListFromApi()
+                presenter.getStockListFromApiWithInit()
             }
         }
         return true
