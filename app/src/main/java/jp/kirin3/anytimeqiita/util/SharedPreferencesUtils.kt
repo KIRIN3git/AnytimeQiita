@@ -8,7 +8,7 @@ import jp.kirin3.anytimeqiita.ui.stocks.FoldersRepository
 import kirin3.jp.mljanken.util.LogUtils.LOGD
 import kirin3.jp.mljanken.util.LogUtils.LOGI
 
-object SettingsUtils {
+object SharedPreferencesUtils {
 
     private const val TAG = "TAG"
 
@@ -24,6 +24,7 @@ object SettingsUtils {
     private const val PREF_SETTING_FOLDERS_SEQID = "pref_setting_folders_seqid"
     private const val PREF_SETTING_USE_EXTERNAL_BROWSER = "pref_setting_use_external_browser"
     private const val PREF_SETTING_CHECK_BOX = "pref_setting_check_box"
+    private const val PREF_STOCK_SPINNER_POSITION = "pref_stock_spinner_position"
 
     fun setQiitaCode(context: Context, code: String) {
         val sp = PreferenceManager.getDefaultSharedPreferences(context)
@@ -205,5 +206,18 @@ object SettingsUtils {
         sp.edit().clear().commit()
     }
 
+
+    fun setStockSpinnerPosition(context: Context?, position: Int) {
+        val sp = PreferenceManager.getDefaultSharedPreferences(context)
+        sp.edit().putInt(PREF_STOCK_SPINNER_POSITION, position).apply()
+        LOGD("SetPref $PREF_STOCK_SPINNER_POSITION = $position")
+    }
+
+    fun getStockSpinnerPosition(context: Context?): Int {
+        val sp = PreferenceManager.getDefaultSharedPreferences(context)
+        val data = sp.getInt(PREF_STOCK_SPINNER_POSITION, 0)
+        LOGD("GetPref $PREF_STOCK_SPINNER_POSITION = $data")
+        return data
+    }
 }
 

@@ -9,7 +9,7 @@ import jp.kirin3.anytimeqiita.data.StocksResponseData
 import jp.kirin3.anytimeqiita.database.StocksDatabase
 import jp.kirin3.anytimeqiita.di.RetrofitFactory
 import kirin3.jp.mljanken.util.LogUtils.LOGD
-import kirin3.jp.mljanken.util.SettingsUtils
+import kirin3.jp.mljanken.util.SharedPreferencesUtils
 
 class StocksRepository(
     private val retrofitFactory: RetrofitFactory
@@ -70,11 +70,11 @@ class StocksRepository(
     }
 
     fun setPageCount(context: Context, pageCount: Int) {
-        SettingsUtils.setStockPageCount(context, pageCount)
+        SharedPreferencesUtils.setStockPageCount(context, pageCount)
     }
 
     fun getPageCount(context: Context) {
-        SettingsUtils.getStockPageCount(context)
+        SharedPreferencesUtils.getStockPageCount(context)
     }
 
     /**

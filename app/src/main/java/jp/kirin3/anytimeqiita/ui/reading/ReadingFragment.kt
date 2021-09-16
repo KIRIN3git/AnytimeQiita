@@ -10,10 +10,9 @@ import androidx.lifecycle.ViewModelProviders
 import jp.kirin3.anytimeqiita.BaseFragment
 import jp.kirin3.anytimeqiita.R
 import jp.kirin3.anytimeqiita.injection.Injection
-import jp.kirin3.anytimeqiita.model.LoginModel
 import jp.kirin3.anytimeqiita.util.ReadingFileHelper
 import kirin3.jp.mljanken.util.LogUtils.LOGI
-import kirin3.jp.mljanken.util.SettingsUtils
+import kirin3.jp.mljanken.util.SharedPreferencesUtils
 
 class ReadingFragment : BaseFragment(), ReadingContract.View {
 
@@ -95,13 +94,13 @@ class ReadingFragment : BaseFragment(), ReadingContract.View {
     fun getParam() {
         arguments?.run {
             getString(URL_PARAM)?.let {
-                SettingsUtils.setWebViewUrl(context, it)
+                SharedPreferencesUtils.setWebViewUrl(context, it)
                 isLoadNewWebView = true
             }
             getBoolean(IS_REFRESH_WEBVIEW_PARAM)?.let {
                 isRefresh = it
                 if (isRefresh) {
-                    SettingsUtils.setWebViewPosition(context, 0)
+                    SharedPreferencesUtils.setWebViewPosition(context, 0)
                 }
             }
         }
@@ -118,7 +117,7 @@ class ReadingFragment : BaseFragment(), ReadingContract.View {
         LOGI("")
         presenter.setEndTime()
         presenter.setReadingTime()
-        SettingsUtils.setWebViewPosition(context, webView.scrollY)
+        SharedPreferencesUtils.setWebViewPosition(context, webView.scrollY)
     }
 
     fun setWebView() {
@@ -144,13 +143,13 @@ class ReadingFragment : BaseFragment(), ReadingContract.View {
         if (!hasFile && !isLoadNewWebView) return
 
         if (isLoadNewWebView) {
-            webView.loadUrl(SettingsUtils.getWebViewUrl(context))
+            webView.loadUrl(SharedPreferencesUtils.getWebViewUrl(context))
         } else {
             webView.loadUrl(READER_FILE_PREFIX + ReadingFileHelper.getReadingFileFullPath(context))
         }
 
-        setTitle(SettingsUtils.getWebViewTitle(context))
-        webView.loadUrl(SettingsUtils.getWebViewUrl(context))
-        webView.scrollY = SettingsUtils.getWebViewPosition(context)
+        setTitle(SharedPreferencesUtils.getWebViewTitle(context))
+        webView.loadUrl(SharedPreferencesUtils.getWebViewUrl(context))
+        webView.scrollY = SharedPreferencesUtils.getWebViewPosition(context)
     }
 }

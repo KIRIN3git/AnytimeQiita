@@ -24,6 +24,7 @@ interface StocksContract {
         fun setup(view: View, viewModel: StocksModel)
         fun stop()
         fun handleGettingStockListFromAny()
+        fun getStockListFromDb()
         fun getStockListFromApiWithInit()
         fun getStockListFromApiWithContinue()
         fun startNotLoggedIn()

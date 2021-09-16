@@ -34,6 +34,7 @@
     <string name="word_no">いいえ</string>
     <string name="word_read_now">今すぐ読む</string>
     <string name="word_bar_y_formatted">%.0f分</string>
+    <string name="word_spinner">spinner</string>
     <string name="word_reload">reload</string>
     <string name="word_go_to_top">go_to_top</string>
 
@@ -46,5 +47,6 @@
     <string name="message_show_update_time">更新日時を表示する</string>
     <string name="message_load_stock_now">ストックデータをロード中です\nしばらくお待ちください</string>
     <string name="message_loaded_stocks_count">%1$s件 ダウンロード済み</string>
+
 
 </resources>

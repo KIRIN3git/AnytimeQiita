@@ -3,6 +3,9 @@ package jp.kirin3.anytimeqiita.ui.stocks
 import android.content.Context
 import android.os.Bundle
 import android.view.*
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.Spinner
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -20,12 +23,13 @@ import jp.kirin3.anytimeqiita.model.StocksModel
 import jp.kirin3.anytimeqiita.source.dialog.StocksDialogFragment
 import jp.kirin3.anytimeqiita.source.dialog.StocksDialogParameter
 import kirin3.jp.mljanken.util.LogUtils.LOGI
-import kirin3.jp.mljanken.util.SettingsUtils
+import kirin3.jp.mljanken.util.SharedPreferencesUtils
 import kotlinx.android.synthetic.main.fragment_stocks.*
 import javax.inject.Inject
 
 class StocksFragment : BaseFragment(), StocksContract.View,
-    StocksRecyclerViewHolder.ItemClickListener, StocksDialogFragment.StocksDialogListener {
+    StocksRecyclerViewHolder.ItemClickListener, StocksDialogFragment.StocksDialogListener,
+    AdapterView.OnItemSelectedListener {
 
     private lateinit var stocksRecyclerView: RecyclerView
     private var viewAdapter: StocksRecyclerAdapter? = null
@@ -73,8 +77,21 @@ class StocksFragment : BaseFragment(), StocksContract.View,
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
+        val nonNullContext = context ?: return
+
         inflater.inflate(R.menu.stocks_menu, menu)
         menu.findItem(R.id.menu_reload).isVisible = true
+
+        val item = menu.findItem(R.id.menu_spinner)
+        val spinner = item.actionView as Spinner
+        val adapter = ArrayAdapter.createFromResource(
+            nonNullContext,
+            R.array.stocks_spinner, R.layout.actionbar_spinner
+        )
+        adapter.setDropDownViewResource(R.layout.actionbar_spinner_dropdown)
+        spinner.adapter = adapter
+        spinner.onItemSelectedListener = this
+        spinner.setSelection(SharedPreferencesUtils.getStockSpinnerPosition(context))
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -151,12 +168,6 @@ class StocksFragment : BaseFragment(), StocksContract.View,
             loaded_stocks_count_text_view.visibility = View.VISIBLE
             loaded_stocks_count_text_view.text =
                 getString(R.string.message_loaded_stocks_count, it.toString())
-            if (presenter.getLoadedStocksCount() > 200) {
-                loading_lottie_animation_view.cancelAnimation()
-                loading_lottie_animation_view.pauseAnimation()
-                loading_lottie_animation_view.clearAnimation()
-                loading_lottie_animation_view.resumeAnimation()
-            }
         }
     }
 
@@ -192,7 +203,7 @@ class StocksFragment : BaseFragment(), StocksContract.View,
     override fun onReadNowButtonClick(dialog: DialogFragment, title: String?, url: String?) {
         if (title == null || url == null) return
 
-        if (SettingsUtils.getUseExternalBrowser(context)) {
+        if (SharedPreferencesUtils.getUseExternalBrowser(context)) {
             TransitionManager.transitionExternalBrowser(this, activity?.packageManager, url)
         } else {
             TransitionManager.transitionReadingFragment(
@@ -229,5 +240,45 @@ class StocksFragment : BaseFragment(), StocksContract.View,
             ),
             null
         ).commitNowAllowingStateLoss()
+    }
+
+//    override fun onNavigationItemSelected(item: MenuItem): Boolean {
+//        LOGI("item aaa " + item)
+//        return true
+//    }
+
+    enum class SpinnerEnum {
+        ADDITION,
+        LGTM,
+        UPDATE,
+        NAME
+    }
+
+    override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+        if (!presenter.isStockLoadCompleted()) return
+        if (position == SharedPreferencesUtils.getStockSpinnerPosition(context)) return
+        SharedPreferencesUtils.setStockSpinnerPosition(context, position)
+
+        when (position) {
+            SpinnerEnum.ADDITION.ordinal -> {
+                presenter.getStockListFromDb()
+                LOGI("aaaxxx1")
+            }
+            SpinnerEnum.LGTM.ordinal -> {
+//                presenter.getStockListFromDb()
+                LOGI("aaaxxx2")
+
+            }
+            SpinnerEnum.UPDATE.ordinal -> {
+                LOGI("aaaxxx3")
+            }
+            SpinnerEnum.NAME.ordinal -> {
+                LOGI("aaaxxx4")
+            }
+        }
+    }
+
+    override fun onNothingSelected(parent: AdapterView<*>?) {
+        LOGI("shinji position xxxxxxxxxxx")
     }
 }

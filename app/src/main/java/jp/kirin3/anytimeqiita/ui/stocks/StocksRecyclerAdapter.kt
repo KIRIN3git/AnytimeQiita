@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
 import jp.kirin3.anytimeqiita.R
 import jp.kirin3.anytimeqiita.data.StocksResponseData
-import kirin3.jp.mljanken.util.SettingsUtils
+import kirin3.jp.mljanken.util.SharedPreferencesUtils
 import kirin3.jp.mljanken.util.TimeUtils
 
 class StocksRecyclerAdapter(
@@ -46,7 +46,7 @@ class StocksRecyclerAdapter(
     override fun onBindViewHolder(holder: StocksRecyclerViewHolder, position: Int) {
         holder?.let {
 
-            val settingCheckBoxData = SettingsUtils.getSettingCheckBoxData(context)
+            val settingCheckBoxData = SharedPreferencesUtils.getSettingCheckBoxData(context)
 
             setIcon(
                 it.iconCardView,

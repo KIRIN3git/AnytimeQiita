@@ -3,6 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
+        android:id="@+id/menu_spinner"
+        android:title="@string/word_spinner"
+        app:actionViewClass="android.widget.Spinner"
+        app:showAsAction="always" />
+
+    <item
         android:id="@+id/menu_reload"
         android:icon="@drawable/ic_reload_white"
         android:title="@string/word_reload"

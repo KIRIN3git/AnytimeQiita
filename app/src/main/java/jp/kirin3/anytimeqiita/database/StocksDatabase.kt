@@ -51,14 +51,14 @@ object StocksDatabase {
         return stocksList
     }
 
-    fun selectStocksDataById(id:String): StocksResponseData? {
+    fun selectStocksDataById(id: String): StocksResponseData? {
 
         var realm = Realm.getDefaultInstance()
 
         val stocks = realm.where<StocksResponseData>()
             .equalTo(ID, id)
             .findAll()
-        if (stocks.count() != 1){
+        if (stocks.count() != 1) {
             realm.close()
             return null
         }

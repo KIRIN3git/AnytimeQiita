@@ -12,7 +12,7 @@ import io.realm.Realm
 import jp.kirin3.anytimeqiita.model.LoginModel
 import jp.kirin3.anytimeqiita.ui.setting.SettingFragment
 import kirin3.jp.mljanken.util.LogUtils.LOGI
-import kirin3.jp.mljanken.util.SettingsUtils
+import kirin3.jp.mljanken.util.SharedPreferencesUtils
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : BaseActivity() {
@@ -56,7 +56,7 @@ class MainActivity : BaseActivity() {
             LoginModel.handleQiitaLoginParam(intent, this)
             // Qiitaログインページからの戻りとして設定画面を開く
             transitSettingWithComeBackFromQiitaLogin(navController)
-        } else if (!SettingsUtils.getWebViewUrl(this).isNullOrEmpty()) {
+        } else if (!SharedPreferencesUtils.getWebViewUrl(this).isNullOrEmpty()) {
             // リーディングページがある場合のトップページ
             navController.navigate(R.id.bottom_navigation_reading, null)
         } else  {

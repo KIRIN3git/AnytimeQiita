@@ -5,7 +5,7 @@ import io.reactivex.Single
 import jp.kirin3.anytimeqiita.data.StocksResponseData
 import jp.kirin3.anytimeqiita.ui.stocks.StocksRepository
 import jp.kirin3.anytimeqiita.usecase.StocksUseCase
-import kirin3.jp.mljanken.util.SettingsUtils
+import kirin3.jp.mljanken.util.SharedPreferencesUtils
 import javax.inject.Inject
 
 class StocksUseCaseImpl @Inject constructor(
@@ -19,7 +19,7 @@ class StocksUseCaseImpl @Inject constructor(
     }
 
     override fun isLoadCompleted(): Boolean {
-        return SettingsUtils.getStockLoadingCompleted(context)
+        return SharedPreferencesUtils.getStockLoadingCompleted(context)
     }
 
     override fun getStockListFromDb(): List<StocksResponseData>? {
@@ -71,22 +71,22 @@ class StocksUseCaseImpl @Inject constructor(
 //    }
 
     override fun getPageCount(): Int {
-        return SettingsUtils.getStockPageCount(context)
+        return SharedPreferencesUtils.getStockPageCount(context)
     }
 
     override fun getLoadedStocksCount(): Int {
-        return (SettingsUtils.getStockPageCount(context) - 1) * ONE_TIME_STOCKS_NUM
+        return (SharedPreferencesUtils.getStockPageCount(context) - 1) * ONE_TIME_STOCKS_NUM
     }
 
     override fun addOnePageCount() {
-        SettingsUtils.setStockPageCount(context, SettingsUtils.getStockPageCount(context) + 1)
+        SharedPreferencesUtils.setStockPageCount(context, SharedPreferencesUtils.getStockPageCount(context) + 1)
     }
 
     override fun resetPageCount() {
-        SettingsUtils.setStockPageCount(context, RESET_PAGE_COUNT)
+        SharedPreferencesUtils.setStockPageCount(context, RESET_PAGE_COUNT)
     }
 
     override fun setStockLoadCompleted(isCompleted: Boolean) {
-        SettingsUtils.setStockLoadingCompleted(context, isCompleted)
+        SharedPreferencesUtils.setStockLoadingCompleted(context, isCompleted)
     }
 }

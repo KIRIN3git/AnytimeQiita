@@ -43,6 +43,11 @@ class StocksPresenter @Inject constructor(
         }
     }
 
+    override fun getStockListFromDb() {
+        if (!isStockLoadCompleted()) return
+        view.showStocksRecyclerView(stocksUseCase.getStockListFromDb())
+    }
+
     override fun getStockListFromApiWithInit() {
         initStocks()
         getStockList()

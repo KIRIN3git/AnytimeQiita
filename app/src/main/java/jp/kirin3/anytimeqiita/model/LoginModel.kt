@@ -8,7 +8,7 @@ import jp.kirin3.anytimeqiita.data.AuthenticatedUserData
 import jp.kirin3.anytimeqiita.database.AuthenticatedUserDatabase
 import kirin3.jp.mljanken.util.LogUtils.LOGE
 import kirin3.jp.mljanken.util.LogUtils.LOGI
-import kirin3.jp.mljanken.util.SettingsUtils
+import kirin3.jp.mljanken.util.SharedPreferencesUtils
 
 /**
  * ログインモデル
@@ -70,7 +70,7 @@ class LoginModel : ViewModel() {
         fun clearAllUserSetting(context: Context?) {
             context ?: return
 
-            SettingsUtils.clearAllPreference(context)
+            SharedPreferencesUtils.clearAllPreference(context)
             MyRealmModel.resetRealm(context)
         }
 
@@ -113,7 +113,7 @@ class LoginModel : ViewModel() {
                     }
                 }
                 it.getQueryParameter("code")?.also { paramCode ->
-                    SettingsUtils.setQiitaCode(context, paramCode)
+                    SharedPreferencesUtils.setQiitaCode(context, paramCode)
                 }
             }
         }
@@ -145,12 +145,12 @@ class LoginModel : ViewModel() {
          */
         fun getQiitaCode(context: Context?): String? {
             if (context == null) return null
-            return SettingsUtils.getQiitaCode(context)
+            return SharedPreferencesUtils.getQiitaCode(context)
         }
 
         private fun clearQiitaCode(context: Context?) {
             if (context == null) return
-            SettingsUtils.setQiitaCode(context, "")
+            SharedPreferencesUtils.setQiitaCode(context, "")
         }
         // QiitaCodeデータ関係ここまで
 
@@ -159,17 +159,17 @@ class LoginModel : ViewModel() {
          */
         fun setAccessToken(context: Context?, token: String) {
             if (context == null) return
-            SettingsUtils.setAccessToken(context, token)
+            SharedPreferencesUtils.setAccessToken(context, token)
         }
 
         fun getAccessToken(context: Context?): String? {
             if (context == null) return null
-            return SettingsUtils.getAccessToken(context)
+            return SharedPreferencesUtils.getAccessToken(context)
         }
 
         fun clearAccessToken(context: Context?) {
             if (context == null) return
-            SettingsUtils.setAccessToken(context, "")
+            SharedPreferencesUtils.setAccessToken(context, "")
         }
         // AccessTokenデータ関係ここまで
 
