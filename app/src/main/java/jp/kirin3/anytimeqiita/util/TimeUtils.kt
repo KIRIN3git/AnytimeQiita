@@ -61,6 +61,14 @@ object TimeUtils {
     }
 
     /**
+     * Date型 → String変換(MM/DD)
+     */
+    fun getStringYymmddFromDate(date: Date): String {
+        val df = SimpleDateFormat("YYYY/MM/DD")
+        return df.format(date)
+    }
+
+    /**
      * Date型 → String変換(午前or午後HH:MM)
      * 午前10:58
      */

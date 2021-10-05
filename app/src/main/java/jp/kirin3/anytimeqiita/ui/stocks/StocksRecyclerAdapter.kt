@@ -62,7 +62,7 @@ class StocksRecyclerAdapter(
                 stocksList[position].likes_count.toString(),
                 settingCheckBoxData?.setting_show_lgtm,
                 it.dateTextView,
-                TimeUtils.getStringMmddFromDate(stocksList[position].updated_at),
+                TimeUtils.getStringYymmddFromDate(stocksList[position].updated_at),
                 settingCheckBoxData?.setting_update_time
             )
         }
