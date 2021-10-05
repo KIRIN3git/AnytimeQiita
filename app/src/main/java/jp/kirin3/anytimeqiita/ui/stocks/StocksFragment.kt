@@ -110,7 +110,11 @@ class StocksFragment : BaseFragment(), StocksContract.View,
 
         if (LoginModel.isLoginCompleted(context)) {
             showLoadingDialog()
-            presenter.handleGettingStockListFromAny()
+            presenter.handleGettingStockListFromAny(
+                SharedPreferencesUtils.getStockSpinnerPosition(
+                    context
+                )
+            )
         }
     }
 
@@ -247,35 +251,30 @@ class StocksFragment : BaseFragment(), StocksContract.View,
 //        return true
 //    }
 
-    enum class SpinnerEnum {
-        ADDITION,
-        LGTM,
-        UPDATE,
-        NAME
-    }
-
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
         if (!presenter.isStockLoadCompleted()) return
         if (position == SharedPreferencesUtils.getStockSpinnerPosition(context)) return
         SharedPreferencesUtils.setStockSpinnerPosition(context, position)
 
-        when (position) {
-            SpinnerEnum.ADDITION.ordinal -> {
-                presenter.getStockListFromDb()
-                LOGI("aaaxxx1")
-            }
-            SpinnerEnum.LGTM.ordinal -> {
-//                presenter.getStockListFromDb()
-                LOGI("aaaxxx2")
+//        when (position) {
+        presenter.getStockListFromDb(position)
 
-            }
-            SpinnerEnum.UPDATE.ordinal -> {
-                LOGI("aaaxxx3")
-            }
-            SpinnerEnum.NAME.ordinal -> {
-                LOGI("aaaxxx4")
-            }
-        }
+//                    SpinnerData.ADDITION.ordinal -> {
+//                presenter.getStockListFromDb(position)
+//                LOGI("aaaxxx1")
+//            }
+//            SpinnerData.LGTM.ordinal -> {
+//                presenter.getStockListFromDb(position)
+//                LOGI("aaaxxx2")
+//
+//            }
+//            SpinnerData.UPDATE.ordinal -> {
+//                presenter.getStockListFromDb(position)
+//            }
+//            SpinnerData.NAME.ordinal -> {
+//                LOGI("aaaxxx4")
+//            }
+//        }
     }
 
     override fun onNothingSelected(parent: AdapterView<*>?) {

@@ -18,7 +18,7 @@ class StocksPresenter @Inject constructor(
 
     companion object {
         // 無限ロードを防ぐストッパー
-        private const val MAX_STOCKS_PAGE = 10
+        private const val MAX_STOCKS_PAGE = 3
     }
 
     private lateinit var view: StocksContract.View
@@ -35,17 +35,19 @@ class StocksPresenter @Inject constructor(
         disposables.clear()
     }
 
-    override fun handleGettingStockListFromAny() {
+    override fun handleGettingStockListFromAny(position: Int) {
         if (isStockLoadCompleted()) {
-            view.showStocksRecyclerView(stocksUseCase.getStockListFromDb())
+            view.showStocksRecyclerView(stocksUseCase.getStockListFromDb(position))
         } else {
             getStockListFromApiWithContinue()
         }
     }
 
-    override fun getStockListFromDb() {
+    override fun getStockListFromDb(position: Int) {
         if (!isStockLoadCompleted()) return
-        view.showStocksRecyclerView(stocksUseCase.getStockListFromDb())
+        view.clearStocksRecyclerView()
+        viewModel.resetRecyclerViewParcelable()
+        view.showStocksRecyclerView(stocksUseCase.getStockListFromDb(position))
     }
 
     override fun getStockListFromApiWithInit() {
@@ -54,7 +56,7 @@ class StocksPresenter @Inject constructor(
     }
 
     override fun getStockListFromApiWithContinue() {
-        view.showStocksRecyclerView(stocksUseCase.getStockListFromDb())
+        view.showStocksRecyclerView(stocksUseCase.getStockListFromDb(0))
         getStockList()
     }
 

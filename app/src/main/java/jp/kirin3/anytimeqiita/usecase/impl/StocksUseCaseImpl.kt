@@ -22,8 +22,8 @@ class StocksUseCaseImpl @Inject constructor(
         return SharedPreferencesUtils.getStockLoadingCompleted(context)
     }
 
-    override fun getStockListFromDb(): List<StocksResponseData>? {
-        return repository.getStocksFromDb()
+    override fun getStockListFromDb(position:Int): List<StocksResponseData>? {
+        return repository.getStocksFromDb(position)
     }
 
     override fun resetStockListFromDb() {

@@ -2,7 +2,9 @@ package jp.kirin3.anytimeqiita.database
 
 import io.realm.Realm
 import io.realm.kotlin.where
+import jp.kirin3.anytimeqiita.data.SpinnerData
 import jp.kirin3.anytimeqiita.data.StocksResponseData
+import kirin3.jp.mljanken.util.LogUtils.LOGI
 
 object StocksDatabase {
 
@@ -35,12 +37,18 @@ object StocksDatabase {
         realm.close()
     }
 
-    fun selectStocksData(): List<StocksResponseData>? {
+    fun selectStocksData(position: Int): List<StocksResponseData>? {
 
         var realm = Realm.getDefaultInstance()
 
-        val stocks = realm.where<StocksResponseData>().findAll()
-        if (stocks.count() == 0){
+        var stocks = if (position > 0) {
+            realm.where<StocksResponseData>().findAll()
+                .sort(SpinnerData.values().find { it.ordinal == position }?.column)
+        } else {
+            realm.where<StocksResponseData>().findAll()
+        }
+
+        if (stocks.count() == 0) {
             realm.close()
             return null
         }

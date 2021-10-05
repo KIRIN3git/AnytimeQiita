@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
 import jp.kirin3.anytimeqiita.R
 import jp.kirin3.anytimeqiita.data.StocksResponseData
+import kirin3.jp.mljanken.util.LogUtils.LOGI
 import kirin3.jp.mljanken.util.SharedPreferencesUtils
 import kirin3.jp.mljanken.util.TimeUtils
 

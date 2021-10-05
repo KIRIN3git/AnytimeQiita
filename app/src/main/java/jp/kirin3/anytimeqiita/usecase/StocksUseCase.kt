@@ -7,7 +7,7 @@ interface StocksUseCase {
 
     fun isLoadCompleted(): Boolean
 
-    fun getStockListFromDb(): List<StocksResponseData>?
+    fun getStockListFromDb(position:Int): List<StocksResponseData>?
 
     fun resetStockListFromDb()
 

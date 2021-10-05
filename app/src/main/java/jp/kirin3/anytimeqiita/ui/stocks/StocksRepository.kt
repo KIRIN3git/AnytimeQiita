@@ -58,8 +58,8 @@ class StocksRepository(
         return cacheStocksList
     }
 
-    fun getStocksFromDb(): List<StocksResponseData>? {
-        StocksDatabase.selectStocksData()?.let {
+    fun getStocksFromDb(position:Int): List<StocksResponseData>? {
+        StocksDatabase.selectStocksData(position)?.let {
             return it
         }
         return null
