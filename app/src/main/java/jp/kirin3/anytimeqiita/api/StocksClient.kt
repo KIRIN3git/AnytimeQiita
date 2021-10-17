@@ -10,10 +10,6 @@ import retrofit2.http.QueryMap
 
 class StocksClient {
 
-    private fun getService(retrofitFactory: RetrofitFactory): StocksService {
-        return retrofitFactory.buildRetrofit().create(StocksService::class.java)
-    }
-
     fun fetchStocks(
         retrofitFactory: RetrofitFactory,
         userId: String,
@@ -26,6 +22,10 @@ class StocksClient {
             retrofitFactory.getHostName(),
             requestData
         )
+    }
+
+    private fun getService(retrofitFactory: RetrofitFactory): StocksService {
+        return retrofitFactory.buildRetrofit().create(StocksService::class.java)
     }
 
     interface StocksService {

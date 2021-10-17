@@ -17,6 +17,7 @@ class StocksRecyclerViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         fun onItemClick(id: String, title: String, url: String)
     }
 
+    var seqTextView: TextView = view.seqTextView
     var titleTextView: TextView = view.titleTextView
     var iconCardView: CardView = view.iconCardView
     var iconImageView: ImageView = view.iconImageView

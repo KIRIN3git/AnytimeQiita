@@ -18,7 +18,7 @@ class StocksPresenter @Inject constructor(
 
     companion object {
         // 無限ロードを防ぐストッパー
-        private const val MAX_STOCKS_PAGE = 3
+        private const val MAX_STOCKS_PAGE = 20
     }
 
     private lateinit var view: StocksContract.View
@@ -35,19 +35,24 @@ class StocksPresenter @Inject constructor(
         disposables.clear()
     }
 
-    override fun handleGettingStockListFromAny(position: Int) {
+    override fun handleGettingStockListFromAny(orderPosition: Int, sortPosition: Int) {
         if (isStockLoadCompleted()) {
-            view.showStocksRecyclerView(stocksUseCase.getStockListFromDb(position))
+            view.showStocksRecyclerView(
+                stocksUseCase.getStockListFromDb(
+                    orderPosition,
+                    sortPosition
+                )
+            )
         } else {
             getStockListFromApiWithContinue()
         }
     }
 
-    override fun getStockListFromDb(position: Int) {
+    override fun getStockListFromDb(orderPosition: Int, sortPosition: Int) {
         if (!isStockLoadCompleted()) return
         view.clearStocksRecyclerView()
         viewModel.resetRecyclerViewParcelable()
-        view.showStocksRecyclerView(stocksUseCase.getStockListFromDb(position))
+        view.showStocksRecyclerView(stocksUseCase.getStockListFromDb(orderPosition, sortPosition))
     }
 
     override fun getStockListFromApiWithInit() {
@@ -56,7 +61,7 @@ class StocksPresenter @Inject constructor(
     }
 
     override fun getStockListFromApiWithContinue() {
-        view.showStocksRecyclerView(stocksUseCase.getStockListFromDb(0))
+        view.showStocksRecyclerView(stocksUseCase.getStockListFromDb(0, 0))
         getStockList()
     }
 
@@ -84,7 +89,10 @@ class StocksPresenter @Inject constructor(
                     stocksUseCase.setStockLoadCompleted(true)
                 } else {
                     // 取得データはDBに保存
-                    StocksDatabase.insertStocksDataList(result)
+                    StocksDatabase.insertStocksDataList(
+                        stocksUseCase.getPageCount(),
+                        result
+                    )
                     stocksUseCase.addOnePageCount()
                     view.showStocksRecyclerView(result)
                     // 再起呼び出し

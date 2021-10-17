@@ -1,6 +1,7 @@
 package jp.kirin3.anytimeqiita.database
 
 import io.realm.Realm
+import io.realm.Sort
 import io.realm.kotlin.where
 import jp.kirin3.anytimeqiita.data.SpinnerData
 import jp.kirin3.anytimeqiita.data.StocksResponseData
@@ -9,14 +10,18 @@ import kirin3.jp.mljanken.util.LogUtils.LOGI
 object StocksDatabase {
 
     private const val ID = "id"
+    private var sequence = 0
 
-    fun insertStocksDataList(userDataList: List<StocksResponseData>?) {
+    fun insertStocksDataList(pageCount: Int, userDataList: List<StocksResponseData>?) {
         if (userDataList == null) return
 
         var realm = Realm.getDefaultInstance()
 
         realm.beginTransaction()
+        if (pageCount == 1) sequence = 0
+
         for (userData in userDataList) {
+            userData.sequence = sequence++
             realm.insert(userData)
         }
         realm.commitTransaction()
@@ -37,16 +42,18 @@ object StocksDatabase {
         realm.close()
     }
 
-    fun selectStocksData(position: Int): List<StocksResponseData>? {
+    fun selectStocksData(orderPosition: Int, sortPosition: Int): List<StocksResponseData>? {
 
         var realm = Realm.getDefaultInstance()
-
-        var stocks = if (position > 0) {
-            realm.where<StocksResponseData>().findAll()
-                .sort(SpinnerData.values().find { it.ordinal == position }?.column)
-        } else {
-            realm.where<StocksResponseData>().findAll()
+        val order = when (orderPosition) {
+            0 -> Sort.ASCENDING
+            else -> Sort.DESCENDING
         }
+        val stocks =
+            realm.where<StocksResponseData>().findAll()
+                .sort(SpinnerData.values().find { it.ordinal == sortPosition }?.column,order)
+
+        LOGI("select stocks count = $stocks.count()")
 
         if (stocks.count() == 0) {
             realm.close()

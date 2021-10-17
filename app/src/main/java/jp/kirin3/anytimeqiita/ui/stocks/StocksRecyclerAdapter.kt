@@ -57,6 +57,8 @@ class StocksRecyclerAdapter(
             )
             setTitle(it.titleTextView, stocksList[position].title)
 
+            setTitle(it.seqTextView, stocksList[position].sequence.toString())
+
             setLgtmAndDate(
                 it.lgtmTextView,
                 stocksList[position].likes_count.toString(),

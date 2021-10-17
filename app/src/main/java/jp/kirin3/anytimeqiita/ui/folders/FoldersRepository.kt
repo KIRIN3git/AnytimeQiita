@@ -113,7 +113,7 @@ class FoldersRepository() : ViewModel(), FoldersDataSource {
                 override fun onFetchSuccess(responseData: List<StocksResponseData>) {
 
                     // データをデータベース保存
-                    StocksDatabase.insertStocksDataList(responseData)
+//                    StocksDatabase.insertStocksDataList(responseData)
 
                     pageCount++
 //                    val dataList = StocksDatabase.selectStocksData()

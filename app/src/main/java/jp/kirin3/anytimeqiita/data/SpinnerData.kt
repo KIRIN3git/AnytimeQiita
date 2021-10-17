@@ -6,7 +6,7 @@ package jp.kirin3.anytimeqiita.data
  * 並び順はstocks_spinner.xmlと同一である必要がある
  */
 enum class SpinnerData(val column: String?) {
-    ADDITION(null), // 追加順
+    SEQUENCE("sequence"),
     LGTM("likes_count"),
     UPDATE("updated_at"),
     NAME("title")

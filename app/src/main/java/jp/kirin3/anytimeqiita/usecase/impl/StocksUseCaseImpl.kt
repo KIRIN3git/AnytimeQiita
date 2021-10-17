@@ -22,8 +22,8 @@ class StocksUseCaseImpl @Inject constructor(
         return SharedPreferencesUtils.getStockLoadingCompleted(context)
     }
 
-    override fun getStockListFromDb(position:Int): List<StocksResponseData>? {
-        return repository.getStocksFromDb(position)
+    override fun getStockListFromDb(orderPosition: Int,sortPosition: Int): List<StocksResponseData>? {
+        return repository.getStocksFromDb(orderPosition,sortPosition)
     }
 
     override fun resetStockListFromDb() {
@@ -73,7 +73,6 @@ class StocksUseCaseImpl @Inject constructor(
     override fun getPageCount(): Int {
         return SharedPreferencesUtils.getStockPageCount(context)
     }
-
     override fun getLoadedStocksCount(): Int {
         return (SharedPreferencesUtils.getStockPageCount(context) - 1) * ONE_TIME_STOCKS_NUM
     }

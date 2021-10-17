@@ -82,16 +82,33 @@ class StocksFragment : BaseFragment(), StocksContract.View,
         inflater.inflate(R.menu.stocks_menu, menu)
         menu.findItem(R.id.menu_reload).isVisible = true
 
-        val item = menu.findItem(R.id.menu_spinner)
+        setOptionMenu(
+            menu,
+            R.id.menu_order_spinner,
+            R.array.stocks_order_spinner,
+            SharedPreferencesUtils.getStockOrderSpinnerPosition(nonNullContext)
+        )
+        setOptionMenu(
+            menu,
+            R.id.menu_sort_spinner,
+            R.array.stocks_sort_spinner,
+            SharedPreferencesUtils.getStockSortSpinnerPosition(nonNullContext)
+        )
+    }
+
+    private fun setOptionMenu(menu: Menu, spinner_id: Int, text_array_res_id: Int, position: Int) {
+        val nonNullContext = context ?: return
+
+        val item = menu.findItem(spinner_id)
         val spinner = item.actionView as Spinner
         val adapter = ArrayAdapter.createFromResource(
             nonNullContext,
-            R.array.stocks_spinner, R.layout.actionbar_spinner
+            text_array_res_id, R.layout.actionbar_spinner
         )
         adapter.setDropDownViewResource(R.layout.actionbar_spinner_dropdown)
         spinner.adapter = adapter
         spinner.onItemSelectedListener = this
-        spinner.setSelection(SharedPreferencesUtils.getStockSpinnerPosition(context))
+        spinner.setSelection(position)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -111,7 +128,10 @@ class StocksFragment : BaseFragment(), StocksContract.View,
         if (LoginModel.isLoginCompleted(context)) {
             showLoadingDialog()
             presenter.handleGettingStockListFromAny(
-                SharedPreferencesUtils.getStockSpinnerPosition(
+                SharedPreferencesUtils.getStockOrderSpinnerPosition(
+                    context
+                ),
+                SharedPreferencesUtils.getStockSortSpinnerPosition(
                     context
                 )
             )
@@ -253,31 +273,28 @@ class StocksFragment : BaseFragment(), StocksContract.View,
 
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
         if (!presenter.isStockLoadCompleted()) return
-        if (position == SharedPreferencesUtils.getStockSpinnerPosition(context)) return
-        SharedPreferencesUtils.setStockSpinnerPosition(context, position)
 
-//        when (position) {
-        presenter.getStockListFromDb(position)
+        var orderPosition = SharedPreferencesUtils.getStockOrderSpinnerPosition(context)
+        var sortPosition = SharedPreferencesUtils.getStockSortSpinnerPosition(context)
 
-//                    SpinnerData.ADDITION.ordinal -> {
-//                presenter.getStockListFromDb(position)
-//                LOGI("aaaxxx1")
-//            }
-//            SpinnerData.LGTM.ordinal -> {
-//                presenter.getStockListFromDb(position)
-//                LOGI("aaaxxx2")
-//
-//            }
-//            SpinnerData.UPDATE.ordinal -> {
-//                presenter.getStockListFromDb(position)
-//            }
-//            SpinnerData.NAME.ordinal -> {
-//                LOGI("aaaxxx4")
-//            }
-//        }
+        when (parent?.id) {
+            R.id.menu_order_spinner -> {
+                if (position == SharedPreferencesUtils.getStockOrderSpinnerPosition(context)) return
+                orderPosition = position
+                SharedPreferencesUtils.setStockOrderSpinnerPosition(context, orderPosition)
+            }
+            R.id.menu_sort_spinner -> {
+                if (position == SharedPreferencesUtils.getStockSortSpinnerPosition(context)) return
+                sortPosition = position
+                SharedPreferencesUtils.setStockSortSpinnerPosition(context, sortPosition)
+            }
+            else -> return
+        }
+
+        presenter.getStockListFromDb(orderPosition, sortPosition)
     }
 
     override fun onNothingSelected(parent: AdapterView<*>?) {
-        LOGI("shinji position xxxxxxxxxxx")
+        // no-op
     }
 }

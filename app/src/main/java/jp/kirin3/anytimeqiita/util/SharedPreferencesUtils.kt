@@ -24,7 +24,8 @@ object SharedPreferencesUtils {
     private const val PREF_SETTING_FOLDERS_SEQID = "pref_setting_folders_seqid"
     private const val PREF_SETTING_USE_EXTERNAL_BROWSER = "pref_setting_use_external_browser"
     private const val PREF_SETTING_CHECK_BOX = "pref_setting_check_box"
-    private const val PREF_STOCK_SPINNER_POSITION = "pref_stock_spinner_position"
+    private const val PREF_STOCK_SORT_SPINNER_POSITION = "pref_stock_sort_spinner_position"
+    private const val PREF_STOCK_ORDER_SPINNER_POSITION = "pref_stock_order_spinner_position"
 
     fun setQiitaCode(context: Context, code: String) {
         val sp = PreferenceManager.getDefaultSharedPreferences(context)
@@ -189,7 +190,7 @@ object SharedPreferencesUtils {
         val sp = PreferenceManager.getDefaultSharedPreferences(context)
         val data = sp.getString(PREF_SETTING_CHECK_BOX, null)
         LOGD(
-            "GetPref $PREF_STOCK_LOADING_COMPLETED = $data"
+            "GetPref $PREF_SETTING_CHECK_BOX = $data"
         )
         return Gson().fromJson(data, SettingCheckBoxData::class.java)
     }
@@ -206,17 +207,29 @@ object SharedPreferencesUtils {
         sp.edit().clear().commit()
     }
 
-
-    fun setStockSpinnerPosition(context: Context?, position: Int) {
+    fun setStockSortSpinnerPosition(context: Context?, position: Int) {
         val sp = PreferenceManager.getDefaultSharedPreferences(context)
-        sp.edit().putInt(PREF_STOCK_SPINNER_POSITION, position).apply()
-        LOGD("SetPref $PREF_STOCK_SPINNER_POSITION = $position")
+        sp.edit().putInt(PREF_STOCK_SORT_SPINNER_POSITION, position).apply()
+        LOGD("SetPref $PREF_STOCK_SORT_SPINNER_POSITION = $position")
     }
 
-    fun getStockSpinnerPosition(context: Context?): Int {
+    fun getStockSortSpinnerPosition(context: Context?): Int {
         val sp = PreferenceManager.getDefaultSharedPreferences(context)
-        val data = sp.getInt(PREF_STOCK_SPINNER_POSITION, 0)
-        LOGD("GetPref $PREF_STOCK_SPINNER_POSITION = $data")
+        val data = sp.getInt(PREF_STOCK_SORT_SPINNER_POSITION, 0)
+        LOGD("GetPref $PREF_STOCK_SORT_SPINNER_POSITION = $data")
+        return data
+    }
+
+    fun setStockOrderSpinnerPosition(context: Context?, position: Int) {
+        val sp = PreferenceManager.getDefaultSharedPreferences(context)
+        sp.edit().putInt(PREF_STOCK_ORDER_SPINNER_POSITION, position).apply()
+        LOGD("SetPref $PREF_STOCK_ORDER_SPINNER_POSITION = $position")
+    }
+
+    fun getStockOrderSpinnerPosition(context: Context?): Int {
+        val sp = PreferenceManager.getDefaultSharedPreferences(context)
+        val data = sp.getInt(PREF_STOCK_ORDER_SPINNER_POSITION, 0)
+        LOGD("GetPref $PREF_STOCK_ORDER_SPINNER_POSITION = $data")
         return data
     }
 }
