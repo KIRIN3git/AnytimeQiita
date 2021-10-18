@@ -27,7 +27,7 @@ import jp.kirin3.anytimeqiita.ui.solders.FoldersRecyclerAdapter
 import jp.kirin3.anytimeqiita.ui.stocks.FoldersRecyclerViewHolder
 import jp.kirin3.anytimeqiita.util.DialogUtils
 import kirin3.jp.mljanken.util.LogUtils.LOGI
-import kirin3.jp.mljanken.util.SettingsUtils
+import kirin3.jp.mljanken.util.SharedPreferencesUtils
 
 class FoldersFragment : BaseFragment(), FoldersContract.View,
     FoldersRecyclerViewHolder.ItemClickListener, FoldersDialogFragment.FolderDialogListener {
@@ -72,9 +72,9 @@ class FoldersFragment : BaseFragment(), FoldersContract.View,
         super.onResume()
         LOGI("")
 
-        if (!SettingsUtils.getCreateFirstFoldersFlg(context)) {
+        if (!SharedPreferencesUtils.getCreateFirstFoldersFlg(context)) {
             presenter.createFirstFolders()
-            SettingsUtils.setCreateFirstFoldersFlg(context, true)
+            SharedPreferencesUtils.setCreateFirstFoldersFlg(context, true)
         }
 
         presenter.readFolders()
@@ -286,8 +286,8 @@ class FoldersFragment : BaseFragment(), FoldersContract.View,
     }
 
     private fun getNextSeqid(): Int {
-        val seqId = SettingsUtils.getFolderSeqid(context) + 1
-        SettingsUtils.setFolderSeqid(context, seqId)
+        val seqId = SharedPreferencesUtils.getFolderSeqid(context) + 1
+        SharedPreferencesUtils.setFolderSeqid(context, seqId)
         return seqId
     }
 }

@@ -2,7 +2,7 @@ package jp.kirin3.anytimeqiita.ui.setting
 
 import android.content.Context
 import jp.kirin3.anytimeqiita.model.LoginModel
-import kirin3.jp.mljanken.util.SettingsUtils
+import kirin3.jp.mljanken.util.SharedPreferencesUtils
 
 
 class SettingPresenter(
@@ -29,7 +29,7 @@ class SettingPresenter(
                 override fun onAccessTokenLoaded() {
                     settingRepository.loadAuthenticatedUser(
                         context,
-                        SettingsUtils.getAccessToken(context),
+                        SharedPreferencesUtils.getAccessToken(context),
                         object : SettingDataSource.LoadAuthenticatedUserCallback {
                             override fun onAuthenticatedUserLoaded() {
                                 settingView.showLoginSuccessToast()

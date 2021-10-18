@@ -3,13 +3,13 @@ package jp.kirin3.anytimeqiita.data
 import android.os.Parcelable
 import io.realm.RealmObject
 import io.realm.annotations.Index
-import io.realm.annotations.PrimaryKey
 import kotlinx.android.parcel.Parcelize
 import java.util.*
 
 @Parcelize
 open class StocksResponseData(
-    @Index var id: String = "",
+    @Index var sequence: Int = 0,
+    var id: String = "",
     var coediting: Boolean = false,
     var user: UserData? = UserData(),
     var title: String = "",

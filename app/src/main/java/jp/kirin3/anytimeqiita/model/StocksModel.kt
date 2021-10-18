@@ -8,7 +8,7 @@ class StocksModel() : ViewModel() {
 
     companion object {
 
-        var parcelable: Parcelable? = null
+        var recyclerViewParcelable: Parcelable? = null
 
         private var cacheStocksList: List<StocksResponseData>? = null
 
@@ -16,5 +16,9 @@ class StocksModel() : ViewModel() {
             cacheStocksList = stocksList
         }
 
+    }
+
+    fun resetRecyclerViewParcelable() {
+        recyclerViewParcelable = null
     }
 }

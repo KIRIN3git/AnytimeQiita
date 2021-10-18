@@ -11,7 +11,7 @@ import jp.kirin3.anytimeqiita.R
 import jp.kirin3.anytimeqiita.data.SettingCheckBoxData
 import jp.kirin3.anytimeqiita.injection.Injection
 import jp.kirin3.anytimeqiita.model.LoginModel
-import kirin3.jp.mljanken.util.SettingsUtils
+import kirin3.jp.mljanken.util.SharedPreferencesUtils
 import kotlinx.android.synthetic.main.fragment_setting.*
 
 class SettingFragment : BaseFragment(), SettingContract.View {
@@ -75,8 +75,8 @@ class SettingFragment : BaseFragment(), SettingContract.View {
     private fun settingCheckBox() {
 
         val beforeSettingCheckBoxData =
-            if (SettingsUtils.hasSettingCheckBoxData(context)) {
-                SettingsUtils.getSettingCheckBoxData(context)
+            if (SharedPreferencesUtils.hasSettingCheckBoxData(context)) {
+                SharedPreferencesUtils.getSettingCheckBoxData(context)
             } else {
                 SettingCheckBoxData()
             }
@@ -116,7 +116,7 @@ class SettingFragment : BaseFragment(), SettingContract.View {
 
     private fun setCheckBoxSp(afterSettingCheckBoxData: SettingCheckBoxData) {
         val json = Gson().toJson(afterSettingCheckBoxData)
-        SettingsUtils.setSettingCheckBoxData(context, json)
+        SharedPreferencesUtils.setSettingCheckBoxData(context, json)
     }
 
 

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="stocks_sort_spinner">
+        <item>追加順</item>
+        <item>LGTM</item>
+        <item>更新日時</item>
+        <item>名前</item>
+    </string-array>
+</resources>

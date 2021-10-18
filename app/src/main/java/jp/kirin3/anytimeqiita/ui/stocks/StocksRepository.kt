@@ -4,25 +4,22 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
-import jp.kirin3.anytimeqiita.api.ApiClient
 import jp.kirin3.anytimeqiita.api.StocksClient
 import jp.kirin3.anytimeqiita.data.StocksResponseData
 import jp.kirin3.anytimeqiita.database.StocksDatabase
 import jp.kirin3.anytimeqiita.di.RetrofitFactory
-import kirin3.jp.mljanken.util.LogUtils
 import kirin3.jp.mljanken.util.LogUtils.LOGD
-import kirin3.jp.mljanken.util.SettingsUtils
+import kirin3.jp.mljanken.util.SharedPreferencesUtils
 
 class StocksRepository(
     private val retrofitFactory: RetrofitFactory
 ) : ViewModel(), StocksDataSource {
 
     private var cacheStocksList: MutableList<StocksResponseData>? = null
-    private var pageCount = 1
 
     companion object {
         // 一度で取得するstock数
-        private const val ONE_TIME_STOCKS_NUM = 100
+
         private var INSTANCE: StocksRepository? = null
 
         /**
@@ -61,8 +58,8 @@ class StocksRepository(
         return cacheStocksList
     }
 
-    fun getStocksFromDb(): List<StocksResponseData>? {
-        StocksDatabase.selectStocksData()?.let {
+    fun getStocksFromDb(orderPosition: Int,sortPosition: Int): List<StocksResponseData>? {
+        StocksDatabase.selectStocksData(orderPosition,sortPosition)?.let {
             return it
         }
         return null
@@ -73,11 +70,11 @@ class StocksRepository(
     }
 
     fun setPageCount(context: Context, pageCount: Int) {
-        SettingsUtils.setStockPageCount(context, pageCount)
+        SharedPreferencesUtils.setStockPageCount(context, pageCount)
     }
 
     fun getPageCount(context: Context) {
-        SettingsUtils.getStockPageCount(context)
+        SharedPreferencesUtils.getStockPageCount(context)
     }
 
     /**
@@ -86,47 +83,48 @@ class StocksRepository(
      */
     fun loadStockList(
         userId: String,
-        pageCount: Int
+        pageCount: Int,
+        oneTimeStocksNum:Int
     ): Single<List<StocksResponseData>> {
         val api = StocksClient()
         return api.fetchStocks(
             retrofitFactory,
             userId,
             pageCount.toString(),
-            ONE_TIME_STOCKS_NUM.toString()
+            oneTimeStocksNum.toString()
         )
             .subscribeOn(Schedulers.io())
             .doAfterSuccess {
-                LOGD("pageCount $pageCount READ_COUNT $ONE_TIME_STOCKS_NUM")
+                LOGD("pageCount $pageCount READ_COUNT $oneTimeStocksNum")
             }
     }
 
-    fun loadStockListOld(
-        userId: String?,
-        pageCount: Int,
-        callback: StocksDataSource.LoadTasksCallback
-    ) {
-
-        LOGD("pageCount $pageCount READ_COUNT $ONE_TIME_STOCKS_NUM")
-
-        ApiClient.fetchStocksOld(
-            userId,
-            pageCount.toString(),
-            ONE_TIME_STOCKS_NUM.toString(),
-            object : ApiClient.StocksApiCallback {
-                override fun onFetchSuccess(responseData: List<StocksResponseData>) {
-                    callback.onLoadSuccess(responseData)
-                }
-
-                override fun onFetchNoData() {
-                    callback.onLoadNoData()
-                }
-
-                override fun onFetchFailure() {
-                    LogUtils.LOGI("Fail fetchAuthenticatedUser")
-
-                    callback.onLoadFailure()
-                }
-            })
-    }
+//    fun loadStockListOld(
+//        userId: String?,
+//        pageCount: Int,
+//        callback: StocksDataSource.LoadTasksCallback
+//    ) {
+//
+//        LOGD("pageCount $pageCount READ_COUNT $ONE_TIME_STOCKS_NUM")
+//
+//        ApiClient.fetchStocksOld(
+//            userId,
+//            pageCount.toString(),
+//            ONE_TIME_STOCKS_NUM.toString(),
+//            object : ApiClient.StocksApiCallback {
+//                override fun onFetchSuccess(responseData: List<StocksResponseData>) {
+//                    callback.onLoadSuccess(responseData)
+//                }
+//
+//                override fun onFetchNoData() {
+//                    callback.onLoadNoData()
+//                }
+//
+//                override fun onFetchFailure() {
+//                    LogUtils.LOGI("Fail fetchAuthenticatedUser")
+//
+//                    callback.onLoadFailure()
+//                }
+//            })
+//    }
 }

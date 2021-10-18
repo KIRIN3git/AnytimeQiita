@@ -11,7 +11,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
 import jp.kirin3.anytimeqiita.R
 import jp.kirin3.anytimeqiita.data.StocksResponseData
-import kirin3.jp.mljanken.util.SettingsUtils
+import kirin3.jp.mljanken.util.LogUtils.LOGI
+import kirin3.jp.mljanken.util.SharedPreferencesUtils
 import kirin3.jp.mljanken.util.TimeUtils
 
 class StocksRecyclerAdapter(
@@ -46,7 +47,7 @@ class StocksRecyclerAdapter(
     override fun onBindViewHolder(holder: StocksRecyclerViewHolder, position: Int) {
         holder?.let {
 
-            val settingCheckBoxData = SettingsUtils.getSettingCheckBoxData(context)
+            val settingCheckBoxData = SharedPreferencesUtils.getSettingCheckBoxData(context)
 
             setIcon(
                 it.iconCardView,
@@ -56,12 +57,14 @@ class StocksRecyclerAdapter(
             )
             setTitle(it.titleTextView, stocksList[position].title)
 
+            setTitle(it.seqTextView, stocksList[position].sequence.toString())
+
             setLgtmAndDate(
                 it.lgtmTextView,
                 stocksList[position].likes_count.toString(),
                 settingCheckBoxData?.setting_show_lgtm,
                 it.dateTextView,
-                TimeUtils.getStringMmddFromDate(stocksList[position].updated_at),
+                TimeUtils.getStringYymmddFromDate(stocksList[position].updated_at),
                 settingCheckBoxData?.setting_update_time
             )
         }

@@ -3,11 +3,13 @@ package jp.kirin3.anytimeqiita.ui.stocks
 import android.content.Context
 import android.os.Bundle
 import android.view.*
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.Spinner
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import jp.kirin3.anytimeqiita.BaseFragment
 import jp.kirin3.anytimeqiita.MainApplication
 import jp.kirin3.anytimeqiita.R
@@ -16,23 +18,23 @@ import jp.kirin3.anytimeqiita.data.StocksResponseData
 import jp.kirin3.anytimeqiita.database.FilesDatabase
 import jp.kirin3.anytimeqiita.database.FoldersDatabase
 import jp.kirin3.anytimeqiita.manager.TransitionManager
+import jp.kirin3.anytimeqiita.model.LoginModel
 import jp.kirin3.anytimeqiita.model.StocksModel
 import jp.kirin3.anytimeqiita.source.dialog.StocksDialogFragment
 import jp.kirin3.anytimeqiita.source.dialog.StocksDialogParameter
-import jp.kirin3.anytimeqiita.model.LoginModel
 import kirin3.jp.mljanken.util.LogUtils.LOGI
-import kirin3.jp.mljanken.util.SettingsUtils
+import kirin3.jp.mljanken.util.SharedPreferencesUtils
+import kotlinx.android.synthetic.main.fragment_stocks.*
 import javax.inject.Inject
 
-class StocksFragment : BaseFragment(), StocksContract.View, SwipeRefreshLayout.OnRefreshListener,
-    StocksRecyclerViewHolder.ItemClickListener, StocksDialogFragment.StocksDialogListener {
+class StocksFragment : BaseFragment(), StocksContract.View,
+    StocksRecyclerViewHolder.ItemClickListener, StocksDialogFragment.StocksDialogListener,
+    AdapterView.OnItemSelectedListener {
 
-    private lateinit var refreshLayout: SwipeRefreshLayout
     private lateinit var stocksRecyclerView: RecyclerView
     private var viewAdapter: StocksRecyclerAdapter? = null
     private lateinit var viewManager: RecyclerView.LayoutManager
     private var hasAdapter: Boolean = false
-    private var nowLoadingFlg: Boolean = false
 
     //override lateinit var presenter: StocksContract.Presenter
 
@@ -64,8 +66,6 @@ class StocksFragment : BaseFragment(), StocksContract.View, SwipeRefreshLayout.O
 
         stocksRecyclerView = root.findViewById(R.id.stocks_recycler_view)
 
-        setRefreshLayout(root)
-
         return root
     }
 
@@ -77,14 +77,45 @@ class StocksFragment : BaseFragment(), StocksContract.View, SwipeRefreshLayout.O
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
+        val nonNullContext = context ?: return
+
         inflater.inflate(R.menu.stocks_menu, menu)
         menu.findItem(R.id.menu_reload).isVisible = true
+
+        setOptionMenu(
+            menu,
+            R.id.menu_order_spinner,
+            R.array.stocks_order_spinner,
+            SharedPreferencesUtils.getStockOrderSpinnerPosition(nonNullContext)
+        )
+        setOptionMenu(
+            menu,
+            R.id.menu_sort_spinner,
+            R.array.stocks_sort_spinner,
+            SharedPreferencesUtils.getStockSortSpinnerPosition(nonNullContext)
+        )
+    }
+
+    private fun setOptionMenu(menu: Menu, spinner_id: Int, text_array_res_id: Int, position: Int) {
+        val nonNullContext = context ?: return
+
+        val item = menu.findItem(spinner_id)
+        val spinner = item.actionView as Spinner
+        val adapter = ArrayAdapter.createFromResource(
+            nonNullContext,
+            text_array_res_id, R.layout.actionbar_spinner
+        )
+        adapter.setDropDownViewResource(R.layout.actionbar_spinner_dropdown)
+        spinner.adapter = adapter
+        spinner.onItemSelectedListener = this
+        spinner.setSelection(position)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.menu_reload -> {
-                presenter.initGettingStockListFromApi()
+                showLoadingDialog()
+                presenter.getStockListFromApiWithInit()
             }
         }
         return true
@@ -95,27 +126,26 @@ class StocksFragment : BaseFragment(), StocksContract.View, SwipeRefreshLayout.O
         LOGI("")
 
         if (LoginModel.isLoginCompleted(context)) {
-            presenter.handleGettingStockListFromAny()
+            showLoadingDialog()
+            presenter.handleGettingStockListFromAny(
+                SharedPreferencesUtils.getStockOrderSpinnerPosition(
+                    context
+                ),
+                SharedPreferencesUtils.getStockSortSpinnerPosition(
+                    context
+                )
+            )
         }
     }
 
     override fun onDestroy() {
         super.onDestroy()
         // 位置の保存
-        StocksModel.parcelable = stocksRecyclerView.layoutManager?.onSaveInstanceState()
+        StocksModel.recyclerViewParcelable = stocksRecyclerView.layoutManager?.onSaveInstanceState()
+//        if (stocks_recycler_view != null) {
+//            StocksModel.parcelable = stocks_recycler_view.layoutManager?.onSaveInstanceState()
+//        }
         presenter.stop()
-    }
-
-    override fun showMessage(msg: String) {
-        LOGI("")
-    }
-
-    private fun setRefreshLayout(root: View) {
-        refreshLayout = root.findViewById(R.id.refresh_layout)
-        refreshLayout.setOnRefreshListener(this)
-        refreshLayout.setColorSchemeResources(
-            R.color.orange2
-        )
     }
 
     override fun showStocksRecyclerView(
@@ -138,11 +168,31 @@ class StocksFragment : BaseFragment(), StocksContract.View, SwipeRefreshLayout.O
                 // ラストスクロールリスナー
                 addOnScrollListener(ScrollListener())
             }
-
             // 位置の復元
-            stocksRecyclerView.layoutManager?.onRestoreInstanceState(StocksModel.parcelable)
+            stocksRecyclerView.layoutManager?.onRestoreInstanceState(StocksModel.recyclerViewParcelable)
         }
-        nowLoadingFlg = false
+
+        handleLoadingDialog()
+    }
+
+    override fun showLoadingDialog() {
+        loaded_stocks_count_text_view.visibility = View.GONE
+        loading_lottie_animation_view.resumeAnimation()
+        loading_card_view.visibility = View.VISIBLE
+    }
+
+    override fun handleLoadingDialog() {
+        // ロードダイアログを非表示
+        if (presenter.isStockLoadCompleted()) {
+            loading_lottie_animation_view.pauseAnimation()
+            loading_card_view.visibility = View.GONE
+        }
+        // ロードダイアログのストック数カウント表示
+        presenter.getLoadedStocksCount().let {
+            loaded_stocks_count_text_view.visibility = View.VISIBLE
+            loaded_stocks_count_text_view.text =
+                getString(R.string.message_loaded_stocks_count, it.toString())
+        }
     }
 
     override fun clearStocksRecyclerView() {
@@ -169,13 +219,15 @@ class StocksFragment : BaseFragment(), StocksContract.View, SwipeRefreshLayout.O
      * StocksRecyclerViewHolder.ItemClickListener
      */
     override fun onItemClick(stockId: String, title: String, url: String) {
-        showStocksDialog(stockId, title, url)
+        if (presenter.isStockLoadCompleted()) {
+            showStocksDialog(stockId, title, url)
+        }
     }
 
     override fun onReadNowButtonClick(dialog: DialogFragment, title: String?, url: String?) {
         if (title == null || url == null) return
 
-        if (SettingsUtils.getUseExternalBrowser(context)) {
+        if (SharedPreferencesUtils.getUseExternalBrowser(context)) {
             TransitionManager.transitionExternalBrowser(this, activity?.packageManager, url)
         } else {
             TransitionManager.transitionReadingFragment(
@@ -214,22 +266,35 @@ class StocksFragment : BaseFragment(), StocksContract.View, SwipeRefreshLayout.O
         ).commitNowAllowingStateLoss()
     }
 
+//    override fun onNavigationItemSelected(item: MenuItem): Boolean {
+//        LOGI("item aaa " + item)
+//        return true
+//    }
 
-    override fun setRefreshingInterface(refreshFlg: Boolean) {
-        refreshLayout.isRefreshing = refreshFlg
+    override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+        if (!presenter.isStockLoadCompleted()) return
+
+        var orderPosition = SharedPreferencesUtils.getStockOrderSpinnerPosition(context)
+        var sortPosition = SharedPreferencesUtils.getStockSortSpinnerPosition(context)
+
+        when (parent?.id) {
+            R.id.menu_order_spinner -> {
+                if (position == SharedPreferencesUtils.getStockOrderSpinnerPosition(context)) return
+                orderPosition = position
+                SharedPreferencesUtils.setStockOrderSpinnerPosition(context, orderPosition)
+            }
+            R.id.menu_sort_spinner -> {
+                if (position == SharedPreferencesUtils.getStockSortSpinnerPosition(context)) return
+                sortPosition = position
+                SharedPreferencesUtils.setStockSortSpinnerPosition(context, sortPosition)
+            }
+            else -> return
+        }
+
+        presenter.getStockListFromDb(orderPosition, sortPosition)
     }
 
-    /**
-     * SwipeRefreshLayout.OnRefreshListener
-     */
-    override fun onRefresh() {
-        LOGI("")
-        setRefreshingInterface(false)
-//        if (LoginModel.isLoginCompleted(context) && !nowLoadingFlg) {
-//            nowLoadingFlg = true
-//            clearStocksRecyclerView()
-//            StocksDatabase.deleteStocksDataList()
-//            presenter.refreshLayout()
-//        }
+    override fun onNothingSelected(parent: AdapterView<*>?) {
+        // no-op
     }
 }
